@@ -77,6 +77,7 @@ class TemplateController extends Controller
     public function edit(Template $template)
     {
         //
+        return view('templates.edit', compact('template'));
     }
 
     /**
@@ -85,6 +86,30 @@ class TemplateController extends Controller
     public function update(Request $request, Template $template)
     {
         //
+        $request->validate([
+            'title' => 'required|max:64',
+            'member_status' => 'required|boolean',
+            'clock_status' => 'required|boolean',
+            'has_check' => 'required|boolean',
+            'has_photo' => 'required|boolean',
+            'has_content' => 'required|boolean',
+            'has_temperature' => 'required|boolean',
+        ]);
+
+        // リクエストからデータを取得
+        $data = $request->only([
+            'title',
+            'member_status',
+            'clock_status',
+            'has_check',
+            'has_photo',
+            'has_content',
+            'has_temperature'
+        ]);
+
+        $template->update($data);
+        return redirect()->route('templates.show', $template);
+
     }
 
     /**
@@ -93,5 +118,7 @@ class TemplateController extends Controller
     public function destroy(Template $template)
     {
         //
+        $template->delete();
+        return redirect()->route('templates.index');
     }
 }
