@@ -24,6 +24,12 @@
             <x-nav-link :href="route('templates.create')" :active="request()->routeIs('templates.create')">
                 {{ __('Item作成') }}
             </x-nav-link>
+            <x-nav-link :href="route('members.index')" :active="request()->routeIs('members.index')">
+                    {{ __('メンバー一覧') }}
+                </x-nav-link>
+            <x-nav-link :href="route('members.create')" :active="request()->routeIs('members.create')">
+                {{ __('メンバー登録') }}
+            </x-nav-link>
             </div>
         </div>
 
@@ -84,6 +90,12 @@
         </x-responsive-nav-link>
         <x-responsive-nav-link :href="route('templates.create')" :active="request()->routeIs('templates.create')">
             {{ __('Item作成') }}
+        </x-responsive-nav-link>
+        <x-responsive-nav-link :href="route('members.index')" :active="request()->routeIs('members.index')">
+            {{ __('メンバー一覧') }}
+        </x-responsive-nav-link>
+        <x-responsive-nav-link :href="route('members.create')" :active="request()->routeIs('members.create')">
+            {{ __('メンバー登録') }}
         </x-responsive-nav-link>
         </div>
 

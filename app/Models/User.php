@@ -55,4 +55,8 @@ class User extends Authenticatable
     {
         return $this->hasMany(Template::class); //Userモデルの $thisに対して、Templateモデルは多数（hasMany)
     }
+    public function members()
+    {
+        return $this->hasMany(Member::class); //Userモデルの $thisに対して、Memberモデルは多数（hasMany)
+    }
 }

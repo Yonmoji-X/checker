@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
     // ↓templateテーブル追加時に追記（※リソースコントローラ）
 use App\Http\Controllers\TemplateController;
+use App\Http\Controllers\MemberController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -20,6 +21,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     // ↓templateテーブル追加時に追記（※リソースコントローラ）
     Route::resource('templates', TemplateController::class);
+    Route::resource('members', MemberController::class);
 
 });
 
