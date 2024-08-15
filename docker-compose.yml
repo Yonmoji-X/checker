@@ -1,0 +1,139 @@
+services:
+    # PHPMyAdminサービス
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        links:
+            - mysql:mysql
+        ports:
+            - 8082:80 # 変更: 8081 から 8082 に
+        environment:
+            MYSQL_USERNAME: "${DB_USERNAME}"
+            MYSQL_ROOT_PASSWORD: "${DB_PASSWORD}"
+            PMA_HOST: mysql
+        networks:
+            - sail
+
+    # Laravelアプリケーションサービス
+    laravel.test:
+        build:
+            context: ./vendor/laravel/sail/runtimes/8.3
+            dockerfile: Dockerfile
+            args:
+                WWWGROUP: '${WWWGROUP}'
+        image: sail-8.3/app
+        extra_hosts:
+            - 'host.docker.internal:host-gateway'
+        ports:
+            - '${APP_PORT:-81}:80' # 変更: デフォルトポートを80から81に変更
+            - '${VITE_PORT:-5174}:${VITE_PORT:-5174}' # 変更: 5173から5174に
+        environment:
+            WWWUSER: '${WWWUSER}'
+            LARAVEL_SAIL: 1
+            XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
+            XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
+            IGNITION_LOCAL_SITES_PATH: '${PWD}'
+        volumes:
+            - '.:/var/www/html'
+        networks:
+            - sail
+        depends_on:
+            - mysql
+            - redis
+            - meilisearch
+            - mailpit
+            - selenium
+
+    # MySQLサービス
+    mysql:
+        image: 'mysql/mysql-server:8.0'
+        ports:
+            - '${FORWARD_DB_PORT:-3307}:3306' # 変更: 3306から3307に
+        environment:
+            MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+            MYSQL_ROOT_HOST: '%'
+            MYSQL_DATABASE: '${DB_DATABASE}'
+            MYSQL_USER: '${DB_USERNAME}'
+            MYSQL_PASSWORD: '${DB_PASSWORD}'
+            MYSQL_ALLOW_EMPTY_PASSWORD: 1
+        volumes:
+            - 'sail-mysql:/var/lib/mysql'
+            - './vendor/laravel/sail/database/mysql/create-testing-database.sh:/docker-entrypoint-initdb.d/10-create-testing-database.sh'
+        networks:
+            - sail
+        healthcheck:
+            test:
+                - CMD
+                - mysqladmin
+                - ping
+                - '-p${DB_PASSWORD}'
+            retries: 3
+            timeout: 5s
+
+    # Redisサービス
+    redis:
+        image: 'redis:alpine'
+        ports:
+            - '${FORWARD_REDIS_PORT:-6380}:6379' # 変更: 6379から6380に
+        volumes:
+            - 'sail-redis:/data'
+        networks:
+            - sail
+        healthcheck:
+            test:
+                - CMD
+                - redis-cli
+                - ping
+            retries: 3
+            timeout: 5s
+
+    # Meilisearchサービス
+    meilisearch:
+        image: 'getmeili/meilisearch:latest'
+        ports:
+            - '${FORWARD_MEILISEARCH_PORT:-7701}:7700' # 変更: 7700から7701に
+        environment:
+            MEILI_NO_ANALYTICS: '${MEILISEARCH_NO_ANALYTICS:-false}'
+        volumes:
+            - 'sail-meilisearch:/meili_data'
+        networks:
+            - sail
+        healthcheck:
+            test:
+                - CMD
+                - wget
+                - '--no-verbose'
+                - '--spider'
+                - 'http://127.0.0.1:7700/health'
+            retries: 3
+            timeout: 5s
+
+    # Mailpitサービス
+    mailpit:
+        image: 'axllent/mailpit:latest'
+        ports:
+            - '${FORWARD_MAILPIT_PORT:-1026}:1025' # 変更: 1025から1026に
+            - '${FORWARD_MAILPIT_DASHBOARD_PORT:-8026}:8025' # 変更: 8025から8026に
+        networks:
+            - sail
+
+    # Seleniumサービス
+    selenium:
+        image: selenium/standalone-chrome
+        extra_hosts:
+            - 'host.docker.internal:host-gateway'
+        volumes:
+            - '/dev/shm:/dev/shm'
+        networks:
+            - sail
+
+networks:
+    sail:
+        driver: bridge
+
+volumes:
+    sail-mysql:
+        driver: local
+    sail-redis:
+        driver: local
+    sail-meilisearch:
+        driver: local
