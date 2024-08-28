@@ -30,6 +30,12 @@
             <x-nav-link :href="route('members.create')" :active="request()->routeIs('members.create')">
                 {{ __('メンバー登録') }}
             </x-nav-link>
+            <x-nav-link :href="route('records.index')" :active="request()->routeIs('records.index')">
+                    {{ __('チェック一覧') }}
+                </x-nav-link>
+            <x-nav-link :href="route('records.create')" :active="request()->routeIs('records.create')">
+                {{ __('チェック') }}
+            </x-nav-link>
             </div>
         </div>
 
@@ -96,6 +102,12 @@
         </x-responsive-nav-link>
         <x-responsive-nav-link :href="route('members.create')" :active="request()->routeIs('members.create')">
             {{ __('メンバー登録') }}
+        </x-responsive-nav-link>
+        <x-responsive-nav-link :href="route('records.index')" :active="request()->routeIs('records.index')">
+            {{ __('チェック一覧') }}
+        </x-responsive-nav-link>
+        <x-responsive-nav-link :href="route('records.create')" :active="request()->routeIs('records.create')">
+            {{ __('チェック') }}
         </x-responsive-nav-link>
         </div>
 

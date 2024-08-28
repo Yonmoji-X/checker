@@ -14,6 +14,9 @@ class TemplateController extends Controller
     {
         //templatesと関連ユーザーの情報をとってくる。
         $templates = Template::with('user')->latest()->get();
+
+        // $templates = Template::where('user_id', $userId)->with('user')->latest()->get();
+
         return view('templates.index',compact('templates'));
     }
 

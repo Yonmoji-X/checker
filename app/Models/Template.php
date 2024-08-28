@@ -17,7 +17,7 @@ class Template extends Model
      * $fillableにはユーザーから受け付けるカラムを指定する。
      */
     protected $fillable = [
-        'user_id', // ユーザーID
+        'user_id', // recordsのuser_idは投稿者ではなく管理者のidにしたい
         'member_status',
         'clock_status',
         'title',
@@ -30,6 +30,7 @@ class Template extends Model
     {
         return $this->belongsTo(User::class);//Templateの$thisがUserに保有されている（belong to）
     }
+
 }
 
 
