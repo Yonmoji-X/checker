@@ -24,12 +24,20 @@ class RecordController extends Controller
         // $jsonTemplates = json_encode($templates, JSON_UNESCAPED_UNICODE);
         // $members = Member::with('user')->latest()->get();
         // =====================
-        $records = Record::with('user')->latest()->get();
-        $templates = Template::with('user')->latest()->get();
-        $members = Member::with('user')->latest()->get();
-        $jsonTemplates = json_encode($templates, JSON_UNESCAPED_UNICODE);
-        return view('records.index', compact('records','templates', 'members', 'jsonTemplates'));
+        // $records = Record::with('user')->latest()->get();
+        // $templates = Template::with('user')->latest()->get();
+        // $members = Member::with('user')->latest()->get();
+        // $jsonTemplates = json_encode($templates, JSON_UNESCAPED_UNICODE);
+        // return view('records.index', compact('records','templates', 'members', 'jsonTemplates'));
         // return view('records.index', compact('records', 'templates', 'members', 'jsonTemplates'));
+
+        $userId = Auth::id();
+        $records = Record::with('user')->latest()->get();
+        $templates = Template::where('user_id', $userId)->latest()->get();
+        $jsonTemplates = json_encode($templates, JSON_UNESCAPED_UNICODE);
+        $jsonRecords = json_encode($records, JSON_UNESCAPED_UNICODE);
+        $members = Member::where('user_id', $userId)->latest()->get();
+        return view('records.index', compact('records', 'templates', 'members', 'jsonTemplates', 'jsonRecords'));
     }
 
     /**

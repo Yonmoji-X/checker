@@ -44,10 +44,6 @@
                     </div>
                     <div id="items_container" class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg p-6">
                         <!-- JavaScriptでここにフィルタリングされたデータを表示 -->
-                        <!-- <ul id="content_ul" class="text-gray-600 dark:text-gray-400 text-sm mt-4 list-none">
-
-                        </ul> -->
-
                     </div>
 
                     <div class="mt-6">
