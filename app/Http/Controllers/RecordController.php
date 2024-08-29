@@ -25,7 +25,10 @@ class RecordController extends Controller
         // $members = Member::with('user')->latest()->get();
         // =====================
         $records = Record::with('user')->latest()->get();
-        // return view('records.index', compact('records'));
+        $templates = Template::with('user')->latest()->get();
+        $members = Member::with('user')->latest()->get();
+        $jsonTemplates = json_encode($templates, JSON_UNESCAPED_UNICODE);
+        return view('records.index', compact('records','templates', 'members', 'jsonTemplates'));
         // return view('records.index', compact('records', 'templates', 'members', 'jsonTemplates'));
     }
 
