@@ -1,4 +1,9 @@
 <x-app-layout>
+    <!-- <style>
+        ul {
+            list-style: none;
+        }
+    </style> -->
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             {{ __('チェック') }}
@@ -39,6 +44,10 @@
                     </div>
                     <div id="items_container" class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg p-6">
                         <!-- JavaScriptでここにフィルタリングされたデータを表示 -->
+                        <!-- <ul id="content_ul" class="text-gray-600 dark:text-gray-400 text-sm mt-4 list-none">
+
+                        </ul> -->
+
                     </div>
 
                     <div class="mt-6">
@@ -122,13 +131,17 @@
                 titleBox.appendChild(templateId);
                 item.appendChild(titleBox);
 
+                // const contentsUl = document.getElementById('content_ul');
                 const contentsUl = document.createElement('ul');
                 contentsUl.classList.add(
                     'text-gray-600',
                     'dark:text-gray-400',
                     'text-sm',
-                    'mt-4'
+                    'mt-4',
+                    'list-none'
                 );
+
+
 
                 if (row.has_check == 1) {
                     const checkLi = document.createElement('li');
@@ -163,7 +176,8 @@
                     checkLi.appendChild(noButton);
                     checkLi.appendChild(noLabel);
 
-                    item.appendChild(checkLi);
+                    // item.appendChild(checkLi);
+                    contentsUl.appendChild(checkLi);
                 } else {
                     const hiddenInput = document.createElement('input');
                     hiddenInput.type = 'hidden';
@@ -180,7 +194,7 @@
                     contentInput.classList.add('block', 'w-full', 'py-2', 'px-3', 'border', 'border-gray-300', 'dark:border-gray-600', 'rounded-md', 'shadow-sm', 'focus:ring-indigo-500', 'focus:border-indigo-500', 'sm:text-sm', 'dark:bg-gray-700', 'dark:text-gray-300');
 
                     contentLi.appendChild(contentInput);
-                    item.appendChild(contentLi);
+                    contentsUl.appendChild(contentLi);
                 } else {
                     const hiddenInput = document.createElement('input');
                     hiddenInput.type = 'hidden';
@@ -197,7 +211,7 @@
                     photoInput.classList.add('block', 'w-full', 'text-sm', 'text-gray-500', 'dark:text-gray-300', 'border', 'border-gray-300', 'dark:border-gray-600', 'rounded-md', 'shadow-sm');
 
                     photoLi.appendChild(photoInput);
-                    item.appendChild(photoLi);
+                    contentsUl.appendChild(photoLi);
                 } else {
                     const hiddenInput = document.createElement('input');
                     hiddenInput.type = 'hidden';
@@ -209,6 +223,7 @@
                 if (row.has_temperature == 1) {
                     const tempLi = document.createElement('li');
                     const tempInput = document.createElement('input');
+                    // tempInput.style.listStyleType = 'none';
                     tempInput.type = 'number';
                     tempInput.step = '0.1';
                     tempInput.name = `temperature_${index}`;
@@ -221,7 +236,7 @@
 
                     tempLi.appendChild(tempInput);
                     tempLi.appendChild(tempLabel);
-                    item.appendChild(tempLi);
+                    contentsUl.appendChild(tempLi);
                 } else {
                     const hiddenInput = document.createElement('input');
                     hiddenInput.type = 'hidden';
@@ -229,17 +244,20 @@
                     hiddenInput.value = null;
                     contentsUl.appendChild(hiddenInput);
                 }
-
+                // contentsUl.style.listStyleType = 'none';
                 item.appendChild(contentsUl);
                 container.appendChild(item);
             });
         }
 
         window.onload = function() {
-            filterData();  // ページ読み込み時にデータをフィルタリング
+            filterData();
         };
 
         document.getElementById('member_status').addEventListener('change', filterData);
         document.getElementById('clock_status').addEventListener('change', filterData);
+        // listItems.forEach(item => {
+        //     item.classList.add('text-gray-600', 'dark-text-gray-400', 'text-sm', 'mt-4', 'list-none');
+        // });
     </script>
 </x-app-layout>
