@@ -1,4 +1,9 @@
+
+
+
+
 <x-app-layout>
+
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             {{ __('Records List') }}
@@ -10,7 +15,7 @@
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     <a href="{{ url('/records/create') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4 inline-block">
-                        Create New Record
+                        チェック
                     </a>
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
                         <div>
@@ -41,6 +46,7 @@
                     </div>
                     <div id="items_container" class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg p-6">
                         <!-- JavaScriptでここにフィルタリングされたデータを表示 -->
+
                     </div>
 
 
@@ -64,6 +70,9 @@
         } catch (e) {
             console.error('Error parsing JSON:', e);
         }
+        dataRecords.sort((a, b) => a.id - b.id);
+        console.log(dataRecords);
+
 
         function filterDataRecords() {
             const memberStatus_selected = document.getElementById('member_status').value;
@@ -74,6 +83,8 @@
             console.log(`filterDataRecords：${filterDataRecords}`);
             displayDataRecords(filterDataRecords);
 
+            console.log(filterDataRecords);
+            // console.log(sortDataRecords(filterDataRecords));
         }
 
         function displayDataRecords(filteredDataRecords) {
@@ -96,14 +107,25 @@
         );
 
         const titleBox = document.createElement('div');
+        titleBox.innerHTML = `
+            <span>${row.created_at}</span>
+            <span>_ID：${row.id}</span>
+            <span>_head ID：${row.head_id}</span>
+            <a href="/records/${row.id}/edit" class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 mx-2">
+                編集
+            </a>
+            <form action="/records/${row.id}" method="POST" style="display:inline;">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">
+                    削除
+                </button>
+            </form>
+        `;
 
-        const headTime = document.createElement('span');
-        headTime.textContent = `${row.created_at}`;  // テンプレートIDを表示
+        // const headTime = document.createElement('span');
+        // headTime.textContent = `${row.created_at}`;  // テンプレートIDを表示
         const record = dataTemplates.find(templete => templete.id === row.template_id);
-
-
-
-
 
         const title_Template = record ? record.title : 'Record not found';
         console.log(title_Template); // "40秒間、手を洗いましたか？"
@@ -154,21 +176,31 @@
             temperatureLi.textContent = row.temperature_item;
             contentsUl.appendChild(temperatureLi);
         }
+        // const itemFootLi = document.createElement('div');
+        // itemFootLi.classList.add('px-6', 'py-4', 'whitespace-nowrap', 'text-sm', 'font-medium');
 
-        titleBox.appendChild(headTime);
-        // titleBox.appendChild(thisId);
-        // titleBox.appendChild(headId);
+        // ↓このif文がうまくいってない。
+
         item.appendChild(titleBox);
         item.appendChild(contentsUl);
+        console.log(`ID：${row.id}`);
+        console.log(`head ID：${row.head_id}`);
         if (row.id == row.head_id) {
+            // console.log(`head_${row.head_id}`);
             item.id = `head_${row.head_id}`;
-            container.appendChild(item);
+            // container.appendChild(item);
+            container.prepend(item);
         }
         if (row.id != row.head_id) {
             headItem = document.getElementById(`head_${row.head_id}`);
-            headItem.appendChild(contentsUl);
+            if(headItem) {
+                headItem.appendChild(contentsUl);
+            }
         }
+
+
     });
+
 
 }
         window.onload = function() {
@@ -178,3 +210,4 @@
 
     </script>
 </x-app-layout>
+

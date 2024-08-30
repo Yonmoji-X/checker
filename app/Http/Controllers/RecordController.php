@@ -190,9 +190,13 @@ class RecordController extends Controller
      */
     public function destroy(Record $record)
     {
+        // dd($record->all());
         // レコードを削除
-        $record->delete();
-
-        return redirect('/records')->with('success', 'Record deleted successfully.');
+        Record::where('head_id', $record->id)->delete();
+        return redirect()->route('templates.index');
+        // return redirect()->back()->with('success', 'Head IDが' . $record->id . 'のレコードを削除しました。');
     }
+    // $record->delete();
+    // ここで、取得したidと一致するhead_idを持つ、レコードを全て削除したい。
+    // return redirect('/records')->with('success', 'Record deleted successfully.');
 }
