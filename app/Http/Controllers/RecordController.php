@@ -131,6 +131,7 @@ class RecordController extends Controller
      */
     public function show(Record $record)
     {
+        dd($record->all());
         return view('records.show', ['record' => $record]);
     }
 

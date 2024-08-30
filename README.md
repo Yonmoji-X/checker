@@ -64,3 +64,23 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+
+
+# 情報
+## 必要機能（残りの実装機能）
+### チェックページはログインなしで使用できる必要がある。
+- QRコードで、checkページに飛ばす。
+- チェックページでQRコード生成（popup表示、ダウンロード）
+-
+## 現在の進行状況
+### 各ページ基本機能
+#### Record
+- ☑︎view create デザイン以外
+- ☑︎view index 表示
+- □view index → 削除機能：デプロイ画面で実行できない
+- □view index → 編集機能：ローカルでページに飛べない
+
+
+
+

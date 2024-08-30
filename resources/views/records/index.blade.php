@@ -48,14 +48,17 @@
                         <!-- JavaScriptでここにフィルタリングされたデータを表示 -->
 
                     </div>
+                    <!-- ==================== -->
 
-
+                    <!-- ==================== -->
                 </div>
 
             </div>
         </div>
     </div>
     <script>
+
+
         const jsonRecords =  `<?= $jsonRecords ?>`;
         const jsonTemplates =  `<?= $jsonTemplates ?>`;
         let dataRecords = [];
