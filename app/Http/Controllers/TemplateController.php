@@ -79,7 +79,7 @@ class TemplateController extends Controller
      */
     public function edit(Template $template)
     {
-        //
+        // dd($template->all());
         return view('templates.edit', compact('template'));
     }
 

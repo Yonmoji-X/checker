@@ -111,7 +111,8 @@
             <span>${row.created_at}</span>
             <span>_ID：${row.id}</span>
             <span>_head ID：${row.head_id}</span>
-            <a href="/records/${row.id}/edit" class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 mx-2">
+            <a href="/records/${row.id}/edit"
+            class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 mx-2">
                 編集
             </a>
             <form action="/records/${row.id}" method="POST" style="display:inline;">

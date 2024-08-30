@@ -142,16 +142,7 @@ class RecordController extends Controller
      */
     public function edit(Record $record)
     {
-        // 現在のログインユーザーのIDを取得
-        $userId = Auth::id();
-
-        // 現在のユーザーに関連するテンプレートを取得
-        $templates = Template::where('user_id', $userId)->get();
-
-        return view('records.edit', [
-            'record' => $record,
-            'templates' => $templates
-        ]);
+        return view('records.edit', compact('record'));
     }
 
     /**
@@ -193,7 +184,7 @@ class RecordController extends Controller
         // dd($record->all());
         // レコードを削除
         Record::where('head_id', $record->id)->delete();
-        return redirect()->route('templates.index');
+        return redirect()->route('records.index');
         // return redirect()->back()->with('success', 'Head IDが' . $record->id . 'のレコードを削除しました。');
     }
     // $record->delete();
