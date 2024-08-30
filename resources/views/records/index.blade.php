@@ -46,7 +46,6 @@
                     </div>
                     <div id="items_container" class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg p-6">
                         <!-- JavaScriptでここにフィルタリングされたデータを表示 -->
-
                     </div>
                     <!-- ==================== -->
 
@@ -114,6 +113,7 @@
             <span>${row.created_at}</span>
             <span>_ID：${row.id}</span>
             <span>_head ID：${row.head_id}</span>
+            <a href="/records/${row.id}" class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300">詳細</a>
             <a href="/records/${row.id}/edit"
             class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 mx-2">
                 編集

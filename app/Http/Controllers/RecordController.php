@@ -131,8 +131,9 @@ class RecordController extends Controller
      */
     public function show(Record $record)
     {
-        dd($record->all());
-        return view('records.show', ['record' => $record]);
+        // dd($record->all());
+        return view('records.show', compact('record'));
+
     }
 
     /**
@@ -143,7 +144,14 @@ class RecordController extends Controller
      */
     public function edit(Record $record)
     {
-        return view('records.edit', compact('record'));
+        // return view('records.edit', compact('record'));
+        $userId = Auth::id();
+        $records = Record::with('user')->latest()->get();
+        $templates = Template::where('user_id', $userId)->latest()->get();
+        $jsonTemplates = json_encode($templates, JSON_UNESCAPED_UNICODE);
+        $jsonRecords = json_encode($records, JSON_UNESCAPED_UNICODE);
+        $members = Member::where('user_id', $userId)->latest()->get();
+        return view('records.edit', compact('record', 'templates', 'members', 'jsonTemplates', 'jsonRecords'));
     }
 
     /**
