@@ -57,7 +57,17 @@
     </div>
     <script>
 
+        let basePath = "{{ url('/') }}";
+            console.log(basePath);
 
+            // 比較のために末尾のスラッシュを削除しておくと、比較がより確実になります
+            basePath = basePath.replace(/\/$/, '');  // 末尾のスラッシュを削除
+
+            if (basePath === "https://chiburi.sakura.ne.jp") {
+                basePath = '{{ url('/checker') }}';
+            } else {
+                basePath = '';
+            }
         const jsonRecords =  `<?= $jsonRecords ?>`;
         const jsonTemplates =  `<?= $jsonTemplates ?>`;
         let dataRecords = [];
@@ -113,12 +123,12 @@
             <span>${row.created_at}</span>
             <span>_ID：${row.id}</span>
             <span>_head ID：${row.head_id}</span>
-            <a href="/records/${row.id}" class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300">詳細</a>
-            <a href="/records/${row.id}/edit"
+            <a href="${basePath}/records/${row.id}" class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300">詳細</a>
+            <a href="${basePath}/records/${row.id}/edit"
             class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 mx-2">
                 編集
             </a>
-            <form action="/records/${row.id}" method="POST" style="display:inline;">
+            <form action="${basePath}/records/${row.id}" method="POST" style="display:inline;">
                 @csrf
                 @method('DELETE')
                 <button type="submit" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">
