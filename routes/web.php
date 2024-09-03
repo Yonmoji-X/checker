@@ -27,6 +27,10 @@ Route::middleware('auth')->group(function () {
 
     // RecordController のリソースルート
     Route::resource('records', RecordController::class);
+    Route::get('/records/{id}/edit', [RecordController::class, 'edit'])->name('records.edit');
+    Route::patch('/records', [RecordController::class, 'update'])->name('records.update');
+    Route::delete('/records', [ProfileController::class, 'destroy'])->name('records.destroy');
+
 });
 
 // 認証なしでアクセス可能なルート
