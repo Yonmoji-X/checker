@@ -64,8 +64,8 @@
             // 比較のために末尾のスラッシュを削除しておくと、比較がより確実になります
             // basePath = basePath.replace(/\/$/, '');  // 末尾のスラッシュを削除
 
-        if (basePath === "https://chiburi.sakura.ne.jp") {
-                basePath === "https://chiburi.sakura.ne.jp/checker"
+        if (basePath === "https://chiburi.sakura.ne.jp/checker") {
+                basePath = "https://chiburi.sakura.ne.jp/checker"
                 // basePath = '{{ url('/checker') }}';
                 console.log(basePath);
         } else {
