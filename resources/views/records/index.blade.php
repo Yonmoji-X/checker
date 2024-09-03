@@ -56,14 +56,11 @@
         </div>
     </div>
     <script>
-
+        // javaScriptで<a>タグリンク追加の際は、下記コード必要。必要に応じてURL変えてね。
+        // ============================================
         let basePath = "{{ url('/') }}";
         console.log("_basePath_");
         console.log(basePath);
-
-            // 比較のために末尾のスラッシュを削除しておくと、比較がより確実になります
-            // basePath = basePath.replace(/\/$/, '');  // 末尾のスラッシュを削除
-
         if (basePath === "https://chiburi.sakura.ne.jp/checker") {
                 basePath = "https://chiburi.sakura.ne.jp/checker"
                 // basePath = '{{ url('/checker') }}';
@@ -73,6 +70,8 @@
         }
         console.log("_basePath_処理後");
         console.log(basePath);
+        // ============================================
+
         const jsonRecords =  `<?= $jsonRecords ?>`;
         const jsonTemplates =  `<?= $jsonTemplates ?>`;
         let dataRecords = [];
