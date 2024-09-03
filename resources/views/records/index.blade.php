@@ -58,6 +58,7 @@
     <script>
 
         let basePath = "{{ url('/') }}";
+        console.log("_basePath_");
         console.log(basePath);
 
             // 比較のために末尾のスラッシュを削除しておくと、比較がより確実になります
@@ -70,6 +71,8 @@
         } else {
                 basePath = '';
         }
+        console.log("_basePath_処理後");
+        console.log(basePath);
         const jsonRecords =  `<?= $jsonRecords ?>`;
         const jsonTemplates =  `<?= $jsonTemplates ?>`;
         let dataRecords = [];
