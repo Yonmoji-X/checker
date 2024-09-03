@@ -14,29 +14,18 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-// 認証必要なルート
+// 認証が必要なルート
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    // Route::get('/records/{id}/edit', [RecordController::class, 'edit'])->name('records.edit');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // リソースコントローラ
     Route::resource('templates', TemplateController::class);
     Route::resource('members', MemberController::class);
-
-    // RecordController のリソースルート
     Route::resource('records', RecordController::class);
-    Route::get('/records/{id}/edit', [RecordController::class, 'edit'])->name('records.edit');
-    Route::patch('/records', [RecordController::class, 'update'])->name('records.update');
-    Route::delete('/records', [ProfileController::class, 'destroy'])->name('records.destroy');
-
 });
 
-// 認証なしでアクセス可能なルート
-// これらのルートは、リソースコントローラを使用しているので不要です。
-// Route::get('/records', [RecordController::class, 'index']);
-// Route::get('/records/create', [RecordController::class, 'create']);
-// Route::post('/records', [RecordController::class, 'store']);
+// 認証なしでアクセス可能なルート（リソースコントローラでカバーされているため不要）
 
 require __DIR__.'/auth.php';
