@@ -127,16 +127,16 @@
             <span>${row.created_at}</span>
             <span>_ID：${row.id}</span>
             <span>_head ID：${row.head_id}</span>
-            <a href="${basePath}/records/${row.id}" class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300">詳細</a>
-            <a href="${basePath}/records/${row.id}/edit"
+
+            <!-- <a href="${basePath}/records/${row.id}/edit"
             class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 mx-2">
                 編集
-            </a>
+            </a> -->
             <form action="${basePath}/records/${row.id}" method="POST" style="display:inline;">
                 @csrf
                 @method('DELETE')
                 <button type="submit" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">
-                    削除
+                    　削除
                 </button>
             </form>
         `;

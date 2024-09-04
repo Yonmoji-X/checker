@@ -64,4 +64,8 @@ class User extends Authenticatable
     {
         return $this->hasMany(Record::class); //Userモデルの $thisに対して、recordモデルは多数（hasMany)
     }
+    public function attendances()
+    {
+        return $this->hasMany(Attendance::class); 
+    }
 }

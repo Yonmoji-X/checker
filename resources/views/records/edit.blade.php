@@ -17,23 +17,20 @@
                     @csrf
                     @method('PUT')
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-                        <div>
-                            <!-- <input type="hidden" name=""> -->
+                        <!-- <div>
                             <label for="member_status" class="block text-sm font-medium text-gray-700 dark:text-gray-300">メンバーの種類</label>
                             <select name="member_status" id="member_status" onchange="filterData()" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                                <!-- <option value="">選択してください</option> -->
                                 <option value="0">従業員</option>
                                 <option value="1">管理者</option>
                             </select>
-                        </div>
-                        <div>
+                        </div> -->
+                        <!-- <div>
                             <label for="clock_status" class="block text-sm font-medium text-gray-700 dark:text-gray-300">ステータス</label>
                             <select name="clock_status" id="clock_status" onchange="filterData()" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                                <!-- <option value="">選択してください</option> -->
                                 <option value="1">出勤時</option>
                                 <option value="0">退勤時</option>
                             </select>
-                        </div>
+                        </div> -->
                         <div>
                             <label for="member_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">メンバー</label>
                             <select name="member_id" id="member_id" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">

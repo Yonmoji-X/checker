@@ -26,10 +26,17 @@
             </x-nav-link>
             <x-nav-link :href="route('members.index')" :active="request()->routeIs('members.index')">
                     {{ __('メンバー一覧') }}
-                </x-nav-link>
+            </x-nav-link>
             <x-nav-link :href="route('members.create')" :active="request()->routeIs('members.create')">
                 {{ __('メンバー登録') }}
             </x-nav-link>
+            <x-nav-link :href="route('attendances.index')" :active="request()->routeIs('attendances.index')">
+                    {{ __('勤怠管理') }}
+            </x-nav-link>
+            <x-nav-link :href="route('attendances.create')" :active="request()->routeIs('attendances.create')">
+                    {{ __('出退勤(仮)') }}
+            </x-nav-link>
+
             <x-nav-link :href="route('records.index')" :active="request()->routeIs('records.index')">
                     {{ __('チェック一覧') }}
                 </x-nav-link>
@@ -103,6 +110,12 @@
         <x-responsive-nav-link :href="route('members.create')" :active="request()->routeIs('members.create')">
             {{ __('メンバー登録') }}
         </x-responsive-nav-link>
+        <x-responsive-nav-link :href="route('attendances.index')" :active="request()->routeIs('attendances.index')">
+            {{ __('勤怠管理') }}
+        </x-responsive-nav-link>
+        <!-- <x-responsive-nav-link :href="route('attendances.index')" :active="request()->routeIs('attendances.index')">
+            {{ __('出退勤（仮）') }}
+        </x-responsive-nav-link> -->
         <x-responsive-nav-link :href="route('records.index')" :active="request()->routeIs('records.index')">
             {{ __('チェック一覧') }}
         </x-responsive-nav-link>

@@ -116,7 +116,7 @@ class RecordController extends Controller
         }
 
         // レコード保存後、リダイレクト
-        return redirect()->route('records.create');
+        return redirect()->route('records.index');
         // return redirect('/records')->with('success', 'Record created successfully.');
     }
 

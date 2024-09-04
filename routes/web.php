@@ -4,10 +4,11 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TemplateController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\RecordController;
+use App\Http\Controllers\AttendanceController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('top');
 });
 
 Route::get('/dashboard', function () {
@@ -24,6 +25,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('templates', TemplateController::class);
     Route::resource('members', MemberController::class);
     Route::resource('records', RecordController::class);
+    Route::resource('attendances', AttendanceController::class);
 });
 
 // 認証なしでアクセス可能なルート（リソースコントローラでカバーされているため不要）
