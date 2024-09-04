@@ -33,9 +33,9 @@
             <x-nav-link :href="route('attendances.index')" :active="request()->routeIs('attendances.index')">
                     {{ __('勤怠管理') }}
             </x-nav-link>
-            <x-nav-link :href="route('attendances.create')" :active="request()->routeIs('attendances.create')">
+            <!-- <x-nav-link :href="route('attendances.create')" :active="request()->routeIs('attendances.create')">
                     {{ __('出退勤(仮)') }}
-            </x-nav-link>
+            </x-nav-link> -->
 
             <x-nav-link :href="route('records.index')" :active="request()->routeIs('records.index')">
                     {{ __('チェック一覧') }}
