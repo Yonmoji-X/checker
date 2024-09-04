@@ -43,6 +43,7 @@
                         </div>
                     </div>
                     <div id="items_container" class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg p-6">
+                        <input type="hidden" name="attendance" value=null >
                         <!-- JavaScriptでここにフィルタリングされたデータを表示 -->
                     </div>
 

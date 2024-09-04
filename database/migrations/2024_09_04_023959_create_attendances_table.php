@@ -19,7 +19,7 @@ return new class extends Migration
                 ->restrictOnDelete(); // 'members'にないものは削除不可
             $table->time('clock_in')->nullable(); // 出勤時間（NULLを許可する）
             $table->time('clock_out')->nullable(); // 退勤時間（NULLを許可する）
-            $table->string('attendance'); // 勤怠のステータス（例：出勤、欠勤）
+            $table->string('attendance')->nullable(); // 勤怠のステータス（例：出勤、欠勤）
             $table->date('attendance_date'); // 勤怠日（特定の日付を記録）
             $table->timestamps(); // created_at と updated_at
         });

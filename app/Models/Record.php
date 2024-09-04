@@ -14,7 +14,7 @@ class Record extends Model
         'user_id',
         'member_id',
         'template_id',
-        'memger_status',
+        'member_status', // "memger_status"を"member_status"に修正
         'clock_status',
         'check_item',
         'photo_item',

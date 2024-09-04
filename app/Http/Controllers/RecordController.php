@@ -1,36 +1,20 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Record;
+use App\Models\Attendance;
 use App\Models\Template;
 use App\Models\Member;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
 
 class RecordController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\View\View
-     */
     public function index()
     {
-        // レコードを最新のものから取得し、ユーザー情報も含める
-        // =====================
-        // $templates = Template::with('user')->latest()->get();
-        // $jsonTemplates = json_encode($templates, JSON_UNESCAPED_UNICODE);
-        // $members = Member::with('user')->latest()->get();
-        // =====================
-        // $records = Record::with('user')->latest()->get();
-        // $templates = Template::with('user')->latest()->get();
-        // $members = Member::with('user')->latest()->get();
-        // $jsonTemplates = json_encode($templates, JSON_UNESCAPED_UNICODE);
-        // return view('records.index', compact('records','templates', 'members', 'jsonTemplates'));
-        // return view('records.index', compact('records', 'templates', 'members', 'jsonTemplates'));
-
         $userId = Auth::id();
         $records = Record::with('user')->latest()->get();
         $templates = Template::where('user_id', $userId)->latest()->get();
@@ -40,36 +24,20 @@ class RecordController extends Controller
         return view('records.index', compact('records', 'templates', 'members', 'jsonTemplates', 'jsonRecords'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\View\View
-     */
     public function create()
     {
-        // 現在のログインユーザーのIDを取得
         $userId = Auth::id();
-
-        // 現在のユーザーに関連するテンプレートとメンバーを取得
         $templates = Template::where('user_id', $userId)->latest()->get();
         $jsonTemplates = json_encode($templates, JSON_UNESCAPED_UNICODE);
         $members = Member::where('user_id', $userId)->latest()->get();
 
         return view('records.create', compact('templates', 'members', 'jsonTemplates'));
-        // return view('records.create');
-
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
     public function store(Request $request)
     {
-        // バリデーション
         // dd($request->all());
+        // バリデーション
         $validated = $request->validate([
             'member_id' => 'required|integer',
             'member_status' => 'required|boolean',
@@ -79,72 +47,99 @@ class RecordController extends Controller
             'photo_item_*' => 'nullable|file|image|max:2048',
             'content_item_*' => 'nullable|string|max:255',
             'temperature_item_*' => 'nullable|numeric',
+            // 'attendance' => 'required|string|max:255', // Attendanceのステータスフィールドのバリデーション
         ]);
 
-        // template_id_の数だけ繰り返す
+        // トランザクションの開始
+        DB::beginTransaction();
 
-        foreach ($request->all() as $key => $value) {
-            if (strpos($key, 'template_id_') === 0) {
-                // インデックスを取得
-                $index = str_replace('template_id_', '', $key);
+        try {
+            // Recordテーブルにデータを保存
+            foreach ($request->all() as $key => $value) {
+                if (strpos($key, 'template_id_') === 0) {
+                    $index = str_replace('template_id_', '', $key);
+                    $maxId = Record::max('id') + 1;
+                    $head_id = $maxId - (int)$index;
 
-                $maxId = Record::max('id') + 1;
-                $head_id = $maxId - (int)$index;
+                    $recordData = [
+                        'user_id' => Auth::id(),
+                        'member_id' => $request->input('member_id'),
+                        'template_id' => $value,
+                        'member_status' => $request->input('member_status'),
+                        'clock_status' => $request->input('clock_status'),
+                        'check_item' => $request->input("check_item_$index"),
+                        'content_item' => $request->input("content_$index"),
+                        'temperature_item' => $request->input("temperature_$index"),
+                        'photo_item' => $request->hasFile("photo_$index")
+                            ? $request->file("photo_$index")->store('photos', 'public')
+                            : null,
+                        'head_id' => $head_id,
+                    ];
 
-
-                // レコードデータを作成
-                $recordData = [
-                    'user_id' => Auth::id(), // 現在のログインユーザーID
-                    'member_id' => $request->input('member_id'),
-                    'template_id' => $value,
-                    'member_status' => $request->input('member_status'),
-                    'clock_status' => $request->input('clock_status'),
-                    'check_item' => $request->input("check_item_$index"),
-                    'content_item' => $request->input("content_$index"),
-                    'temperature_item' => $request->input("temperature_$index"),
-                    'photo_item' => $request->hasFile("photo_$index")
-                        ? $request->file("photo_$index")->store('photos', 'public')
-                        : null,
-                    'head_id' => $head_id,
-                    // 'head_id' => $request->input("id - $index"),
-                ];
-
-                // レコードを作成
-                Record::create($recordData);
-                // $request->user()->records()->create($recordData);
+                    Record::create($recordData);
+                }
             }
+
+            // 現在時刻を取得
+            $now = Carbon::now();
+
+            // clock_status が 0 の場合、Attendance を更新
+            if ($request->input('clock_status') == '0') {
+                $attendance = Attendance::where('user_id', Auth::id())
+                                        ->where('member_id', $request->input('member_id'))
+                                        ->where('attendance_date', $now->toDateString())
+                                        ->whereNull('clock_out')
+                                        ->first();
+
+                if ($attendance) {
+                    // 出勤データが見つかった場合、clock_out を更新
+                    $attendance->update(['clock_out' => $now]);
+                } else {
+                    // 出勤データが見つからない場合は新規作成
+                    $attendanceData = [
+                        'user_id' => Auth::id(),
+                        'member_id' => $request->input('member_id'),
+                        'clock_in' => null,
+                        'clock_out' => $now,
+                        'attendance' => $request->input('attendance'),
+                        'attendance_date' => $now->toDateString(),
+                    ];
+                    Attendance::create($attendanceData);
+                }
+            } else {
+                // 出勤データを新規作成
+                $attendanceData = [
+                    'user_id' => Auth::id(),
+                    'member_id' => $request->input('member_id'),
+                    'clock_in' => $now,
+                    'clock_out' => null,
+                    'attendance' => $request->input('attendance'),
+                    'attendance_date' => $now->toDateString(),
+                ];
+                Attendance::create($attendanceData);
+            }
+
+            // トランザクションをコミット
+            DB::commit();
+
+        } catch (\Exception $e) {
+            // エラーが発生した場合、ロールバック
+            DB::rollBack();
+            return redirect()->back()->withErrors('Error occurred while saving data. Please try again.');
         }
 
-        // レコード保存後、リダイレクト
-        return redirect()->route('records.index');
-        // return redirect('/records')->with('success', 'Record created successfully.');
+        // 成功時のリダイレクト
+        return redirect()->route('records.index')->with('success', 'Record and Attendance created/updated successfully.');
     }
 
 
-
-
-    /**
-     * Display the specified resource.
-     *
-     * @param \App\Models\Record $record
-     * @return \Illuminate\View\View
-     */
     public function show(Record $record)
     {
-        // dd($record->all());
         return view('records.show', compact('record'));
-
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param \App\Models\Record $record
-     * @return \Illuminate\View\View
-     */
     public function edit(Record $record)
     {
-        // return view('records.edit', compact('record'));
         $userId = Auth::id();
         $records = Record::with('user')->latest()->get();
         $templates = Template::where('user_id', $userId)->latest()->get();
@@ -154,13 +149,6 @@ class RecordController extends Controller
         return view('records.edit', compact('record', 'templates', 'members', 'jsonTemplates', 'jsonRecords'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param \App\Models\Record $record
-     * @return \Illuminate\Http\RedirectResponse
-     */
     public function update(Request $request, Record $record)
     {
         // バリデーションルールを定義
@@ -182,21 +170,10 @@ class RecordController extends Controller
         return redirect('/records')->with('success', 'Record updated successfully.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param \App\Models\Record $record
-     * @return \Illuminate\Http\RedirectResponse
-     */
     public function destroy(Record $record)
     {
-        // dd($record->all());
-        // レコードを削除
+        // 取得したidと一致するhead_idを持つ、レコードを全て削除
         Record::where('head_id', $record->id)->delete();
-        return redirect()->route('records.index');
-        // return redirect()->back()->with('success', 'Head IDが' . $record->id . 'のレコードを削除しました。');
+        return redirect()->route('records.index')->with('success', 'Record deleted successfully.');
     }
-    // $record->delete();
-    // ここで、取得したidと一致するhead_idを持つ、レコードを全て削除したい。
-    // return redirect('/records')->with('success', 'Record deleted successfully.');
 }
