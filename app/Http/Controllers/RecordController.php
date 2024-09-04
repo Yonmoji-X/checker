@@ -36,7 +36,6 @@ class RecordController extends Controller
 
     public function store(Request $request)
     {
-        // dd($request->all());
         // バリデーション
         $validated = $request->validate([
             'member_id' => 'required|integer',
@@ -47,7 +46,7 @@ class RecordController extends Controller
             'photo_item_*' => 'nullable|file|image|max:2048',
             'content_item_*' => 'nullable|string|max:255',
             'temperature_item_*' => 'nullable|numeric',
-            // 'attendance' => 'required|string|max:255', // Attendanceのステータスフィールドのバリデーション
+            // 'attendance' => 'required|string|max:255',
         ]);
 
         // トランザクションの開始
@@ -89,6 +88,7 @@ class RecordController extends Controller
                                         ->where('member_id', $request->input('member_id'))
                                         ->where('attendance_date', $now->toDateString())
                                         ->whereNull('clock_out')
+                                        ->orderBy('clock_in', 'desc') // clock_inが新しい順に並べる
                                         ->first();
 
                 if ($attendance) {
@@ -131,6 +131,7 @@ class RecordController extends Controller
         // 成功時のリダイレクト
         return redirect()->route('records.index')->with('success', 'Record and Attendance created/updated successfully.');
     }
+
 
 
     public function show(Record $record)
