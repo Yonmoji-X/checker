@@ -1,0 +1,21 @@
+/* Bootstrapのテーブルスタイルを限定する */
+.bootstrap-table-container .table {
+  /* Bootstrapのテーブルスタイル */
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.bootstrap-table-container .table th,
+.bootstrap-table-container .table td {
+  padding: 0.75rem;
+  text-align: left;
+  border: 1px solid #dee2e6;
+}
+
+.bootstrap-table-container .table thead th {
+  background-color: #f8f9fa;
+}
+
+.bootstrap-table-container .table tbody tr:nth-child(even) {
+  background-color: #f2f2f2;
+}

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Member;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class MemberController extends Controller
 {
@@ -12,8 +13,13 @@ class MemberController extends Controller
      */
     public function index()
     {
-        $members = Member::with('user')->latest()->get(); // 'user' リレーションに修正
+        // $members = Member::with('user')->latest()->get(); // 'user' リレーションに修正
+        // return view('members.index', compact('members'));
+        // -----------------------------------------
+        $userId = Auth::id();
+        $members = Member::where('user_id', $userId)->with('user')->latest()->get();
         return view('members.index', compact('members'));
+
     }
 
     /**

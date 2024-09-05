@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Template;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TemplateController extends Controller
 {
@@ -13,9 +14,14 @@ class TemplateController extends Controller
     public function index()
     {
         //templatesと関連ユーザーの情報をとってくる。
-        $templates = Template::with('user')->latest()->get();
+        // $templates = Template::with('user')->latest()->get();
+        // return view('templates.index',compact('templates'));
+        // -------------------------------------------
+        $userId = Auth::id();
+        $templates = Template::where('user_id', $userId)->with('user')->latest()->get();
+        return view('templates.index', compact('templates'));
+
         // $templates = Template::where('user_id', $userId)->with('user')->latest()->get();
-        return view('templates.index',compact('templates'));
     }
 
     /**

@@ -15,8 +15,12 @@ class AttendanceController extends Controller
      */
     public function index()
     {
+        $userId = Auth::id();
+        $members = Member::where('user_id', $userId)->latest()->get();
+        // $attendances = Attendance::where('user_id', $userId)->with('user')->latest()->get();
         $attendances = Attendance::with('user','member')->latest()->get();
-        return view('attendances.index', compact('attendances'));
+        return view('attendances.index', compact('attendances', 'members'));
+        // return view('attendances.index', compact('attendances'));
     }
 
     /**
