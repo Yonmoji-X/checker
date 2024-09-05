@@ -14,9 +14,7 @@ class TemplateController extends Controller
     {
         //templatesと関連ユーザーの情報をとってくる。
         $templates = Template::with('user')->latest()->get();
-
         // $templates = Template::where('user_id', $userId)->with('user')->latest()->get();
-
         return view('templates.index',compact('templates'));
     }
 
@@ -123,5 +121,13 @@ class TemplateController extends Controller
         //
         $template->delete();
         return redirect()->route('templates.index');
+
+        // #####################Template.php参照#####################
+        // 危険NG→head_idのテンプレだったら詰む。
+        // →recordデータのtemplate_idをnullありにして、viewで削除されましたってするくらいがいい。
+        // $template->records()->delete();
+        // $template->delete();
+        // return redirect()->route('templates.index');
+        // #####################Template.php参照#####################
     }
 }

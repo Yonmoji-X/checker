@@ -70,5 +70,7 @@ class AttendanceController extends Controller
     public function destroy(Attendance $attendance)
     {
         //
+        $attendance->delete();
+        return redirect()->route('attendances.index');
     }
 }
