@@ -1,6 +1,6 @@
 <!-- resources/views/layouts/navigation.blade.php -->
 
-    <nav x-data="{ open: false }" class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
+<nav x-data="{ open: false }" class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
@@ -15,14 +15,15 @@
             <!-- Navigation Links -->
             <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
             <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                {{ __('Dashboard') }}
+                {{ __('ダッシュボード') }}
             </x-nav-link>
             <!-- 🔽 2項目追加 -->
+            @if (auth()->user()->role === 'admin')
             <x-nav-link :href="route('templates.index')" :active="request()->routeIs('templates.index')">
-                {{ __('Item一覧') }}
+                {{ __('アイテム一覧') }}
             </x-nav-link>
             <x-nav-link :href="route('templates.create')" :active="request()->routeIs('templates.create')">
-                {{ __('Item作成') }}
+                {{ __('アイテム作成') }}
             </x-nav-link>
             <x-nav-link :href="route('members.index')" :active="request()->routeIs('members.index')">
                     {{ __('メンバー一覧') }}
@@ -30,13 +31,19 @@
             <x-nav-link :href="route('members.create')" :active="request()->routeIs('members.create')">
                 {{ __('メンバー登録') }}
             </x-nav-link>
+            <x-nav-link :href="route('groups.index')" :active="request()->routeIs('groups.index')">
+                    {{ __('グループ一覧') }}
+            </x-nav-link>
+            <x-nav-link :href="route('groups.create')" :active="request()->routeIs('groups.create')">
+                {{ __('グループ登録') }}
+            </x-nav-link>
+            @endif
             <x-nav-link :href="route('attendances.index')" :active="request()->routeIs('attendances.index')">
                     {{ __('勤怠管理') }}
             </x-nav-link>
             <!-- <x-nav-link :href="route('attendances.create')" :active="request()->routeIs('attendances.create')">
                     {{ __('出退勤(仮)') }}
             </x-nav-link> -->
-
             <x-nav-link :href="route('records.index')" :active="request()->routeIs('records.index')">
                     {{ __('チェック一覧') }}
                 </x-nav-link>
@@ -63,7 +70,7 @@
 
             <x-slot name="content">
                 <x-dropdown-link :href="route('profile.edit')">
-                {{ __('Profile') }}
+                {{ __('プロフィール') }}
                 </x-dropdown-link>
 
                 <!-- Authentication -->
@@ -72,7 +79,7 @@
 
                 <x-dropdown-link :href="route('logout')" onclick="event.preventDefault();
                                                     this.closest('form').submit();">
-                    {{ __('Log Out') }}
+                    {{ __('ログアウト') }}
                 </x-dropdown-link>
                 </form>
             </x-slot>
@@ -95,14 +102,15 @@
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
         <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-            {{ __('Dashboard') }}
+            {{ __('ダッシュボード') }}
         </x-responsive-nav-link>
         <!-- 🔽 2項目追加 -->
+        @if (auth()->user()->role === 'admin')
         <x-responsive-nav-link :href="route('templates.index')" :active="request()->routeIs('templates.index')">
-            {{ __('Item一覧') }}
+            {{ __('アイテム一覧') }}
         </x-responsive-nav-link>
         <x-responsive-nav-link :href="route('templates.create')" :active="request()->routeIs('templates.create')">
-            {{ __('Item作成') }}
+            {{ __('アイテム作成') }}
         </x-responsive-nav-link>
         <x-responsive-nav-link :href="route('members.index')" :active="request()->routeIs('members.index')">
             {{ __('メンバー一覧') }}
@@ -110,6 +118,7 @@
         <x-responsive-nav-link :href="route('members.create')" :active="request()->routeIs('members.create')">
             {{ __('メンバー登録') }}
         </x-responsive-nav-link>
+        @endif
         <x-responsive-nav-link :href="route('attendances.index')" :active="request()->routeIs('attendances.index')">
             {{ __('勤怠管理') }}
         </x-responsive-nav-link>

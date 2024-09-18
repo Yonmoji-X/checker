@@ -20,6 +20,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
     ];
 
     /**
@@ -66,6 +67,6 @@ class User extends Authenticatable
     }
     public function attendances()
     {
-        return $this->hasMany(Attendance::class); 
+        return $this->hasMany(Attendance::class);
     }
 }

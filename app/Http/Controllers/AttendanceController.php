@@ -6,7 +6,6 @@ use App\Models\Attendance;
 use App\Models\Member;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 
 class AttendanceController extends Controller
 {
@@ -15,12 +14,20 @@ class AttendanceController extends Controller
      */
     public function index()
     {
+        // 現在のユーザーIDを取得
         $userId = Auth::id();
+
+        // ログインユーザーのメンバーだけを取得
         $members = Member::where('user_id', $userId)->latest()->get();
-        // $attendances = Attendance::where('user_id', $userId)->with('user')->latest()->get();
-        $attendances = Attendance::with('user','member')->latest()->get();
+
+        // ログインユーザーの勤怠データだけを取得
+        $attendances = Attendance::where('user_id', $userId)
+            ->with('user', 'member') // ユーザーとメンバーのリレーションをロード
+            ->latest()
+            ->get();
+
+        // ビューにデータを渡す
         return view('attendances.index', compact('attendances', 'members'));
-        // return view('attendances.index', compact('attendances'));
     }
 
     /**
@@ -28,12 +35,13 @@ class AttendanceController extends Controller
      */
     public function create()
     {
-        //
+        // 現在のユーザーIDを取得
         $userId = Auth::id();
+
+        // ログインユーザーのメンバーだけを取得
         $members = Member::where('user_id', $userId)->latest()->get();
 
         return view('attendances.create', compact('members'));
-        // return view('attendances.create');
     }
 
     /**
@@ -41,7 +49,7 @@ class AttendanceController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // 勤怠データを保存するコードを追加します
     }
 
     /**
@@ -73,7 +81,7 @@ class AttendanceController extends Controller
      */
     public function destroy(Attendance $attendance)
     {
-        //
+        // 勤怠データを削除
         $attendance->delete();
         return redirect()->route('attendances.index');
     }

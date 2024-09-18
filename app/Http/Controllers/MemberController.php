@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Member;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate; //←追記
 
 class MemberController extends Controller
 {
@@ -13,9 +14,7 @@ class MemberController extends Controller
      */
     public function index()
     {
-        // $members = Member::with('user')->latest()->get(); // 'user' リレーションに修正
-        // return view('members.index', compact('members'));
-        // -----------------------------------------
+        Gate::authorize('isAdmin');//←追記
         $userId = Auth::id();
         $members = Member::where('user_id', $userId)->with('user')->latest()->get();
         return view('members.index', compact('members'));
@@ -27,6 +26,7 @@ class MemberController extends Controller
      */
     public function create()
     {
+        Gate::authorize('isAdmin');//←追記
         return view('members.create');
     }
 
@@ -35,6 +35,7 @@ class MemberController extends Controller
      */
     public function store(Request $request)
     {
+        Gate::authorize('isAdmin');//←追記
         $request->validate([
             'name' => 'required|max:64',
             'email' => 'required|email|max:255', // 'email' バリデーションルールを追加
@@ -58,6 +59,7 @@ class MemberController extends Controller
      */
     public function show(Member $member)
     {
+        Gate::authorize('isAdmin');//←追記
         return view('members.show', compact('member'));
     }
 
@@ -66,6 +68,7 @@ class MemberController extends Controller
      */
     public function edit(Member $member)
     {
+        Gate::authorize('isAdmin');//←追記
         return view('members.edit', compact('member'));
     }
 
@@ -74,6 +77,7 @@ class MemberController extends Controller
      */
     public function update(Request $request, Member $member)
     {
+        Gate::authorize('isAdmin');//←追記
         $request->validate([
             'name' => 'required|max:64',
             'email' => 'required|email|max:255',
@@ -91,6 +95,7 @@ class MemberController extends Controller
     public function destroy(Member $member)
     {
 
+        Gate::authorize('isAdmin');//←追記
         $member->delete();
         return redirect()->route('members.index');
     }

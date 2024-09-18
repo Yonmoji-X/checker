@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Template;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate; //←roleがadminの人以外は入れない。
 
 class TemplateController extends Controller
 {
@@ -17,6 +18,7 @@ class TemplateController extends Controller
         // $templates = Template::with('user')->latest()->get();
         // return view('templates.index',compact('templates'));
         // -------------------------------------------
+        Gate::authorize('isAdmin'); //←roleがadminの人以外は入れない。
         $userId = Auth::id();
         $templates = Template::where('user_id', $userId)->with('user')->latest()->get();
         return view('templates.index', compact('templates'));
@@ -30,6 +32,7 @@ class TemplateController extends Controller
     public function create()
     {
         //
+        Gate::authorize('isAdmin'); //←roleがadminの人以外は入れない。
         return view('templates.create');
     }
 
@@ -40,6 +43,7 @@ class TemplateController extends Controller
 {
     // dd($request->all());
     // バリデーション
+    Gate::authorize('isAdmin'); //←roleがadminの人以外は入れない。
     $request->validate([
         'title' => 'required|max:64',
         'member_status' => 'required|boolean',
@@ -75,6 +79,7 @@ class TemplateController extends Controller
     public function show(Template $template)
     {
         //
+        Gate::authorize('isAdmin'); //←roleがadminの人以外は入れない。
         return view('templates.show', compact('template'));
     }
 
@@ -93,6 +98,7 @@ class TemplateController extends Controller
     public function update(Request $request, Template $template)
     {
         //
+        Gate::authorize('isAdmin'); //←roleがadminの人以外は入れない。
         $request->validate([
             'title' => 'required|max:64',
             'member_status' => 'required|boolean',
@@ -125,6 +131,7 @@ class TemplateController extends Controller
     public function destroy(Template $template)
     {
         //
+        Gate::authorize('isAdmin'); //←roleがadminの人以外は入れない。
         $template->delete();
         return redirect()->route('templates.index');
 
