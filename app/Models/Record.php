@@ -12,6 +12,7 @@ class Record extends Model
     // このモデルが許可する属性を指定します
     protected $fillable = [
         'user_id',
+        'created_by',
         'member_id',
         'template_id',
         'member_status', // "memger_status"を"member_status"に修正

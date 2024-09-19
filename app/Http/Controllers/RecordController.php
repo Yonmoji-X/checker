@@ -97,6 +97,7 @@ class RecordController extends Controller
         ]);
 
         // 現在のユーザーIDを取得
+        $createdById = Auth::id();
         $userId = Auth::id();
 
         // 現在のログインユーザー情報を取得
@@ -126,6 +127,7 @@ class RecordController extends Controller
 
                     $recordData = [
                         'user_id' => $userId, // 更新: ここで $userId を使用
+                        'created_by' => $createdById, // 追加: created_by カラムに現在のユーザーIDを設定
                         'member_id' => $request->input('member_id'),
                         'template_id' => $value,
                         'member_status' => $request->input('member_status'),
@@ -195,6 +197,7 @@ class RecordController extends Controller
         // 成功時のリダイレクト
         return redirect()->route('records.index')->with('success', 'Record and Attendance created/updated successfully.');
     }
+
 
 
 // =====ここ以降は、adminのみなので、注意事項を反映しない。=====
