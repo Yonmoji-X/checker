@@ -13,8 +13,21 @@
                         <h3 class="text-2xl font-bold">管理者アカウント</h3>
                         <p>全ての権限を持つアカウントです。</p>
                     @elseif (auth()->user()->role === 'user')
-                        <h3 class="text-2xl font-bold">一般アカウント</h3>
-                        <p>権限に一部制限があります。管理権限で操作したい場合は、管理アカウントでログインしてください。</p>
+                        <h3 class="text-2xl font-bold">一般アカウント</h3><br>
+                        <p>権限に一部制限があります。管理権限で操作したい場合は、管理アカウントでログインしてください。</p><br><br>
+
+                        <h5 class="text-2xl font-bold">管理者情報</h5><br>
+                        <div>
+                            <ul>
+                                @if ($admin)
+                                    <li>管理者名：{{ $admin->name }} </li>
+                                    <li>メール　：{{ $admin->email }}</li>
+                                @else
+                                    <li>管理者情報はありません</li>
+                                @endif
+                            </ul>
+                        </div>
+
                     @else
                         <h3 class="text-2xl font-bold">ようこそ</h3>
                         <p></p>

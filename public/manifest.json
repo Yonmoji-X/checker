@@ -1,0 +1,13 @@
+{
+  "short_name": "Checker",
+  "name": "Checker",
+  "display": "standalone",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "/images/app-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}

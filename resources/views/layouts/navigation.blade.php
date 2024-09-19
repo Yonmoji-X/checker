@@ -19,24 +19,82 @@
             </x-nav-link>
             <!-- 🔽 2項目追加 -->
             @if (auth()->user()->role === 'admin')
-            <x-nav-link :href="route('templates.index')" :active="request()->routeIs('templates.index')">
-                {{ __('アイテム一覧') }}
-            </x-nav-link>
-            <x-nav-link :href="route('templates.create')" :active="request()->routeIs('templates.create')">
-                {{ __('アイテム作成') }}
-            </x-nav-link>
-            <x-nav-link :href="route('members.index')" :active="request()->routeIs('members.index')">
-                    {{ __('メンバー一覧') }}
-            </x-nav-link>
-            <x-nav-link :href="route('members.create')" :active="request()->routeIs('members.create')">
-                {{ __('メンバー登録') }}
-            </x-nav-link>
-            <x-nav-link :href="route('groups.index')" :active="request()->routeIs('groups.index')">
-                    {{ __('グループ一覧') }}
-            </x-nav-link>
-            <x-nav-link :href="route('groups.create')" :active="request()->routeIs('groups.create')">
-                {{ __('グループ登録') }}
-            </x-nav-link>
+            <div class="hidden sm:flex sm:items-center sm:ms-6">
+            <x-dropdown align="right" width="48">
+                <x-slot name="trigger">
+                    <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
+                        {{ __('アイテム') }}
+                        <div class="ms-1">
+                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                    </button>
+                </x-slot>
+
+                <x-slot name="content">
+                    <x-dropdown-link :href="route('templates.create')" :active="request()->routeIs('templates.create')">
+                        {{ __('アイテム作成') }}
+                    </x-dropdown-link>
+
+                    <x-dropdown-link :href="route('templates.index')" :active="request()->routeIs('templates.index')">
+                        {{ __('アイテム一覧') }}
+                    </x-dropdown-link>
+                </x-slot>
+            </x-dropdown>
+        </div>
+        <div class="hidden sm:flex sm:items-center sm:ms-6">
+
+            <!-- 名簿関連のプルダウンメニュー -->
+            <x-dropdown align="right" width="48">
+                <x-slot name="trigger">
+                    <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
+                        {{ __('名簿') }}
+                        <div class="ms-1">
+                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                    </button>
+                </x-slot>
+
+                <x-slot name="content">
+                    <x-dropdown-link :href="route('members.create')" :active="request()->routeIs('members.create')">
+                        {{ __('名簿登録') }}
+                    </x-dropdown-link>
+
+                    <x-dropdown-link :href="route('members.index')" :active="request()->routeIs('members.index')">
+                        {{ __('名簿') }}
+                    </x-dropdown-link>
+                </x-slot>
+            </x-dropdown>
+
+            <!-- 管理関係のプルダウンメニュー -->
+            <x-dropdown align="right" width="48">
+                <x-slot name="trigger">
+                    <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
+                        {{ __('管理関係') }}
+                        <div class="ms-1">
+                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                    </button>
+                </x-slot>
+
+                <x-slot name="content">
+                    <x-dropdown-link :href="route('groups.create')" :active="request()->routeIs('groups.create')">
+                        {{ __('管理アカウント登録') }}
+                    </x-dropdown-link>
+
+                    <x-dropdown-link :href="route('groups.index')" :active="request()->routeIs('groups.index')">
+                        {{ __('管理アカウント') }}
+                    </x-dropdown-link>
+                </x-slot>
+            </x-dropdown>
+
+        </div>
+
             @endif
             <x-nav-link :href="route('attendances.index')" :active="request()->routeIs('attendances.index')">
                     {{ __('勤怠管理') }}
@@ -113,10 +171,10 @@
             {{ __('アイテム作成') }}
         </x-responsive-nav-link>
         <x-responsive-nav-link :href="route('members.index')" :active="request()->routeIs('members.index')">
-            {{ __('メンバー一覧') }}
+            {{ __('管理アカウント') }}
         </x-responsive-nav-link>
         <x-responsive-nav-link :href="route('members.create')" :active="request()->routeIs('members.create')">
-            {{ __('メンバー登録') }}
+            {{ __('アカウント管理') }}
         </x-responsive-nav-link>
         @endif
         <x-responsive-nav-link :href="route('attendances.index')" :active="request()->routeIs('attendances.index')">
