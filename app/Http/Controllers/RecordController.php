@@ -5,32 +5,79 @@ use App\Models\Record;
 use App\Models\Attendance;
 use App\Models\Template;
 use App\Models\Member;
+use App\Models\Group;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 
+/*
+注意事項
+これにおいて、usersテーブルのroleカラムがadminではなくuserの場合は、groupテーブルのuser_idが現在ログインしているユーザーのidのデータを探し、そのデータのadmin_idカラムのidを$userIdの部分に入れるようにする。
+*/
+
 class RecordController extends Controller
 {
     public function index()
     {
+        // 現在のユーザーIDを取得
         $userId = Auth::id();
-        $records = Record::with('user')->latest()->get();
+
+        // 現在のログインユーザー情報を取得
+        $currentUser = Auth::user();
+
+        // ユーザーがuser roleの場合
+        if ($currentUser->role === 'user') {
+            // groupテーブルから現在のユーザーIDに関連するadmin_idを取得
+            $group = Group::where('user_id', $userId)->first();
+
+            // groupが存在すれば、admin_idを$userIdとして使用
+            if ($group) {
+                $userId = $group->admin_id;
+            }
+        }
+
+        // 指定した$userIdでレコードを取得
+        $records = Record::with('user')->where('user_id', $userId)->latest()->get();
         $templates = Template::where('user_id', $userId)->latest()->get();
+
+        // JSONエンコード
         $jsonTemplates = json_encode($templates, JSON_UNESCAPED_UNICODE);
         $jsonRecords = json_encode($records, JSON_UNESCAPED_UNICODE);
+
+        // メンバーを取得
         $members = Member::where('user_id', $userId)->latest()->get();
+
+        // ビューにデータを渡す
         return view('records.index', compact('records', 'templates', 'members', 'jsonTemplates', 'jsonRecords'));
     }
 
     public function create()
     {
+        // 現在のユーザーIDを取得
         $userId = Auth::id();
+
+        // 現在のログインユーザー情報を取得
+        $currentUser = Auth::user();
+
+        // ユーザーがuser roleの場合
+        if ($currentUser->role === 'user') {
+            // groupテーブルから現在のユーザーIDに関連するadmin_idを取得
+            $group = Group::where('user_id', $userId)->first();
+
+            // groupが存在すれば、admin_idを$userIdとして使用
+            if ($group) {
+                $userId = $group->admin_id;
+            }
+        }
+
+        // 指定した$userIdでテンプレートとメンバーを取得
         $templates = Template::where('user_id', $userId)->latest()->get();
         $jsonTemplates = json_encode($templates, JSON_UNESCAPED_UNICODE);
         $members = Member::where('user_id', $userId)->latest()->get();
 
+        // ビューにデータを渡す
         return view('records.create', compact('templates', 'members', 'jsonTemplates'));
     }
 
@@ -49,6 +96,23 @@ class RecordController extends Controller
             // 'attendance' => 'required|string|max:255',
         ]);
 
+        // 現在のユーザーIDを取得
+        $userId = Auth::id();
+
+        // 現在のログインユーザー情報を取得
+        $currentUser = Auth::user();
+
+        // ユーザーがuser roleの場合
+        if ($currentUser->role === 'user') {
+            // groupテーブルから現在のユーザーIDに関連するadmin_idを取得
+            $group = Group::where('user_id', $userId)->first();
+
+            // groupが存在すれば、admin_idを$userIdとして使用
+            if ($group) {
+                $userId = $group->admin_id;
+            }
+        }
+
         // トランザクションの開始
         DB::beginTransaction();
 
@@ -61,7 +125,7 @@ class RecordController extends Controller
                     $head_id = $maxId - (int)$index;
 
                     $recordData = [
-                        'user_id' => Auth::id(),
+                        'user_id' => $userId, // 更新: ここで $userId を使用
                         'member_id' => $request->input('member_id'),
                         'template_id' => $value,
                         'member_status' => $request->input('member_status'),
@@ -84,7 +148,7 @@ class RecordController extends Controller
 
             // clock_status が 0 の場合、Attendance を更新
             if ($request->input('clock_status') == '0') {
-                $attendance = Attendance::where('user_id', Auth::id())
+                $attendance = Attendance::where('user_id', $userId) // 更新: ここで $userId を使用
                                         ->where('member_id', $request->input('member_id'))
                                         ->where('attendance_date', $now->toDateString())
                                         ->whereNull('clock_out')
@@ -97,7 +161,7 @@ class RecordController extends Controller
                 } else {
                     // 出勤データが見つからない場合は新規作成
                     $attendanceData = [
-                        'user_id' => Auth::id(),
+                        'user_id' => $userId, // 更新: ここで $userId を使用
                         'member_id' => $request->input('member_id'),
                         'clock_in' => null,
                         'clock_out' => $now,
@@ -109,7 +173,7 @@ class RecordController extends Controller
             } else {
                 // 出勤データを新規作成
                 $attendanceData = [
-                    'user_id' => Auth::id(),
+                    'user_id' => $userId, // 更新: ここで $userId を使用
                     'member_id' => $request->input('member_id'),
                     'clock_in' => $now,
                     'clock_out' => null,
@@ -133,11 +197,14 @@ class RecordController extends Controller
     }
 
 
+// =====ここ以降は、adminのみなので、注意事項を反映しない。=====
 
     public function show(Record $record)
     {
         return view('records.show', compact('record'));
     }
+
+
 
     public function edit(Record $record)
     {

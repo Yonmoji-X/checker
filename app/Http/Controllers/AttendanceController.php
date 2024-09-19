@@ -2,10 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Attendance;
-use App\Models\Member;
+use App\Models\Attendance; // 勤怠データのモデル
+use App\Models\Member;     // メンバーデータのモデル
+use App\Models\Group;      // グループデータのモデル
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Auth; // 認証情報を扱うファサード
+
+/*
+注意事項
+これにおいて、usersテーブルのroleカラムがadminではなくuserの場合は、groupテーブルのuser_idが現在ログインしているユーザーのidのデータを探し、そのデータのadmin_idカラムのidを$userIdの部分に入れるようにする。
+*/
 
 class AttendanceController extends Controller
 {
@@ -17,10 +23,24 @@ class AttendanceController extends Controller
         // 現在のユーザーIDを取得
         $userId = Auth::id();
 
-        // ログインユーザーのメンバーだけを取得
+        // 現在のログインユーザー情報を取得
+        $currentUser = Auth::user();
+
+        // ユーザーがuser roleの場合
+        if ($currentUser->role === 'user') {
+            // groupテーブルから現在のユーザーIDに関連するadmin_idを取得
+            $group = Group::where('user_id', $userId)->first();
+
+            // groupが存在すれば、admin_idを$userIdとして使用
+            if ($group) {
+                $userId = $group->admin_id;
+            }
+        }
+
+        // ログインユーザー（またはadmin_idに紐づくメンバー）のデータを取得
         $members = Member::where('user_id', $userId)->latest()->get();
 
-        // ログインユーザーの勤怠データだけを取得
+        // ログインユーザー（またはadmin_idに紐づく勤怠データ）を取得
         $attendances = Attendance::where('user_id', $userId)
             ->with('user', 'member') // ユーザーとメンバーのリレーションをロード
             ->latest()
@@ -29,6 +49,7 @@ class AttendanceController extends Controller
         // ビューにデータを渡す
         return view('attendances.index', compact('attendances', 'members'));
     }
+
 
     /**
      * Show the form for creating a new resource.
