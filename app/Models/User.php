@@ -69,4 +69,8 @@ class User extends Authenticatable
     {
         return $this->hasMany(Attendance::class);
     }
+    public function breakSessions()
+    {
+        return $this->hasMany(BreakSession::class);
+    }
 }

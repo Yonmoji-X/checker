@@ -104,7 +104,10 @@
             </x-nav-link> -->
             <x-nav-link :href="route('records.index')" :active="request()->routeIs('records.index')">
                     {{ __('チェック一覧') }}
-                </x-nav-link>
+            </x-nav-link>
+            <x-nav-link :href="route('breaksessions.create')" :active="request()->routeIs('breaksessions.create')">
+                    {{ __('休憩') }}
+            </x-nav-link>
             <x-nav-link :href="route('records.create')" :active="request()->routeIs('records.create')">
                 {{ __('チェック') }}
             </x-nav-link>
@@ -171,6 +174,12 @@
             {{ __('アイテム作成') }}
         </x-responsive-nav-link>
         <x-responsive-nav-link :href="route('members.index')" :active="request()->routeIs('members.index')">
+            {{ __('名簿') }}
+        </x-responsive-nav-link>
+        <x-responsive-nav-link :href="route('members.create')" :active="request()->routeIs('members.create')">
+            {{ __('名簿登録') }}
+        </x-responsive-nav-link>
+        <x-responsive-nav-link :href="route('members.index')" :active="request()->routeIs('members.index')">
             {{ __('管理アカウント') }}
         </x-responsive-nav-link>
         <x-responsive-nav-link :href="route('members.create')" :active="request()->routeIs('members.create')">
@@ -185,6 +194,9 @@
         </x-responsive-nav-link> -->
         <x-responsive-nav-link :href="route('records.index')" :active="request()->routeIs('records.index')">
             {{ __('チェック一覧') }}
+        </x-responsive-nav-link>
+        <x-responsive-nav-link :href="route('breaksessions.create')" :active="request()->routeIs('breaksessions.create')">
+            {{ __('休憩') }}
         </x-responsive-nav-link>
         <x-responsive-nav-link :href="route('records.create')" :active="request()->routeIs('records.create')">
             {{ __('チェック') }}

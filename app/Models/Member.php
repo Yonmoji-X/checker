@@ -20,13 +20,22 @@ class Member extends Model
         return $this->belongsTo(User::class);
     }
 
+
     // public function member()
     // {
     //     return $this->belongsTo(Member::class);
     // }
 
-    // public function attendance()
-    // {
-    //     return $this->belongsTo(User::class);
-    // }
+    // =======↓追記した=======
+    public function attendances()
+    {
+        return $this->hasMany(Attendance::class);
+    }
+
+    // =======↑追記した=======
+
+    public function breakSessions()
+    {
+        return $this->hasMany(BreakSession::class);
+    }
 }

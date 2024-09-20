@@ -1,25 +1,25 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Attendance extends Model
+class BreakSession extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'user_id',
+        'created_by',
         'member_id',
-        'clock_in',
-        'clock_out',
-        'attendance',
-        'attendance_date',
+        'attendance_id',
+        'break_in',
+        'break_out',
+        'break_duration',
     ];
 
     /**
-     * Get the user associated with the attendance.
+     * Get the user associated with the break session.
      */
     public function user()
     {
@@ -27,15 +27,18 @@ class Attendance extends Model
     }
 
     /**
-     * Get the member associated with the attendance.
+     * Get the member associated with the break session.
      */
     public function member()
     {
         return $this->belongsTo(Member::class);
     }
 
-    public function breakSessions()
+    /**
+     * Get the attendance associated with the break session.
+     */
+    public function attendance()
     {
-        return $this->hasMany(BreakSession::class);
+        return $this->belongsTo(Attendance::class);
     }
 }

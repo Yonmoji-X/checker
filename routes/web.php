@@ -7,6 +7,7 @@ use App\Http\Controllers\RecordController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\BreakSessionController;
 use Illuminate\Support\Facades\Route;
 
 // ホームページのルート
@@ -31,6 +32,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('records', RecordController::class);
     Route::resource('attendances', AttendanceController::class);
     Route::resource('groups', GroupController::class);
+    Route::resource('breaksessions', BreakSessionController::class);
 
     // ロールベースのミドルウェア設定（必要に応じて）
     // Route::middleware(['role:admin'])->group(function () {
