@@ -7,6 +7,7 @@ use App\Models\Attendance;
 use App\Models\Member;
 use App\Models\Group;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class BreakSessionController extends Controller
@@ -16,16 +17,45 @@ class BreakSessionController extends Controller
      */
     public function index()
     {
-        $breaksessions = BreakSession::with('user')->latest()->get();
+        // ログインユーザーのIDを取得
+        $userId = auth()->user()->id;
+
+        // ログインユーザーに関連するBreakSessionを取得し、関連するMemberをロード
+        $breaksessions = BreakSession::where('user_id', $userId)
+                                    ->with('member')  // memberリレーションをロード
+                                    ->get();
+
         return view('breaksessions.index', compact('breaksessions'));
     }
+
 
     /**
      * 新しいリソースを作成するためのフォームを表示します。
      */
     public function create()
     {
-        return view('breaksessions.create');
+        // 現在のユーザーIDを取得
+        $userId = Auth::id();
+
+        // 現在のログインユーザー情報を取得
+        $currentUser = Auth::user();
+
+        // ユーザーが「user」ロールの場合
+        if ($currentUser->role === 'user') {
+            // groupテーブルから現在のユーザーIDに関連するadmin_idを取得
+            $group = Group::where('user_id', $userId)->first();
+
+            // groupが存在すれば、admin_idを$userIdとして使用
+            if ($group) {
+                $userId = $group->admin_id;
+            }
+        }
+
+        // 該当するユーザーのメンバーリストを取得
+        $members = Member::where('user_id', $userId)->latest()->get();
+
+        // ビューにデータを渡す
+        return view('breaksessions.create', compact('members'));
     }
 
     /**
@@ -34,37 +64,57 @@ class BreakSessionController extends Controller
     public function store(Request $request)
     {
         // 入力データのバリデーション
-        $request->validate([
+        $validatedData = $request->validate([
             'member_id' => 'required|exists:members,id',
-            'attendance_id' => 'required|exists:attendances,id',
-            'break_in' => 'required|date',
-            'break_out' => 'required|date|after:break_in',
         ]);
+
+        // 出勤データ（attendance）を取得
+        $attendance = Attendance::where('member_id', $request->member_id)
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        if (!$attendance) {
+            return redirect()->back()->with('error', '出勤データが見つかりません。');
+        }
 
         // 現在の認証済みユーザーを取得
         $user = Auth::user();
+        $userId = $user->role === 'admin' ? $user->id : Group::where('user_id', $user->id)->value('admin_id');
+        $currentTimestamp = Carbon::now();
 
-        // BreakSessionのuser_idを決定
-        if ($user->role === 'admin') {
-            $userId = $user->id; // 管理者のID
-        } else {
-            // groupテーブルから関連するadmin_idを取得
-            $group = Group::where('user_id', $user->id)->first();
-            $userId = $group ? $group->admin_id : null; // グループが存在すればadmin_idを取得
+        if ($request->input('action') === 'break_in') {
+            // 休憩開始処理
+            BreakSession::create([
+                'user_id' => $userId,
+                'created_by' => $user->id,
+                'member_id' => $request->member_id,
+                'attendance_id' => $attendance->id,
+                'break_in' => $currentTimestamp,
+            ]);
+
+            return redirect()->route('breaksessions.index')->with('success', '休憩が開始されました。');
+        } elseif ($request->input('action') === 'break_out') {
+            // 休憩終了処理
+            $breakInSession = BreakSession::where('member_id', $request->member_id)
+                ->whereNotNull('break_in')
+                ->whereNull('break_out')
+                ->orderBy('created_at', 'desc')
+                ->first();
+
+            if (!$breakInSession) {
+                return redirect()->back()->with('error', '休憩開始データが見つかりません。');
+            }
+
+            // 休憩終了の時間を更新し、休憩時間（分）を計算
+            $breakInSession->update([
+                'break_out' => $currentTimestamp,
+                'break_duration' => Carbon::parse($breakInSession->break_in)->diffInMinutes($currentTimestamp),
+            ]);
+
+            return redirect()->route('breaksessions.index')->with('success', '休憩が終了しました。');
         }
 
-        // ブレークセッションの作成
-        BreakSession::create([
-            'user_id' => $userId,
-            'created_by' => $user->id,
-            'member_id' => $request->member_id,
-            'attendance_id' => $request->attendance_id,
-            'break_in' => $request->break_in,
-            'break_out' => $request->break_out,
-            'break_duration' => $request->break_out->diffInMinutes($request->break_in), // 休憩時間を計算
-        ]);
-
-        return redirect()->route('breaksessions.index')->with('success', '休憩が登録されました。');
+        return redirect()->back()->with('error', '無効な操作です。');
     }
 
     /**
@@ -72,6 +122,7 @@ class BreakSessionController extends Controller
      */
     public function show(BreakSession $breakSession)
     {
+        // 休憩セッションの詳細を表示
         return view('breaksessions.show', compact('breakSession'));
     }
 
@@ -80,6 +131,7 @@ class BreakSessionController extends Controller
      */
     public function edit(BreakSession $breakSession)
     {
+        // 休憩セッションの編集フォームを表示
         return view('breaksessions.edit', compact('breakSession'));
     }
 
@@ -89,20 +141,20 @@ class BreakSessionController extends Controller
     public function update(Request $request, BreakSession $breakSession)
     {
         // 入力データのバリデーション
-        $request->validate([
+        $validatedData = $request->validate([
             'member_id' => 'required|exists:members,id',
             'attendance_id' => 'required|exists:attendances,id',
             'break_in' => 'required|date',
-            'break_out' => 'required|date|after:break_in',
+            'break_out' => 'required|date|after:break_in', // 休憩終了時間は開始時間の後である必要がある
         ]);
 
-        // ブレークセッションの更新
+        // 休憩時間を更新し、休憩時間（分）を再計算
         $breakSession->update([
             'member_id' => $request->member_id,
             'attendance_id' => $request->attendance_id,
-            'break_in' => $request->break_in,
-            'break_out' => $request->break_out,
-            'break_duration' => $request->break_out->diffInMinutes($request->break_in), // 休憩時間を再計算
+            'break_in' => Carbon::parse($request->break_in),
+            'break_out' => Carbon::parse($request->break_out),
+            'break_duration' => Carbon::parse($request->break_in)->diffInMinutes(Carbon::parse($request->break_out)),
         ]);
 
         return redirect()->route('breaksessions.index')->with('success', '休憩が更新されました。');
@@ -113,6 +165,7 @@ class BreakSessionController extends Controller
      */
     public function destroy(BreakSession $breakSession)
     {
+        // 休憩セッションを削除
         $breakSession->delete();
         return redirect()->route('breaksessions.index')->with('success', '休憩が削除されました。');
     }

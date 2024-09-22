@@ -105,6 +105,9 @@
             <x-nav-link :href="route('records.index')" :active="request()->routeIs('records.index')">
                     {{ __('チェック一覧') }}
             </x-nav-link>
+            <x-nav-link :href="route('breaksessions.index')" :active="request()->routeIs('breaksessions.index')">
+                    {{ __('休憩一覧（仮）') }}
+            </x-nav-link>
             <x-nav-link :href="route('breaksessions.create')" :active="request()->routeIs('breaksessions.create')">
                     {{ __('休憩') }}
             </x-nav-link>
