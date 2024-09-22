@@ -23,6 +23,7 @@ class BreakSessionController extends Controller
         // ログインユーザーに関連するBreakSessionを取得し、関連するMemberをロード
         $breaksessions = BreakSession::where('user_id', $userId)
                                     ->with('member')  // memberリレーションをロード
+                                    ->orderBy('created_at', 'desc')
                                     ->get();
 
         return view('breaksessions.index', compact('breaksessions'));
@@ -80,7 +81,7 @@ class BreakSessionController extends Controller
         // 現在の認証済みユーザーを取得
         $user = Auth::user();
         $userId = $user->role === 'admin' ? $user->id : Group::where('user_id', $user->id)->value('admin_id');
-        $currentTimestamp = Carbon::now();
+        $currentTimestamp = Carbon::now()->setTimezone('Asia/Tokyo');
 
         if ($request->input('action') === 'break_in') {
             // 休憩開始処理
@@ -147,14 +148,16 @@ class BreakSessionController extends Controller
             'break_in' => 'required|date',
             'break_out' => 'required|date|after:break_in', // 休憩終了時間は開始時間の後である必要がある
         ]);
+        $breakIn = Carbon::parse($request->break_in)->setTimezone('Asia/Tokyo');
+        $breakOut = Carbon::parse($request->break_out)->setTimezone('Asia/Tokyo');
 
         // 休憩時間を更新し、休憩時間（分）を再計算
         $breakSession->update([
             'member_id' => $request->member_id,
             'attendance_id' => $request->attendance_id,
-            'break_in' => Carbon::parse($request->break_in),
-            'break_out' => Carbon::parse($request->break_out),
-            'break_duration' => Carbon::parse($request->break_in)->diffInMinutes(Carbon::parse($request->break_out)),
+            'break_in' => $breakIn,
+            'break_out' => $breakOut,
+            'break_duration' => $breakIn->diffInMinutes($breakOut),
         ]);
 
         return redirect()->route('breaksessions.index')->with('success', '休憩が更新されました。');

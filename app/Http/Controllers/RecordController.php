@@ -146,7 +146,7 @@ class RecordController extends Controller
             }
 
             // 現在時刻を取得
-            $now = Carbon::now();
+            $now = Carbon::now('Asia/Tokyo');
             // $now = Carbon::now()->toIso8601String();
 
             // clock_status が 0 の場合、Attendance を更新
