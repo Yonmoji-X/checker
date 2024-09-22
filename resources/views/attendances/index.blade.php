@@ -42,7 +42,7 @@
                                     <td class="text-sm text-gray-500 dark:text-gray-300 px-2 py-2 md:px-6 md:py-4">{{ $attendance->member->name }}</td>
                                     <td class="text-sm font-medium px-2 py-2 md:px-6 md:py-4">
                                         <a href="{{ url('/attendances/' . $attendance->id . '/edit') }}" class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 mx-2">編集</a>
-                                        <form action="{{ url('/attendances/' . $attendance->id) }}" method="POST" style="display:inline;">
+                                        <form action="{{ url('/attendances/' . $attendance->id) }}" method="POST" style="display:inline;" onsubmit="return confirmDeletion()">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">削除</button>
@@ -56,4 +56,10 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function confirmDeletion() {
+            return confirm("関連する休憩データも削除されます。本当に削除しますか？");
+        }
+    </script>
 </x-app-layout>

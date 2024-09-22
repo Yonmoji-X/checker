@@ -93,22 +93,18 @@ class RecordController extends Controller
             'photo_item_*' => 'nullable|file|image|max:2048',
             'content_item_*' => 'nullable|string|max:255',
             'temperature_item_*' => 'nullable|numeric',
-            // 'attendance' => 'required|string|max:255',
         ]);
 
         // 現在のユーザーIDを取得
-        $createdById = Auth::id();
         $userId = Auth::id();
+        $createdById = $userId;
 
         // 現在のログインユーザー情報を取得
         $currentUser = Auth::user();
 
-        // ユーザーがuser roleの場合
+        // ユーザーがuser roleの場合、admin_idに切り替え
         if ($currentUser->role === 'user') {
-            // groupテーブルから現在のユーザーIDに関連するadmin_idを取得
             $group = Group::where('user_id', $userId)->first();
-
-            // groupが存在すれば、admin_idを$userIdとして使用
             if ($group) {
                 $userId = $group->admin_id;
             }
@@ -126,8 +122,8 @@ class RecordController extends Controller
                     $head_id = $maxId - (int)$index;
 
                     $recordData = [
-                        'user_id' => $userId, // 更新: ここで $userId を使用
-                        'created_by' => $createdById, // 追加: created_by カラムに現在のユーザーIDを設定
+                        'user_id' => $userId,
+                        'created_by' => $createdById,
                         'member_id' => $request->input('member_id'),
                         'template_id' => $value,
                         'member_status' => $request->input('member_status'),
@@ -147,57 +143,58 @@ class RecordController extends Controller
 
             // 現在時刻を取得
             $now = Carbon::now('Asia/Tokyo');
-            // $now = Carbon::now()->toIso8601String();
 
-            // clock_status が 0 の場合、Attendance を更新
-            if ($request->input('clock_status') == '0') {
-                $attendance = Attendance::where('user_id', $userId) // 更新: ここで $userId を使用
-                                        ->where('member_id', $request->input('member_id'))
-                                        ->where('attendance_date', $now->toDateString())
-                                        ->whereNull('clock_out')
-                                        ->orderBy('clock_in', 'desc') // clock_inが新しい順に並べる
-                                        ->first();
+            // 出勤処理
+            if ($request->input('clock_status') == '1') { // 1が出勤、0が退勤
+                $attendance = Attendance::where('user_id', $userId)
+                    ->where('member_id', $request->input('member_id'))
+                    ->whereNull('clock_out') // まだ退勤していない
+                    ->orderBy('clock_in', 'desc')
+                    ->first();
 
+                // 既に出勤していて、退勤していない場合
                 if ($attendance) {
-                    // 出勤データが見つかった場合、clock_out を更新
-                    $attendance->update(['clock_out' => $now]);
-                } else {
-                    // 出勤データが見つからない場合は新規作成
-                    $attendanceData = [
-                        'user_id' => $userId, // 更新: ここで $userId を使用
-                        'member_id' => $request->input('member_id'),
-                        'clock_in' => null,
-                        'clock_out' => $now,
-                        'attendance' => $request->input('attendance'),
-                        'attendance_date' => $now->toDateString(),
-                    ];
-                    Attendance::create($attendanceData);
+                    return redirect()->back()->withErrors('既に出勤しています。');
                 }
-            } else {
-                // 出勤データを新規作成
-                $attendanceData = [
-                    'user_id' => $userId, // 更新: ここで $userId を使用
+
+                // 既に出勤・退勤が両方完了している場合は新しいレコードを作成
+                Attendance::create([
+                    'user_id' => $userId,
                     'member_id' => $request->input('member_id'),
                     'clock_in' => $now,
                     'clock_out' => null,
                     'attendance' => $request->input('attendance'),
                     'attendance_date' => $now->toDateString(),
-                ];
-                Attendance::create($attendanceData);
+                ]);
+
+            } else { // 退勤処理 (clock_status == 0)
+                $attendance = Attendance::where('user_id', $userId)
+                    ->where('member_id', $request->input('member_id'))
+                    ->whereNull('clock_out')
+                    ->orderBy('clock_in', 'desc')
+                    ->first();
+
+                // 出勤しているが退勤していない場合
+                if ($attendance) {
+                    $attendance->update(['clock_out' => $now]);
+                } else {
+                    return redirect()->back()->withErrors('既に退勤しています。');
+                }
             }
 
-            // トランザクションをコミット
+            // トランザクションのコミット
             DB::commit();
 
         } catch (\Exception $e) {
             // エラーが発生した場合、ロールバック
             DB::rollBack();
-            return redirect()->back()->withErrors('Error occurred while saving data. Please try again.');
+            return redirect()->back()->withErrors('エラーが発生しました。もう一度やり直してください。');
         }
 
         // 成功時のリダイレクト
-        return redirect()->route('records.index')->with('success', 'Record and Attendance created/updated successfully.');
+        return redirect()->route('records.index')->with('success', '勤怠情報が正常に登録されました。');
     }
+
 
 
 

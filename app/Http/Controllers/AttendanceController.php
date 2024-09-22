@@ -100,10 +100,18 @@ class AttendanceController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Attendance $attendance)
-    {
-        // 勤怠データを削除
-        $attendance->delete();
-        return redirect()->route('attendances.index');
-    }
+/**
+ * Remove the specified resource from storage.
+ */
+public function destroy(Attendance $attendance)
+{
+    // まず関連するBreakSessionレコードを削除
+    $attendance->breakSessions()->delete();
+
+    // その後、Attendanceレコードを削除
+    $attendance->delete();
+
+    return redirect()->route('attendances.index')->with('success', 'Attendance and related BreakSessions deleted successfully.');
+}
+
 }
