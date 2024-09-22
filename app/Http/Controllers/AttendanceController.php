@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Attendance; // 勤怠データのモデル
 use App\Models\Member;     // メンバーデータのモデル
+use App\Models\BreakSession;
 use App\Models\Group;      // グループデータのモデル
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth; // 認証情報を扱うファサード
@@ -20,33 +21,24 @@ class AttendanceController extends Controller
      */
     public function index()
     {
-        // 現在のユーザーIDを取得
         $userId = Auth::id();
-
-        // 現在のログインユーザー情報を取得
         $currentUser = Auth::user();
 
-        // ユーザーがuser roleの場合
         if ($currentUser->role === 'user') {
-            // groupテーブルから現在のユーザーIDに関連するadmin_idを取得
             $group = Group::where('user_id', $userId)->first();
-
-            // groupが存在すれば、admin_idを$userIdとして使用
             if ($group) {
                 $userId = $group->admin_id;
             }
         }
 
-        // ログインユーザー（またはadmin_idに紐づくメンバー）のデータを取得
         $members = Member::where('user_id', $userId)->latest()->get();
 
-        // ログインユーザー（またはadmin_idに紐づく勤怠データ）を取得
+        // 勤怠データに関連する休憩データも取得
         $attendances = Attendance::where('user_id', $userId)
-            ->with('user', 'member') // ユーザーとメンバーのリレーションをロード
+            ->with(['user', 'member', 'breakSessions']) // breakSessionsのリレーションを追加
             ->latest()
             ->get();
 
-        // ビューにデータを渡す
         return view('attendances.index', compact('attendances', 'members'));
     }
 

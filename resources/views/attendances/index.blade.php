@@ -30,17 +30,27 @@
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">出勤</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">退勤</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">従業員ID</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">休憩時間</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">操作</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
                             @foreach ($attendances as $attendance)
-                                <tr class="mb-4 p-4 bg-gray-100 dark:bg-gray-700 rounded-lg">
-                                    <td class="text-sm text-gray-500 dark:text-gray-300 px-2 py-2 md:px-6 md:py-4">{{ $attendance->attendance_date }}</td>
-                                    <td class="text-sm text-gray-500 dark:text-gray-300 px-2 py-2 md:px-6 md:py-4">{{ $attendance->clock_in }}</td>
-                                    <td class="text-sm text-gray-500 dark:text-gray-300 px-2 py-2 md:px-6 md:py-4">{{ $attendance->clock_out }}</td>
-                                    <td class="text-sm text-gray-500 dark:text-gray-300 px-2 py-2 md:px-6 md:py-4">{{ $attendance->member->name }}</td>
-                                    <td class="text-sm font-medium px-2 py-2 md:px-6 md:py-4">
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{{ $attendance->attendance_date }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{{ $attendance->clock_in }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{{ $attendance->clock_out }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{{ $attendance->member->name }}</td>
+
+                                    <!-- 休憩時間の合計を表示 -->
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                                        @php
+                                            $totalBreakDuration = $attendance->breakSessions->sum('break_duration');
+                                        @endphp
+                                        {{ $totalBreakDuration }} 分
+                                    </td>
+
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                         <a href="{{ url('/attendances/' . $attendance->id . '/edit') }}" class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 mx-2">編集</a>
                                         <form action="{{ url('/attendances/' . $attendance->id) }}" method="POST" style="display:inline;" onsubmit="return confirmDeletion()">
                                             @csrf

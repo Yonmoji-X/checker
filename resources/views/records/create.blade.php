@@ -42,10 +42,23 @@
                             </select>
                         </div>
                     </div>
+                    <!-- アラートメッセージの表示 -->
+                    @if (session('error'))
+                        <div class="bg-red-500 text-white p-4 rounded mb-4">
+                            {{ session('error') }}
+                        </div>
+                    @endif
+
+                    @if (session('success'))
+                        <div class="bg-green-500 text-white p-4 rounded mb-4">
+                            {{ session('success') }}
+                        </div>
+                    @endif
                     <div id="items_container" class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg p-6">
                         <input type="hidden" name="attendance" value=null >
                         <!-- JavaScriptでここにフィルタリングされたデータを表示 -->
                     </div>
+
 
                     <div class="mt-6">
                         <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">送信</button>
