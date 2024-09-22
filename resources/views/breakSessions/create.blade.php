@@ -1,5 +1,3 @@
-<!-- resources/views/breaksessions/create.blade.php -->
-
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
@@ -14,11 +12,24 @@
                     <h3 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                         現在時間: <span id="server-time">{{ \Carbon\Carbon::now()->toIso8601String() }}</span>
                     </h3>
+
+                    <!-- アラートメッセージの表示 -->
+                    @if (session('error'))
+                        <div class="bg-red-500 text-white p-4 rounded mb-4">
+                            {{ session('error') }}
+                        </div>
+                    @endif
+
+                    @if (session('success'))
+                        <div class="bg-green-500 text-white p-4 rounded mb-4">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+
                     <form method="POST" action="{{ route('breaksessions.store') }}">
                         <input type="hidden" name="break_in" value="{{ \Carbon\Carbon::now()->toIso8601String() }}">
                         <input type="hidden" name="break_out" value="{{ \Carbon\Carbon::now()->toIso8601String() }}">
-                    <div>
-                            <!-- <label for="member_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">メンバー</label> -->
+                        <div>
                             <select name="member_id" id="member_id" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                 @foreach ($members as $member)
                                     <option value="{{ $member->id }}">{{ $member->name }}</option>
@@ -33,7 +44,6 @@
                         </div>
                         <button type="submit" name="action" value="break_in" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">休憩開始</button>
                         <button type="submit" name="action" value="break_out" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">休憩終了</button>
-                    
                     </form>
                 </div>
             </div>
