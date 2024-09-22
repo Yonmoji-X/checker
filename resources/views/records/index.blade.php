@@ -56,176 +56,156 @@
         </div>
     </div>
     <script>
-        // javaScriptで<a>タグリンク追加の際は、下記コード必要。必要に応じてURL変えてね。
-        // ============================================
-        let basePath = "{{ url('/') }}";
-        console.log("_basePath_");
+    let basePath = "{{ url('/') }}";
+    console.log("_basePath_");
+    console.log(basePath);
+    if (basePath === "https://chiburi.sakura.ne.jp/checker") {
+        basePath = "https://chiburi.sakura.ne.jp/checker";
         console.log(basePath);
-        if (basePath === "https://chiburi.sakura.ne.jp/checker") {
-                basePath = "https://chiburi.sakura.ne.jp/checker"
-                // basePath = '{{ url('/checker') }}';
-                console.log(basePath);
-        } else {
-                basePath = '';
-        }
-        console.log("_basePath_処理後");
-        console.log(basePath);
-        // ============================================
+    } else {
+        basePath = '';
+    }
+    console.log("_basePath_処理後");
+    console.log(basePath);
 
-        const jsonRecords =  `<?= $jsonRecords ?>`;
-        const jsonTemplates =  `<?= $jsonTemplates ?>`;
-        let dataRecords = [];
-        let dataTemplates = [];
+    const jsonRecords = `<?= $jsonRecords ?>`;
+    const jsonTemplates = `<?= $jsonTemplates ?>`;
+    let dataRecords = [];
+    let dataTemplates = [];
 
-        try {
-            dataRecords = JSON.parse(jsonRecords);
-            dataTemplates = JSON.parse(jsonTemplates);
-            console.log(`dataRecords:${dataRecords}`);
-            console.log(`dataTemplates:${dataTemplates}`);
-            console.log(`dataTemplates: ${JSON.stringify(dataTemplates, null, 2)}`);
-        } catch (e) {
-            console.error('Error parsing JSON:', e);
-        }
-        dataRecords.sort((a, b) => a.id - b.id);
-        console.log(dataRecords);
+    try {
+        dataRecords = JSON.parse(jsonRecords);
+        dataTemplates = JSON.parse(jsonTemplates);
+        console.log(`dataRecords:${dataRecords}`);
+        console.log(`dataTemplates:${dataTemplates}`);
+        console.log(`dataTemplates: ${JSON.stringify(dataTemplates, null, 2)}`);
+    } catch (e) {
+        console.error('Error parsing JSON:', e);
+    }
+    dataRecords.sort((a, b) => a.id - b.id);
+    console.log(dataRecords);
 
+    function filterDataRecords() {
+        const memberStatus_selected = document.getElementById('member_status').value;
+        const clockStatus_selected = document.getElementById('clock_status').value;
+        const member_selected = document.getElementById('member_id').value;
 
-        function filterDataRecords() {
-            const memberStatus_selected = document.getElementById('member_status').value;
-            const clockStatus_selected = document.getElementById('clock_status').value;
-            const member_selected = document.getElementById('member_id').value;
+        const filterDataRecords = dataRecords.filter(row => row.member_status == memberStatus_selected && row.clock_status == clockStatus_selected && row.member_id == member_selected);
+        console.log(`filterDataRecords：${filterDataRecords}`);
+        displayDataRecords(filterDataRecords);
 
-            const filterDataRecords = dataRecords.filter(row => row.member_status == memberStatus_selected && row.clock_status == clockStatus_selected && row.member_id == member_selected);
-            console.log(`filterDataRecords：${filterDataRecords}`);
-            displayDataRecords(filterDataRecords);
+        console.log(filterDataRecords);
+    }
 
-            console.log(filterDataRecords);
-            // console.log(sortDataRecords(filterDataRecords));
-        }
+    function displayDataRecords(filteredDataRecords) {
+        const container = document.getElementById('items_container');
+        container.innerHTML = '';
 
-        function displayDataRecords(filteredDataRecords) {
-    const container = document.getElementById('items_container');
+        filteredDataRecords.forEach((row, index) => {
+            const item = document.createElement('div');
+            item.classList.add(
+                'template',
+                'mb-4',
+                'p-4',
+                'bg-gray-50',
+                'dark:bg-gray-700',
+                'rounded-lg',
+                'border',
+                'border-gray-300',
+                'dark:border-gray-600'
+            );
 
-    container.innerHTML = '';
+            const titleBox = document.createElement('div');
 
-    filteredDataRecords.forEach((row, index) => {
-        const item = document.createElement('div');
-        item.classList.add(
-            'template',
-            'mb-4',
-            'p-4',
-            'bg-gray-50',
-            'dark:bg-gray-700',
-            'rounded-lg',
-            'border',
-            'border-gray-300',
-            'dark:border-gray-600'
-        );
+            // created_atを東京時間に変換する部分
+            const createdAtDate = new Date(row.created_at);
+            const tokyoTime = createdAtDate.toLocaleString("ja-JP", {
+                timeZone: "Asia/Tokyo",
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            });
 
-        const titleBox = document.createElement('div');
-        titleBox.innerHTML = `
-            <span>${row.created_at}</span>
-            <span>_ID：${row.id}</span>
-            <span>_head ID：${row.head_id}</span>
-
+            titleBox.innerHTML = `
+                <span>${tokyoTime}</span>
             <!-- <a href="${basePath}/records/${row.id}/edit"
             class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 mx-2">
                 編集
-            </a> -->
+            </a>
             <form action="${basePath}/records/${row.id}" method="POST" style="display:inline;">
                 @csrf
                 @method('DELETE')
                 <button type="submit" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">
                     　削除
                 </button>
-            </form>
-        `;
+            </form> -->
+            `;
 
-        // const headTime = document.createElement('span');
-        // headTime.textContent = `${row.created_at}`;  // テンプレートIDを表示
-        const record = dataTemplates.find(templete => templete.id === row.template_id);
+            const record = dataTemplates.find(template => template.id === row.template_id);
+            const title_Template = record ? record.title : 'Record not found';
 
-        const title_Template = record ? record.title : 'Record not found';
-        console.log(title_Template); // "40秒間、手を洗いましたか？"
-        // const headId = document.createElement('span');
-        // headId.textContent = `head ID: ${row.head_id}`;  // テンプレートIDを表示
-        // const thisId = document.createElement('span');
-        // thisId.textContent = `ID: ${row.id}`;  // テンプレートIDを表示
-        const contentsUl = document.createElement('ul');
-                contentsUl.classList.add(
-                    'text-gray-600',
-                    'dark:text-gray-400',
-                    'text-sm',
-                    'mt-4',
-                    'list-none'
-                );
-        const titleTemplate = document.createElement('span');
-        titleTemplate.textContent = `>${title_Template}`;
-        titleTemplate.classList.add(
-            'text-gray-600',
-            'dark:text-gray-400',
-            'text-sm'
-        );
-        contentsUl.appendChild(titleTemplate);
-        // contentsUl.textContent = `>${title_Template}`;
+            const contentsUl = document.createElement('ul');
+            contentsUl.classList.add(
+                'text-gray-600',
+                'dark:text-gray-400',
+                'text-sm',
+                'mt-4',
+                'list-none'
+            );
 
+            const titleTemplate = document.createElement('span');
+            titleTemplate.textContent = `>${title_Template}`;
+            titleTemplate.classList.add(
+                'text-gray-600',
+                'dark:text-gray-400',
+                'text-sm'
+            );
+            contentsUl.appendChild(titleTemplate);
 
-        if (row.check_item != null) {
-            const checkLi = document.createElement('li');
-            if (row.check_item == 1) {
-                checkLi.textContent = 'はい';
-            } else if (row.check_item == 0) {
-                checkLi.textContent = 'いいえ';
+            if (row.check_item != null) {
+                const checkLi = document.createElement('li');
+                checkLi.textContent = row.check_item == 1 ? 'はい' : 'いいえ';
+                contentsUl.appendChild(checkLi);
             }
-            contentsUl.appendChild(checkLi);
-        }
-        if (row.photo_item != null) {
-            const photoLi = document.createElement('li');
-            photoLi.textContent = 'ここに画像が入ります。';
-            contentsUl.appendChild(photoLi);
-        }
-        if (row.content_item != null) {
-            const contentLi = document.createElement('li');
-            contentLi.textContent = row.content_item;
-            contentsUl.appendChild(contentLi);
-        }
-        if (row.temperature_item != null) {
-            const temperatureLi = document.createElement('li');
-            temperatureLi.textContent = row.temperature_item;
-            contentsUl.appendChild(temperatureLi);
-        }
-        // const itemFootLi = document.createElement('div');
-        // itemFootLi.classList.add('px-6', 'py-4', 'whitespace-nowrap', 'text-sm', 'font-medium');
-
-        // ↓このif文がうまくいってない。
-
-        item.appendChild(titleBox);
-        item.appendChild(contentsUl);
-        console.log(`ID：${row.id}`);
-        console.log(`head ID：${row.head_id}`);
-        if (row.id == row.head_id) {
-            // console.log(`head_${row.head_id}`);
-            item.id = `head_${row.head_id}`;
-            // container.appendChild(item);
-            container.prepend(item);
-        }
-        if (row.id != row.head_id) {
-            headItem = document.getElementById(`head_${row.head_id}`);
-            if(headItem) {
-                headItem.appendChild(contentsUl);
+            if (row.photo_item != null) {
+                const photoLi = document.createElement('li');
+                photoLi.textContent = 'ここに画像が入ります。';
+                contentsUl.appendChild(photoLi);
             }
-        }
+            if (row.content_item != null) {
+                const contentLi = document.createElement('li');
+                contentLi.textContent = row.content_item;
+                contentsUl.appendChild(contentLi);
+            }
+            if (row.temperature_item != null) {
+                const temperatureLi = document.createElement('li');
+                temperatureLi.textContent = row.temperature_item;
+                contentsUl.appendChild(temperatureLi);
+            }
 
+            item.appendChild(titleBox);
+            item.appendChild(contentsUl);
 
-    });
+            if (row.id == row.head_id) {
+                item.id = `head_${row.head_id}`;
+                container.prepend(item);
+            } else {
+                const headItem = document.getElementById(`head_${row.head_id}`);
+                if (headItem) {
+                    headItem.appendChild(contentsUl);
+                }
+            }
+        });
+    }
 
+    window.onload = function() {
+        filterDataRecords();
+    };
+</script>
 
-}
-        window.onload = function() {
-            filterDataRecords();
-        };
-
-
-    </script>
 </x-app-layout>
 

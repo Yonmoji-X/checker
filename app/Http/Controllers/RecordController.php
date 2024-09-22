@@ -49,9 +49,13 @@ class RecordController extends Controller
         // メンバーを取得
         $members = Member::where('user_id', $userId)->latest()->get();
 
+        // メンバー情報をJSON形式でエンコード
+        $jsonMembers = json_encode($members, JSON_UNESCAPED_UNICODE);
+
         // ビューにデータを渡す
-        return view('records.index', compact('records', 'templates', 'members', 'jsonTemplates', 'jsonRecords'));
+        return view('records.index', compact('records', 'templates', 'members', 'jsonTemplates', 'jsonRecords', 'jsonMembers'));
     }
+
 
     public function create()
     {
