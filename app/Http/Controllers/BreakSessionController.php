@@ -106,10 +106,15 @@ class BreakSessionController extends Controller
                 return redirect()->back()->with('error', '休憩開始データが見つかりません。');
             }
 
+            // `break_in` を東京時間として取得
+            $breakInTime = Carbon::parse($breakInSession->break_in)->setTimezone('Asia/Tokyo');
+            $breakOutTime = $currentTimestamp;
+            // dd($breakInTime, $breakOutTime);
+
             // 休憩終了の時間を更新し、休憩時間（分）を計算
             $breakInSession->update([
-                'break_out' => $currentTimestamp,
-                'break_duration' => Carbon::parse($breakInSession->break_in)->diffInMinutes($currentTimestamp),
+                'break_out' => $breakOutTime,
+                'break_duration' => $breakInTime->diffInMinutes($breakOutTime),
             ]);
 
             return redirect()->route('breaksessions.index')->with('success', '休憩が終了しました。');
@@ -117,6 +122,7 @@ class BreakSessionController extends Controller
 
         return redirect()->back()->with('error', '無効な操作です。');
     }
+
 
     /**
      * 指定されたリソースを表示します。
