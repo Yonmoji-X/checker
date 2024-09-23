@@ -45,10 +45,20 @@
                                     <!-- 休憩時間の合計を表示 -->
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                                         @php
-                                            $totalBreakDuration = $attendance->breakSessions->sum('break_duration');
+                                            $totalBreakDuration = $attendance->breakSessions->sum(function($breakSession) {
+                                                return $breakSession->break_out ? $breakSession->break_duration : 0;
+                                            });
+                                            $isCurrentlyOnBreak = $attendance->breakSessions->contains(function($breakSession) {
+                                                return $breakSession->break_in && is_null($breakSession->break_out);
+                                            });
                                         @endphp
                                         {{ $totalBreakDuration }} 分
+                                        @if ($isCurrentlyOnBreak)
+                                            <span class="text-red-500">（休憩中）</span>
+                                        @endif
                                     </td>
+
+
 
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                         <a href="{{ url('/attendances/' . $attendance->id . '/edit') }}" class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 mx-2">編集</a>
