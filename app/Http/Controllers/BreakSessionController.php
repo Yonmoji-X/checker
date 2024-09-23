@@ -17,8 +17,13 @@ class BreakSessionController extends Controller
      */
     public function index()
     {
-        // ログインユーザーのIDを取得
-        $userId = auth()->user()->id;
+        $user = Auth::user();
+
+        if ($user->role === 'admin') {
+            $userId = $user->id;
+        } else {
+            $userId = Group::where('user_id', $user->id)->value('admin_id');
+        }
 
         // ログインユーザーに関連するBreakSessionを取得し、関連するMemberをロード
         $breaksessions = BreakSession::where('user_id', $userId)
@@ -28,6 +33,7 @@ class BreakSessionController extends Controller
 
         return view('breaksessions.index', compact('breaksessions'));
     }
+
 
 
     /**
