@@ -139,7 +139,7 @@
             <x-nav-link :href="route('breaksessions.create')" :active="request()->routeIs('breaksessions.create')">
                     {{ __('休憩') }}
             </x-nav-link>
-            <x-nav-link :href="route('records.create')" :active="request()->routeIs('records.create')">
+            <x-nav-link :href="route('records.create')" :active="request()->routeIs('records.create')" >
                 {{ __('チェック') }}
             </x-nav-link>
             </div>

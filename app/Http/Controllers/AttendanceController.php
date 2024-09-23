@@ -30,7 +30,7 @@ class AttendanceController extends Controller
                 $userId = $group->admin_id;
             }
         }
-        // L8vKbJ/Jhr4i
+
 
         $members = Member::where('user_id', $userId)->latest()->get();
 
