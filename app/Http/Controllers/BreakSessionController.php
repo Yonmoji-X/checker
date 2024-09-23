@@ -110,7 +110,8 @@ class BreakSessionController extends Controller
                 'break_in' => $currentTimestamp,
             ]);
 
-            return redirect()->route('breaksessions.index')->with('success', '休憩が開始されました。');
+            return redirect()->route('attendances.index')->with('success', '休憩が開始されました。');
+            // return redirect()->route('breaksessions.index')->with('success', '休憩が開始されました。');
         } elseif ($request->input('action') === 'break_out') {
             // 休憩終了処理
             if (!$activeBreakSession) {
@@ -127,7 +128,8 @@ class BreakSessionController extends Controller
                 'break_duration' => $breakInTime->diffInMinutes($breakOutTime),
             ]);
 
-            return redirect()->route('breaksessions.index')->with('success', '休憩が終了しました。');
+            // return redirect()->route('breaksessions.index')->with('success', '休憩が終了しました。');
+            return redirect()->route('attendances.index')->with('success', '休憩が終了しました。');
         }
 
         return redirect()->back()->with('error', '無効な操作です。');

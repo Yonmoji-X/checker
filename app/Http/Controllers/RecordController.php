@@ -196,7 +196,8 @@ class RecordController extends Controller
         }
 
         // 成功時のリダイレクト
-        return redirect()->route('records.index')->with('success', '勤怠情報が正常に登録されました。');
+        return redirect()->route('attendances.index')->with('success', '勤怠情報が正常に登録されました。');
+        // return redirect()->route('records.index')->with('success', '勤怠情報が正常に登録されました。');
     }
 
 
