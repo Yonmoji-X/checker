@@ -30,6 +30,7 @@ class AttendanceController extends Controller
                 $userId = $group->admin_id;
             }
         }
+        // L8vKbJ/Jhr4i
 
         $members = Member::where('user_id', $userId)->latest()->get();
 
@@ -84,10 +85,21 @@ class AttendanceController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Attendance $attendance)
+    public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'attendance' => 'required|string|max:255', // バリデーション
+        ]);
+
+        $attendance = Attendance::findOrFail($id);
+        $attendance->attendance = $request->attendance;
+        $attendance->save();
+
+        // セッションフラッシュメッセージを設定
+        return redirect()->route('attendances.index')->with('success', '更新成功しました。');
     }
+
+
 
     /**
      * Remove the specified resource from storage.

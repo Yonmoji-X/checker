@@ -38,13 +38,16 @@ Route::middleware('auth')->group(function () {
     Route::resource('groups', GroupController::class);
     Route::resource('breaksessions', BreakSessionController::class);
 
-    // ロールベースのミドルウェア設定（必要に応じて）
-    // Route::middleware(['role:admin'])->group(function () {
-    //     Route::get('/admin', [AdminController::class, 'index'])->name('admin.dashboard');
-    // });
-    // Route::middleware(['role:user'])->group(function () {
-    //     Route::get('/user', [UserController::class, 'index'])->name('user.dashboard');
-    // });
+    // PUT メソッドのルートを追加
+    Route::put('/attendances/{id}', [AttendanceController::class, 'update']);
 });
+
+// ロールベースのミドルウェア設定（必要に応じて）
+// Route::middleware(['role:admin'])->group(function () {
+//     Route::get('/admin', [AdminController::class, 'index'])->name('admin.dashboard');
+// });
+// Route::middleware(['role:user'])->group(function () {
+//     Route::get('/user', [UserController::class, 'index'])->name('user.dashboard');
+// });
 
 require __DIR__.'/auth.php';
