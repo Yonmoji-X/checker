@@ -145,10 +145,15 @@
             </x-nav-link> -->
             <x-nav-link :href="route('breaksessions.create')" :active="request()->routeIs('breaksessions.create')">
                     {{ __('休憩') }}
+                    <!-- <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline">{{ __('休憩') }}</button> -->
             </x-nav-link>
-            <x-nav-link :href="route('records.create')" :active="request()->routeIs('records.create')" >
-                {{ __('チェック') }}
+            <x-nav-link :href="route('records.create')" :active="request()->routeIs('records.create')">
+                <!-- {{ __('出退勤') }} -->
+                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline">
+                    {{ __('出退勤') }}
+                </button>
             </x-nav-link>
+
             </div>
         </div>
 
