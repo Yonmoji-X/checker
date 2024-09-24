@@ -15,22 +15,24 @@ Route::get('/', function () {
     return view('top');
 });
 
-// ダッシュボードのルート
+// ダッシュボードのルート（認証が必要）
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 });
 
+// タイムページのルート
 Route::get('/time', function () {
     return view('time');
 });
 
-// 認証が必要なルート
+// 認証が必要なルート群
 Route::middleware('auth')->group(function () {
+    // プロフィール関連のルート
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // リソースコントローラ
+    // リソースコントローラのルート
     Route::resource('templates', TemplateController::class);
     Route::resource('members', MemberController::class);
     Route::resource('records', RecordController::class);
@@ -42,6 +44,11 @@ Route::middleware('auth')->group(function () {
     Route::put('/attendances/{id}', [AttendanceController::class, 'update']);
 });
 
+// サービスワーカーのルート
+Route::get('/service-worker.js', function () {
+    return view('service-worker'); // service-worker.blade.phpを返す
+});
+
 // ロールベースのミドルウェア設定（必要に応じて）
 // Route::middleware(['role:admin'])->group(function () {
 //     Route::get('/admin', [AdminController::class, 'index'])->name('admin.dashboard');
@@ -50,4 +57,5 @@ Route::middleware('auth')->group(function () {
 //     Route::get('/user', [UserController::class, 'index'])->name('user.dashboard');
 // });
 
+// 認証関連のルートを含める
 require __DIR__.'/auth.php';

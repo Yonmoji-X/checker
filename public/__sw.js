@@ -1,30 +1,29 @@
 // キャッシュ名とキャッシュするファイルのリスト
 var CACHE_NAME = 'pwa-sample-caches';
 var urlsToCache = [
-    "/",
-    "/css/style.css",
-    "/js/app.js",
-    "/images/app-icon-192.png"
+    "/",  // ルート
+    "/index.php",  // メインエントリーポイント（index.php）
+    "{{ asset('css/app.css') }}",  // LaravelでビルドされたCSSファイル
+    "{{ asset('js/app.js') }}",    // LaravelでビルドされたJavaScriptファイル
+    "/images/app-icon-192.png",    // アイコン画像
+    "/manifest.json",               // マニフェストファイル
+    "/favicon.ico"                  // Favicon
 ];
 
 // インストール処理
 self.addEventListener('install', function(event) {
     event.waitUntil(
-        caches
-            .open(CACHE_NAME)
-            .then(function(cache) {
-                return cache.addAll(urlsToCache);
-            })
+        caches.open(CACHE_NAME).then(function(cache) {
+            return cache.addAll(urlsToCache);
+        })
     );
 });
 
 // リソースフェッチ時のキャッシュロード処理
 self.addEventListener('fetch', function(event) {
     event.respondWith(
-        caches
-            .match(event.request)
-            .then(function(response) {
-                return response ? response : fetch(event.request);
-            })
+        caches.match(event.request).then(function(response) {
+            return response || fetch(event.request);
+        })
     );
 });

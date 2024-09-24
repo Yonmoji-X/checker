@@ -1,7 +1,7 @@
 {
   "name": "AC-Sync PWA",
   "short_name": "AC-Sync",
-  "start_url": "/",
+  "start_url": "checker/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#007bff",
