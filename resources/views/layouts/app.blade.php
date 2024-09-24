@@ -6,7 +6,7 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <!-- iPhoneでのスタンドアロン表示を可能にする -->
         <meta name="apple-mobile-web-app-capable" content="yes">
-        <!-- ステータスバーのスタイル（デフォルト、黒、透過） -->
+        <!-- ステータスバーのスタイル -->
         <meta name="apple-mobile-web-app-status-bar-style" content="black">
         <!-- iOSでPWAアイコンとして使う画像 -->
         <link rel="apple-touch-icon" href="/images/app-icon-192.png">
