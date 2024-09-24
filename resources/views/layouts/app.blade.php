@@ -4,19 +4,40 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
+        <!-- iPhoneでのスタンドアロン表示を可能にする -->
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <!-- ステータスバーのスタイル（デフォルト、黒、透過） -->
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <!-- iOSでPWAアイコンとして使う画像 -->
+        <link rel="apple-touch-icon" href="/images/app-icon-192.png">
+        <!-- スタートアップ時の画面色 -->
+        <meta name="apple-mobile-web-app-title" content="AC-Sync">
 
         <title>{{ $title ?? 'AC-Sync' }}</title>
-        <!-- <title>{{ config('app.name', 'Laravel') }}</title> -->
+
+        <!-- Manifestファイルへのリンク -->
+        <link rel="manifest" href="{{ asset('manifest.json') }}">
+
+        <!-- Favicon -->
+        <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-        <link rel="manifest" href="{{ asset('manifest.json') }}">
-        <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
-
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+        <!-- Service Worker登録 -->
+        <script>
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('{{ asset('service-worker.js') }}').then(function(registration) {
+                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                }).catch(function(err) {
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+            }
+        </script>
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
@@ -36,15 +57,5 @@
                 {{ $slot }}
             </main>
         </div>
-        <script>
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('{{ asset('sw.js') }}').then(function(registration) {
-                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
-                }).catch(function(err) {
-                    console.log('ServiceWorker registration failed: ', err);
-                });
-            }
-        </script>
-
     </body>
 </html>
