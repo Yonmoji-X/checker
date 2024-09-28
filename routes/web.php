@@ -8,6 +8,8 @@ use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\BreakSessionController;
+use App\Http\Controllers\Auth\PasswordResetLinkController; // 追加
+use App\Http\Controllers\Auth\NewPasswordController; // 追加
 use Illuminate\Support\Facades\Route;
 
 // ホームページのルート
@@ -47,6 +49,14 @@ Route::middleware('auth')->group(function () {
 // サービスワーカーのルート
 Route::get('/service-worker.js', function () {
     return view('service-worker'); // service-worker.blade.phpを返す
+});
+
+// 認証関連のルート（パスワードリセット）
+Route::middleware('guest')->group(function () {
+    Route::get('/forgot-password', [PasswordResetLinkController::class, 'create'])->name('password.request');
+    Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])->name('password.email');
+    Route::get('/reset-password/{token}', [NewPasswordController::class, 'create'])->name('password.reset');
+    Route::post('/reset-password', [NewPasswordController::class, 'store'])->name('password.update');
 });
 
 // ロールベースのミドルウェア設定（必要に応じて）
