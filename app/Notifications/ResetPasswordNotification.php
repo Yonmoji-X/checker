@@ -15,6 +15,8 @@ class ResetPasswordNotification extends Notification
      * Create a new notification instance.
      */
 
+    protected $url;
+    
     public function __construct($url)                      //この行を修正
     {
         $this->url = $url;                                 //この行を修正
