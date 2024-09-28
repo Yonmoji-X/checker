@@ -92,5 +92,18 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 - □Controller edit update →コントローラの作成。
 
 
+## メモ
+- □メールでアドレス再登録機能
+- □日本語化
+- □チェック機能の並び替え機能
+- □いいえの場合通知したい
+- □デザインの更新
+- □アプリ化→明日PWAにしたい。
+- □勤怠管理は、管理アカウントからは削除できるようにしたい。
+- □CSV出力
+- □勤怠管理に、日にちが加味されていない気がする。修正。
+
+
+
 
 
