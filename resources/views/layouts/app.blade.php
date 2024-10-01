@@ -11,8 +11,15 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <!-- iOSでPWAアイコンとして使う画像 -->
     <link rel="apple-touch-icon" href="/checker/images/app-icon-180.png"> <!-- 180x180 アイコン -->
+    <!-- テーマカラーの指定 -->
+    <meta name="theme-color" content="#3300cc"> <!-- テーマカラー -->
     <!-- スタートアップ時の画面色 -->
     <meta name="apple-mobile-web-app-title" content="AC-Sync">
+
+    <!-- iOS向けのスタート画面画像を設定（必要に応じて） -->
+    <link rel="apple-touch-startup-image" href="/checker/images/startup-640x1136.png" media="(device-width: 320px)">
+    <link rel="apple-touch-startup-image" href="/checker/images/startup-750x1334.png" media="(device-width: 375px)">
+    <link rel="apple-touch-startup-image" href="/checker/images/startup-1125x2436.png" media="(device-width: 375px) and (-webkit-device-pixel-ratio: 3)">
 
     <title>{{ $title ?? 'AC-Sync' }}</title>
 
