@@ -1,10 +1,11 @@
 {
   "name": "AC-Sync PWA",
   "short_name": "AC-Sync",
-  "start_url": "checker/",
+  "start_url": "/checker/", 
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#007bff",
+  "scope": "/checker/",
   "icons": [
     {
       "src": "/checker/images/app-icon-192.png",
@@ -18,4 +19,3 @@
     }
   ]
 }
-

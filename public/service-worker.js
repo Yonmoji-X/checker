@@ -1,3 +1,4 @@
+// キャッシュ名とキャッシュするファイルのリスト
 var CACHE_NAME = 'pwa-sample-caches';
 var urlsToCache = [
     "/checker/",                        // アプリケーションのルート
@@ -26,3 +27,16 @@ self.addEventListener('fetch', function(event) {
         })
     );
 });
+
+// サービスワーカーの登録処理
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+        navigator.serviceWorker.register('/checker/service-worker.js')
+            .then(function(registration) {
+                console.log('ServiceWorker registration successful with scope: ', registration.scope);
+            })
+            .catch(function(error) {
+                console.log('ServiceWorker registration failed: ', error);
+            });
+    });
+}
