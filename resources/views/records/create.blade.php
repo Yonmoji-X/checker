@@ -36,7 +36,7 @@
                         <div>
                             <label for="member_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">メンバー</label>
                             <select name="member_id" id="member_id" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                                @foreach ($members as $member)
+                                @foreach ($members->sortBy('created_at') as $member)
                                     <option value="{{ $member->id }}">{{ $member->name }}</option>
                                 @endforeach
                             </select>
