@@ -12,7 +12,7 @@
     <!-- iOSでPWAアイコンとして使う画像 -->
     <link rel="apple-touch-icon" href="/checker/images/app-icon-180.png"> <!-- 180x180 アイコン -->
     <!-- テーマカラーの指定 -->
-    <meta name="theme-color" content="#3300cc"> <!-- テーマカラー -->
+    <meta name="theme-color" content="#111827"> <!-- テーマカラー -->
     <!-- スタートアップ時の画面色 -->
     <meta name="apple-mobile-web-app-title" content="AC-Sync">
 
