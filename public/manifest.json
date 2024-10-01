@@ -1,7 +1,7 @@
 {
   "name": "AC-Sync PWA",
   "short_name": "AC-Sync",
-  "start_url": "/checker/", 
+  "start_url": "/checker/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#007bff",
@@ -15,6 +15,11 @@
     {
       "src": "/checker/images/app-icon-512.png",
       "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/checker/images/app-icon-180.png", 
+      "sizes": "180x180",
       "type": "image/png"
     }
   ]
