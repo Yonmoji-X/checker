@@ -132,15 +132,15 @@ class TemplateController extends Controller
     {
         //
         Gate::authorize('isAdmin'); //←roleがadminの人以外は入れない。
-        $template->delete();
-        return redirect()->route('templates.index');
+        // $template->delete();
+        // return redirect()->route('templates.index');
 
         // #####################Template.php参照#####################
         // 危険NG→head_idのテンプレだったら詰む。
         // →recordデータのtemplate_idをnullありにして、viewで削除されましたってするくらいがいい。
-        // $template->records()->delete();
-        // $template->delete();
-        // return redirect()->route('templates.index');
+        $template->records()->delete();
+        $template->delete();
+        return redirect()->route('templates.index');
         // #####################Template.php参照#####################
     }
 }

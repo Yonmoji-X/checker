@@ -40,7 +40,10 @@ class AttendanceController extends Controller
             ->latest()
             ->get();
 
-        return view('attendances.index', compact('attendances', 'members'));
+        $jsonMembers = json_encode($members, JSON_UNESCAPED_UNICODE);
+
+        // return view('attendances.create', compact('members','jsonMembers'));
+        return view('attendances.index', compact('attendances', 'members', 'jsonMembers'));
     }
 
 

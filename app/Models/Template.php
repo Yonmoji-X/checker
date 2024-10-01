@@ -33,10 +33,10 @@ class Template extends Model
 // #####################Controller参照#####################
 // 危険NG→head_idのテンプレだったら詰む。
 // →recordデータのtemplate_idをnullありにして、viewで削除されましたってするくらいがいい。
-    // public function records()
-    // {
-    //     return $this->hasMany(Record::class, 'template_id');
-    // }
+    public function records()
+    {
+        return $this->hasMany(Record::class, 'template_id');
+    }
 // #####################Controller参照#####################
 
 }
