@@ -108,7 +108,8 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 - #3300cc セーフカラー
 - #4A2FB6 イリス
 - #007bff デフォルト青
-
+- iPhoneのPWA背景はこれを参照
+- https://sogo.dev/posts/2024/07/pwa-appearance
 
 
 
