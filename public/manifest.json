@@ -3,8 +3,8 @@
   "short_name": "AC-Sync",
   "start_url": "/checker/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#007bff",
+  "background_color": "#111827",
+  "theme_color": "#3300cc",
   "scope": "/checker/",
   "icons": [
     {
@@ -18,7 +18,7 @@
       "type": "image/png"
     },
     {
-      "src": "/checker/images/app-icon-180.png", 
+      "src": "/checker/images/app-icon-180.png",
       "sizes": "180x180",
       "type": "image/png"
     }

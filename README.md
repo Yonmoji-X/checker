@@ -104,6 +104,11 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 - □勤怠管理に、日にちが加味されていない気がする。修正。
 
 
+# テーマカラー候補
+- #3300cc セーフカラー
+- #4A2FB6 イリス
+- #007bff デフォルト青
+
 
 
 
