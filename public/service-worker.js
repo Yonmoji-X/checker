@@ -1,13 +1,12 @@
-// キャッシュ名とキャッシュするファイルのリスト
 var CACHE_NAME = 'pwa-sample-caches';
 var urlsToCache = [
-    "/checker/",                         // アプリケーションのルート
-    "/checker/index.php",                // メインエントリーポイント（index.php）
-    "/checker/css/app.css",              // LaravelでビルドされたCSSファイル
-    "/checker/js/app.js",                // LaravelでビルドされたJavaScriptファイル
-    "/checker/images/app-icon-192.png",  // アイコン画像
-    "/checker/manifest.json",             // マニフェストファイル
-    "/checker/favicon.ico"                // Favicon
+    "/checker/",                        // アプリケーションのルート
+    "/checker/index.php",               // メインエントリーポイント
+    "/checker/build/assets/app-DZp4A-7N.css",  // CSSファイル
+    "/checker/build/assets/app-CH09qwMe.js",   // JSファイル
+    "/checker/images/app-icon-192.png",       // アイコン画像
+    "/checker/manifest.json",           // マニフェストファイル
+    "/checker/favicon.ico"              // Favicon
 ];
 
 // インストール処理
