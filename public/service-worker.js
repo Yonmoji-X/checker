@@ -1,5 +1,5 @@
 // キャッシュ名とキャッシュするファイルのリスト
-var CACHE_NAME = 'pwa-sample-caches-v4'; // バージョンを更新
+var CACHE_NAME = 'pwa-sample-caches-v5'; // バージョンを更新
 
 var urlsToCache = [
     "/checker/",                        // アプリケーションのルート

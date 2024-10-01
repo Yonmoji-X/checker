@@ -37,6 +37,11 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <!-- Service Worker登録 -->
+    <style>
+        html {
+            background-color: #3300cc; /* ビューポート外の背景色 */
+        }
+    </style>
     <script>
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('{{ asset('service-worker.js') }}').then(function(registration) {
