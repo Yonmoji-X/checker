@@ -5,3 +5,6 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  background-color: #3300cc; /* ビューポート外の背景色 */
+}
