@@ -39,7 +39,7 @@
     <!-- Service Worker登録 -->
     <style>
         html {
-            background-color: #3300cc; /* ビューポート外の背景色 */
+            background-color: #111827; /* ビューポート外の背景色 */
         }
     </style>
     <script>
