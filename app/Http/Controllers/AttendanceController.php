@@ -38,7 +38,8 @@ class AttendanceController extends Controller
         $attendances = Attendance::where('user_id', $userId)
             ->with(['user', 'member', 'breakSessions']) // breakSessionsのリレーションを追加
             ->latest()
-            ->get();
+            ->paginate(16);
+            // ->get();
 
         $jsonMembers = json_encode($members, JSON_UNESCAPED_UNICODE);
 

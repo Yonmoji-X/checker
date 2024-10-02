@@ -43,6 +43,39 @@
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700" id="attendanceTableBody">
+    @foreach ($attendances as $attendance)
+        <tr data-member-id="{{ $attendance->member_id }}">
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{{ $attendance->attendance_date }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{{ $attendance->clock_in }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{{ $attendance->clock_out }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{{ $attendance->member->name }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                @php
+                    $totalBreakDuration = $attendance->breakSessions->sum(function($breakSession) {
+                        return $breakSession->break_out ? $breakSession->break_duration : 0;
+                    });
+                    $isCurrentlyOnBreak = $attendance->breakSessions->contains(function($breakSession) {
+                        return $breakSession->break_in && is_null($breakSession->break_out);
+                    });
+                @endphp
+                {{ $totalBreakDuration }} 分
+                @if ($isCurrentlyOnBreak)
+                    <span class="text-red-500">（休憩中）</span>
+                @endif
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                <form action="{{ url('/attendances/' . $attendance->id) }}" method="POST" style="display:inline;">
+                    @csrf
+                    @method('PUT')
+                    <input type="text" name="attendance" value="{{ $attendance->attendance }}" class="border border-gray-300 rounded-md px-2 py-1 dark:bg-gray-700 focus:outline-none focus:shadow-outline" required>
+                    <button type="submit" class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 ml-2">保存</button>
+                </form>
+            </td>
+        </tr>
+    @endforeach
+</tbody>
+
+                            <!-- <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700" id="attendanceTableBody">
                                 @foreach ($attendances as $attendance)
                                     <tr data-member-id="{{ $attendance->member_id }}">
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{{ $attendance->attendance_date }}</td>
@@ -74,8 +107,12 @@
                                         </td>
                                     </tr>
                                 @endforeach
-                            </tbody>
+                            </tbody> -->
                         </table>
+                        <div class="mt-4">
+    {{ $attendances->links() }}
+</div>
+
                     </div>
                 </div>
             </div>
