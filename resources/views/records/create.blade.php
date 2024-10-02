@@ -67,6 +67,56 @@
             </div>
         </div>
     </div>
+    <style>
+        .check-li {
+            margin-bottom: 10px;
+        }
+        .radio-group {
+            display: flex;
+            gap: 20px; /* 2つの要素の間に間隔を追加 */
+            /* justify-content: center;  */
+        }
+
+        .form-radio {
+    display: none;
+}
+
+.radio-label {
+    background-color: rgb(31, 41, 55 / var(--tw-bg-opacity)); /* ダークグレー */
+    color: #d1d5db; /* ライトグレーの文字色 */
+    font-weight: bold;
+    padding: 0.5rem 1rem;
+    border-radius: 50px; /* 完全に丸く */
+    outline: none;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25); /* 深めのシャドウで立体感 */
+    transition: background-color 0.4s ease, color 0.4s ease, transform 0.3s ease; /* スムーズなトランジション */
+}
+
+.radio-label:hover {
+    background-color: #6b5bff; /* 明るい紫 */
+    color: #ffffff; /* ホワイト */
+    background-image: linear-gradient(145deg, #6b5bff, #8a74ff); /* 鮮やかな紫のグラデーション */
+    transform: translateY(-2px); /* ホバー時に少し上に移動 */
+}
+
+.form-radio:checked + .radio-label {
+    background-color: #8a44e4; /* 鮮やかな紫 */
+    color: #ffffff; /* ホワイト */
+    /* background-image: linear-gradient(145deg, #8a44e4, #b057ff);  */
+    /* background-image: linear-gradient(145deg, #8a44e4, #007bff); */
+    background-image: linear-gradient(145deg, #b057ff, #007bff);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* 選択時のシャドウを強化 */
+}
+
+.form-radio:checked + .radio-label:hover {
+    background-color: #9b57ff; /* さらに明るい紫 */
+    color: #ffffff; /* ホワイト */
+    background-image: linear-gradient(145deg, #9b57ff, #bb81ff); /* ホバー時のより明るい輝き */
+    transform: translateY(-2px); /* ホバー時に少し上に移動 */
+}
+
+
+    </style>
 
     <script>
         // JSONデータをPHPから受け取る
@@ -155,7 +205,7 @@
 
                 if (row.has_check == 1) {
                     const checkLi = document.createElement('li');
-                    checkLi.classList.add('mt-4');
+                    checkLi.classList.add('radio-group', 'mt-4', 'check-li');
 
                     const yesButton = document.createElement('input');
                     yesButton.type = 'radio';
@@ -167,7 +217,7 @@
                     const yesLabel = document.createElement('label');
                     yesLabel.htmlFor = `check_li_yes_${index}`;
                     yesLabel.textContent = 'はい';
-                    yesLabel.classList.add('inline-flex', 'items-center');
+                    yesLabel.classList.add('radio-label','inline-flex', 'items-center');
 
                     const noButton = document.createElement('input');
                     noButton.type = 'radio';
@@ -179,7 +229,7 @@
                     const noLabel = document.createElement('label');
                     noLabel.htmlFor = `check_li_no_${index}`;
                     noLabel.textContent = 'いいえ';
-                    noLabel.classList.add('inline-flex', 'items-center');
+                    noLabel.classList.add('radio-label', 'inline-flex', 'items-center');
 
                     checkLi.appendChild(yesButton);
                     checkLi.appendChild(yesLabel);
@@ -201,7 +251,7 @@
                     const contentInput = document.createElement('input');
                     contentInput.type = 'text';
                     contentInput.name = `content_${index}`;
-                    contentInput.classList.add('block', 'w-full', 'py-2', 'px-3', 'border', 'border-gray-300', 'dark:border-gray-600', 'rounded-md', 'shadow-sm', 'focus:ring-indigo-500', 'focus:border-indigo-500', 'sm:text-sm', 'dark:bg-gray-700', 'dark:text-gray-300');
+                    contentInput.classList.add('block', 'w-full', 'py-2', 'px-3', 'border', 'border-gray-300', 'dark:border-gray-600', 'rounded-md', 'shadow-sm', 'focus:ring-indigo-500', 'focus:border-indigo-500', 'sm:text-sm', 'dark:bg-gray-700', 'dark:text-gray-300', 'check-li');
 
                     contentLi.appendChild(contentInput);
                     contentsUl.appendChild(contentLi);
@@ -218,7 +268,7 @@
                     const photoInput = document.createElement('input');
                     photoInput.type = 'file';
                     photoInput.name = `photo_${index}`;
-                    photoInput.classList.add('block', 'w-full', 'text-sm', 'text-gray-500', 'dark:text-gray-300', 'border', 'border-gray-300', 'dark:border-gray-600', 'rounded-md', 'shadow-sm');
+                    photoInput.classList.add('block', 'w-full', 'text-sm', 'text-gray-500', 'dark:text-gray-300', 'border', 'border-gray-300', 'dark:border-gray-600', 'rounded-md', 'shadow-sm', 'check-li');
 
                     photoLi.appendChild(photoInput);
                     contentsUl.appendChild(photoLi);
@@ -237,7 +287,7 @@
                     tempInput.type = 'number';
                     tempInput.step = '0.1';
                     tempInput.name = `temperature_${index}`;
-                    tempInput.classList.add('block', 'w-full', 'py-2', 'px-3', 'border', 'border-gray-300', 'dark:border-gray-600', 'rounded-md', 'shadow-sm', 'focus:ring-indigo-500', 'focus:border-indigo-500', 'sm:text-sm', 'dark:bg-gray-700', 'dark:text-gray-300');
+                    tempInput.classList.add('block', 'w-full', 'py-2', 'px-3', 'border', 'border-gray-300', 'dark:border-gray-600', 'rounded-md', 'shadow-sm', 'focus:ring-indigo-500', 'focus:border-indigo-500', 'sm:text-sm', 'dark:bg-gray-700', 'dark:text-gray-300', 'check-li');
 
                     const tempLabel = document.createElement('label');
                     // tempLabel.htmlFor = `temperature_${index}`;
