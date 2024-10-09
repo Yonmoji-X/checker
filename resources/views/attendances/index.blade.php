@@ -30,7 +30,7 @@
                         </div>
 
                         <div class="mt-4">
-                            <form action="{{ route('attendance.export') }}" method="POST">
+                            <form action="{{ route('attendance.export') }}" method="POST" onsubmit="return validateExportForm();">
                                 @csrf
                                 <!-- 追加：選択されたメンバーIDを保持するhiddenフィールド -->
                                 <input type="hidden" name="member_id" id="export_member_id" value="">
@@ -96,8 +96,16 @@
     </div>
 
     <script>
-        function confirmDeletion() {
-            return confirm("関連する休憩データも削除されます。本当に削除しますか？");
+        function validateExportForm() {
+            const selectedMemberId = document.getElementById('member_id').value;
+
+            if (selectedMemberId === "") {
+                alert("メンバーを選択してください。");
+                return false; // フォーム送信を中止
+            }
+
+            // メンバーIDが選択されている場合はフォームを送信
+            return true;
         }
 
         function filterDataRecords() {
