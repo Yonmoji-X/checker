@@ -129,7 +129,8 @@ public function export(Request $request)
     $memberId = $request->input('member_id'); // 'member_id' はフォームの名前
 
     // エクスポート処理
-    return Excel::download(new AttendanceExport($memberId), 'attendance_export.xlsx');
+    return Excel::download(new AttendanceExport($memberId), '勤怠データ.xlsx');
+    // return Excel::download(new AttendanceExport($memberId), 'attendance_export.xlsx');
 }
 
 }
