@@ -6,6 +6,8 @@ use App\Models\Attendance; // 勤怠データのモデル
 use App\Models\Member;     // メンバーデータのモデル
 use App\Models\BreakSession;
 use App\Models\Group;      // グループデータのモデル
+use App\Exports\AttendanceExport;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth; // 認証情報を扱うファサード
 
@@ -120,6 +122,14 @@ public function destroy(Attendance $attendance)
     $attendance->delete();
 
     return redirect()->route('attendances.index')->with('success', 'Attendance and related BreakSessions deleted successfully.');
+}
+public function export(Request $request)
+{
+    // フォームから選択されたメンバーのIDを取得
+    $memberId = $request->input('member_id'); // 'member_id' はフォームの名前
+
+    // エクスポート処理
+    return Excel::download(new AttendanceExport($memberId), 'attendance_export.xlsx');
 }
 
 }

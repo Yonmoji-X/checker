@@ -10,6 +10,8 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\BreakSessionController;
 use App\Http\Controllers\Auth\PasswordResetLinkController; // 追加
 use App\Http\Controllers\Auth\NewPasswordController; // 追加
+
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Route;
 
 // ホームページのルート
@@ -44,6 +46,9 @@ Route::middleware('auth')->group(function () {
 
     // PUT メソッドのルートを追加
     Route::put('/attendances/{id}', [AttendanceController::class, 'update']);
+
+    // 勤怠データをエクスポートするルートを追加
+    Route::post('/attendance/export', [AttendanceController::class, 'export'])->name('attendance.export');
 });
 
 // サービスワーカーのルート

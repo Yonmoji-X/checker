@@ -21,12 +21,23 @@
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
                         <div>
                             <label for="member_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">メンバー</label>
-                            <select name="member_id" id="member_id" onchange="filterDataRecords()" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            <select name="member_id" id="member_id" onchange="filterDataRecords()" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
                                 <option value="">全ての従業員</option>
                                 @foreach ($members as $member)
                                     <option value="{{ $member->id }}">{{ $member->name }}</option>
                                 @endforeach
                             </select>
+                        </div>
+
+                        <div class="mt-4">
+                            <form action="{{ route('attendance.export') }}" method="POST">
+                                @csrf
+                                <!-- 追加：選択されたメンバーIDを保持するhiddenフィールド -->
+                                <input type="hidden" name="member_id" id="export_member_id" value="">
+                                <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                    勤怠データをエクスポート
+                                </button>
+                            </form>
                         </div>
                     </div>
 
@@ -43,46 +54,12 @@
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700" id="attendanceTableBody">
-    @foreach ($attendances as $attendance)
-        <tr data-member-id="{{ $attendance->member_id }}">
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{{ $attendance->attendance_date }}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{{ $attendance->clock_in }}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{{ $attendance->clock_out }}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{{ $attendance->member->name }}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                @php
-                    $totalBreakDuration = $attendance->breakSessions->sum(function($breakSession) {
-                        return $breakSession->break_out ? $breakSession->break_duration : 0;
-                    });
-                    $isCurrentlyOnBreak = $attendance->breakSessions->contains(function($breakSession) {
-                        return $breakSession->break_in && is_null($breakSession->break_out);
-                    });
-                @endphp
-                {{ $totalBreakDuration }} 分
-                @if ($isCurrentlyOnBreak)
-                    <span class="text-red-500">（休憩中）</span>
-                @endif
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                <form action="{{ url('/attendances/' . $attendance->id) }}" method="POST" style="display:inline;">
-                    @csrf
-                    @method('PUT')
-                    <input type="text" name="attendance" value="{{ $attendance->attendance }}" class="border border-gray-300 rounded-md px-2 py-1 dark:bg-gray-700 focus:outline-none focus:shadow-outline" required>
-                    <button type="submit" class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 ml-2">保存</button>
-                </form>
-            </td>
-        </tr>
-    @endforeach
-</tbody>
-
-                            <!-- <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700" id="attendanceTableBody">
                                 @foreach ($attendances as $attendance)
                                     <tr data-member-id="{{ $attendance->member_id }}">
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{{ $attendance->attendance_date }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{{ $attendance->clock_in }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{{ $attendance->clock_out }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{{ $attendance->member->name }}</td>
-
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                                             @php
                                                 $totalBreakDuration = $attendance->breakSessions->sum(function($breakSession) {
@@ -107,12 +84,11 @@
                                         </td>
                                     </tr>
                                 @endforeach
-                            </tbody> -->
+                            </tbody>
                         </table>
                         <div class="mt-4">
-    {{ $attendances->links() }}
-</div>
-
+                            {{ $attendances->links() }}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -135,11 +111,17 @@
                     row.style.display = 'none'; // 行を非表示
                 }
             });
+            updateExportMemberId(); // 追加：メンバーIDを更新
+        }
+
+        function updateExportMemberId() {
+            const selectedMemberId = document.getElementById('member_id').value;
+            document.getElementById('export_member_id').value = selectedMemberId;
         }
 
         document.addEventListener('DOMContentLoaded', function() {
-            // 初期状態で全ての従業員のデータを表示
-            filterDataRecords();
+            // 初期状態でエクスポート用のメンバーIDを設定
+            updateExportMemberId();
 
             const notification = document.getElementById('success-notification');
             if (notification) {
@@ -147,7 +129,8 @@
                     notification.style.display = 'none';
                 }, 2000);
             }
+
+            filterDataRecords();
         });
     </script>
 </x-app-layout>
-
