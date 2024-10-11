@@ -104,7 +104,10 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 - □CSV出力
 - □勤怠管理に、日にちが加味されていない気がする。修正。
 - □ チェック項目の編集
-- □
+## 修正依頼【重要度：髙】
+- □エクセル出力したい。←10月中
+- □チェック内容修正したい。
+- □チェック内容の並び替えできるようにしたい。
 
 
 # テーマカラー候補

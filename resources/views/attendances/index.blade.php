@@ -18,7 +18,14 @@
                     <a href="{{ url('/records/create') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4 inline-block">
                         チェック
                     </a>
+
+                    <!-- 日付範囲選択カレンダー -->
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+                        <div>
+                            <label for="date_range" class="block text-sm font-medium text-gray-700 dark:text-gray-300">日付範囲</label>
+                            <input type="text" id="date_range" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="日付範囲を選択" />
+                        </div>
+
                         <div>
                             <label for="member_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">メンバー</label>
                             <select name="member_id" id="member_id" onchange="filterDataRecords()" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
@@ -34,6 +41,7 @@
                                 @csrf
                                 <!-- 追加：選択されたメンバーIDを保持するhiddenフィールド -->
                                 <input type="hidden" name="member_id" id="export_member_id" value="">
+                                <input type="hidden" name="date_range" id="export_date_range" value="">
                                 <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                     勤怠データをエクスポート
                                 </button>
@@ -95,16 +103,47 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ja.js"></script>
     <script>
+        // Flatpickrで日付範囲選択
+        document.addEventListener('DOMContentLoaded', function() {
+        // 現在の月の初日と最終日を取得
+        const today = new Date();
+        const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+        const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+
+        flatpickr("#date_range", {
+            mode: "range",
+            dateFormat: "Y-m-d",
+            locale: "ja", // 日本語に設定
+            defaultDate: [firstDayOfMonth, lastDayOfMonth], // 初期選択範囲を設定
+            onClose: function(selectedDates, dateStr, instance) {
+                document.getElementById('export_date_range').value = dateStr;
+                filterDataRecords();
+            }
+        });
+
+        // 通知の自動非表示
+        const notification = document.getElementById('success-notification');
+        if (notification) {
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 2000);
+        }
+
+        filterDataRecords();
+    });
+
         function validateExportForm() {
             const selectedMemberId = document.getElementById('member_id').value;
+            const dateRange = document.getElementById('date_range').value;
 
-            if (selectedMemberId === "") {
-                alert("メンバーを選択してください。");
+            if (selectedMemberId === "" || dateRange === "") {
+                alert("メンバーと日付範囲を選択してください。");
                 return false; // フォーム送信を中止
             }
 
-            // メンバーIDが選択されている場合はフォームを送信
+            // メンバーIDと日付範囲が選択されている場合はフォームを送信
             return true;
         }
 
@@ -119,26 +158,12 @@
                     row.style.display = 'none'; // 行を非表示
                 }
             });
-            updateExportMemberId(); // 追加：メンバーIDを更新
+            updateExportMemberId(); // メンバーIDをエクスポート用に更新
         }
 
         function updateExportMemberId() {
             const selectedMemberId = document.getElementById('member_id').value;
             document.getElementById('export_member_id').value = selectedMemberId;
         }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            // 初期状態でエクスポート用のメンバーIDを設定
-            updateExportMemberId();
-
-            const notification = document.getElementById('success-notification');
-            if (notification) {
-                setTimeout(() => {
-                    notification.style.display = 'none';
-                }, 2000);
-            }
-
-            filterDataRecords();
-        });
     </script>
 </x-app-layout>

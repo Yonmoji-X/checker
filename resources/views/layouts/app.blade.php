@@ -33,6 +33,27 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
+    <!-- FlatpickrのCSS -->
+<!-- FlatpickrのCSS -->
+<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"> -->
+
+<!-- FlatpickrのJavaScript
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script> -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ja.js"></script> -->
+<!-- FlatpickrのCSS -->
+<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"> -->
+
+<!-- Flatpickrの日本語ロケール -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ja.js"></script> -->
+<!-- FlatpickrのCSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+
+
+
+
+
+
     <!-- ViteでCSSとJSをリンク -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
@@ -70,5 +91,10 @@
             {{ $slot }}
         </main>
     </div>
+<!-- FlatpickrのJavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+<!-- Flatpickrの日本語ロケール -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ja.js"></script>
 </body>
 </html>
