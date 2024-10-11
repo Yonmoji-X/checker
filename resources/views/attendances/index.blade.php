@@ -39,7 +39,6 @@
                         <div class="mt-4">
                             <form action="{{ route('attendance.export') }}" method="POST" onsubmit="return validateExportForm();">
                                 @csrf
-                                <!-- 追加：選択されたメンバーIDを保持するhiddenフィールド -->
                                 <input type="hidden" name="member_id" id="export_member_id" value="">
                                 <input type="hidden" name="date_range" id="export_date_range" value="">
                                 <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
@@ -63,6 +62,7 @@
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700" id="attendanceTableBody">
                                 @foreach ($attendances as $attendance)
+                                    @if ($attendance->attendance_date >= $startDate && $attendance->attendance_date <= $endDate)
                                     <tr data-member-id="{{ $attendance->member_id }}">
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{{ $attendance->attendance_date }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{{ $attendance->clock_in }}</td>
@@ -91,6 +91,7 @@
                                             </form>
                                         </td>
                                     </tr>
+                                    @endif
                                 @endforeach
                             </tbody>
                         </table>
@@ -107,63 +108,76 @@
     <script>
         // Flatpickrで日付範囲選択
         document.addEventListener('DOMContentLoaded', function() {
-        // 現在の月の初日と最終日を取得
-        const today = new Date();
-        const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-        const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+            const today = new Date();
+            const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+            const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+            flatpickr("#date_range", {
+                mode: "range",
+                dateFormat: "Y-m-d",
+                locale: "ja",
+                defaultDate: [firstDayOfMonth, lastDayOfMonth],
+                onClose: function(selectedDates, dateStr, instance) {
+        document.getElementById('export_date_range').value = dateStr;
 
-        flatpickr("#date_range", {
-            mode: "range",
-            dateFormat: "Y-m-d",
-            locale: "ja", // 日本語に設定
-            defaultDate: [firstDayOfMonth, lastDayOfMonth], // 初期選択範囲を設定
-            onClose: function(selectedDates, dateStr, instance) {
-                document.getElementById('export_date_range').value = dateStr;
-                filterDataRecords();
+        if (selectedDates.length === 2) {
+            const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+
+            // 再度日付範囲を変数に格納
+            window.startDate = selectedDates[0].toLocaleDateString('ja-JP', options).replace(/\//g, '-');
+            window.endDate = selectedDates[1].toLocaleDateString('ja-JP', options).replace(/\//g, '-');
+
+            console.log("選択された範囲の初めの日:", window.startDate);
+            console.log("選択された範囲の終わりの日:", window.endDate);
+
+            // 日付範囲が正しく更新されるたびにデータをフィルタリング
+            filterDataRecords();
+        } else {
+            console.log("範囲が正しく選択されていません。");
+            // 日付範囲が正しく選択されなかった場合、変数をリセットする
+            window.startDate = undefined;
+            window.endDate = undefined;
+        }
+    }
+});
+
+
+            const notification = document.getElementById('success-notification');
+            if (notification) {
+                setTimeout(() => {
+                    notification.style.display = 'none';
+                }, 3000);
             }
         });
 
-        // 通知の自動非表示
-        const notification = document.getElementById('success-notification');
-        if (notification) {
-            setTimeout(() => {
-                notification.style.display = 'none';
-            }, 2000);
-        }
-
-        filterDataRecords();
-    });
-
-        function validateExportForm() {
-            const selectedMemberId = document.getElementById('member_id').value;
-            const dateRange = document.getElementById('date_range').value;
-
-            if (selectedMemberId === "" || dateRange === "") {
-                alert("メンバーと日付範囲を選択してください。");
-                return false; // フォーム送信を中止
-            }
-
-            // メンバーIDと日付範囲が選択されている場合はフォームを送信
-            return true;
-        }
-
+        
         function filterDataRecords() {
             const selectedMemberId = document.getElementById('member_id').value;
-            const rows = document.querySelectorAll('#attendanceTableBody tr');
-            rows.forEach(row => {
+            const attendanceRows = document.querySelectorAll('#attendanceTableBody tr');
+
+            attendanceRows.forEach(row => {
                 const memberId = row.getAttribute('data-member-id');
-                if (selectedMemberId === "" || memberId === selectedMemberId) {
-                    row.style.display = ''; // 行を表示
+
+                if ((selectedMemberId === "" || selectedMemberId == memberId) &&
+                    (window.startDate === undefined || window.endDate === undefined ||
+                     (row.cells[0].innerText >= window.startDate && row.cells[0].innerText <= window.endDate))) {
+                    row.style.display = ''; // 表示
                 } else {
-                    row.style.display = 'none'; // 行を非表示
+                    row.style.display = 'none'; // 非表示
                 }
             });
-            updateExportMemberId(); // メンバーIDをエクスポート用に更新
+            document.getElementById('export_member_id').value = selectedMemberId;
         }
 
-        function updateExportMemberId() {
-            const selectedMemberId = document.getElementById('member_id').value;
-            document.getElementById('export_member_id').value = selectedMemberId;
+        function validateExportForm() {
+            const startDate = document.querySelector('#date_range')._flatpickr.selectedDates[0];
+            const endDate = document.querySelector('#date_range')._flatpickr.selectedDates[1];
+
+            if (!startDate || !endDate) {
+                alert('日付範囲を選択してください。');
+                return false;
+            }
+
+            return true;
         }
     </script>
 </x-app-layout>

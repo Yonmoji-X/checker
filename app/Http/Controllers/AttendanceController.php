@@ -21,10 +21,14 @@ class AttendanceController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $userId = Auth::id();
         $currentUser = Auth::user();
+
+        // リクエストから日付範囲を取得
+        $startDate = '2000-01-01'; // すべてのデータの最初の可能な日付 (または任意の開始日)
+        $endDate = now()->toDateString(); // 現在の日付まで
 
         if ($currentUser->role === 'user') {
             $group = Group::where('user_id', $userId)->first();
@@ -33,21 +37,24 @@ class AttendanceController extends Controller
             }
         }
 
-
         $members = Member::where('user_id', $userId)->latest()->get();
 
-        // 勤怠データに関連する休憩データも取得
+        // 勤怠データを日付範囲でフィルタリング
         $attendances = Attendance::where('user_id', $userId)
-            ->with(['user', 'member', 'breakSessions']) // breakSessionsのリレーションを追加
+            ->when($startDate && $endDate, function ($query) use ($startDate, $endDate) {
+                return $query->whereBetween('attendance_date', [$startDate, $endDate]);
+            })
+            ->with(['user', 'member', 'breakSessions'])
             ->latest()
-            ->paginate(16);
-            // ->get();
+            ->paginate(31);
 
         $jsonMembers = json_encode($members, JSON_UNESCAPED_UNICODE);
 
-        // return view('attendances.create', compact('members','jsonMembers'));
-        return view('attendances.index', compact('attendances', 'members', 'jsonMembers'));
+        // ビューにデータを渡す
+        return view('attendances.index', compact('attendances', 'members', 'jsonMembers', 'startDate', 'endDate'));
     }
+
+
 
 
     /**
