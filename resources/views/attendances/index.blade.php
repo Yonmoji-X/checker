@@ -105,79 +105,99 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ja.js"></script>
-    <script>
-        // Flatpickrで日付範囲選択
-        document.addEventListener('DOMContentLoaded', function() {
-            const today = new Date();
-            const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-            const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-            flatpickr("#date_range", {
-                mode: "range",
-                dateFormat: "Y-m-d",
-                locale: "ja",
-                defaultDate: [firstDayOfMonth, lastDayOfMonth],
-                onClose: function(selectedDates, dateStr, instance) {
-        document.getElementById('export_date_range').value = dateStr;
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ja.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ja.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ja.js"></script>
+<script>
+    // 日本時間を考慮した日付範囲選択
+    document.addEventListener('DOMContentLoaded', function() {
+        const today = new Date();
+        const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+        const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
 
-        if (selectedDates.length === 2) {
-            const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+        // 日本時間（JST）を考慮した初期データの範囲をセットして表示
+        window.startDate = formatDateToJST(firstDayOfMonth);
+        window.endDate = formatDateToJST(lastDayOfMonth);
 
-            // 再度日付範囲を変数に格納
-            window.startDate = selectedDates[0].toLocaleDateString('ja-JP', options).replace(/\//g, '-');
-            window.endDate = selectedDates[1].toLocaleDateString('ja-JP', options).replace(/\//g, '-');
+        flatpickr("#date_range", {
+            mode: "range",
+            dateFormat: "Y-m-d",
+            locale: "ja",
+            defaultDate: [firstDayOfMonth, lastDayOfMonth],
+            onClose: function(selectedDates, dateStr, instance) {
+                document.getElementById('export_date_range').value = dateStr;
 
-            console.log("選択された範囲の初めの日:", window.startDate);
-            console.log("選択された範囲の終わりの日:", window.endDate);
+                if (selectedDates.length === 2) {
+                    const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
 
-            // 日付範囲が正しく更新されるたびにデータをフィルタリング
-            filterDataRecords();
-        } else {
-            console.log("範囲が正しく選択されていません。");
-            // 日付範囲が正しく選択されなかった場合、変数をリセットする
-            window.startDate = undefined;
-            window.endDate = undefined;
-        }
-    }
-});
+                    // 再度日付範囲を変数に格納
+                    window.startDate = formatDateToJST(selectedDates[0]);
+                    window.endDate = formatDateToJST(selectedDates[1]);
 
+                    console.log("選択された範囲の初めの日:", window.startDate);
+                    console.log("選択された範囲の終わりの日:", window.endDate);
 
-            const notification = document.getElementById('success-notification');
-            if (notification) {
-                setTimeout(() => {
-                    notification.style.display = 'none';
-                }, 3000);
+                    // 日付範囲が正しく更新されるたびにデータをフィルタリング
+                    filterDataRecords();
+                } else {
+                    console.log("範囲が正しく選択されていません。");
+                    // 日付範囲が正しく選択されなかった場合、変数をリセットする
+                    window.startDate = undefined;
+                    window.endDate = undefined;
+                }
             }
         });
 
-        
-        function filterDataRecords() {
-            const selectedMemberId = document.getElementById('member_id').value;
-            const attendanceRows = document.querySelectorAll('#attendanceTableBody tr');
+        // 初回ロード時にデータをフィルタリングして表示
+        filterDataRecords();
 
-            attendanceRows.forEach(row => {
-                const memberId = row.getAttribute('data-member-id');
-
-                if ((selectedMemberId === "" || selectedMemberId == memberId) &&
-                    (window.startDate === undefined || window.endDate === undefined ||
-                     (row.cells[0].innerText >= window.startDate && row.cells[0].innerText <= window.endDate))) {
-                    row.style.display = ''; // 表示
-                } else {
-                    row.style.display = 'none'; // 非表示
-                }
-            });
-            document.getElementById('export_member_id').value = selectedMemberId;
+        const notification = document.getElementById('success-notification');
+        if (notification) {
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
         }
+    });
 
-        function validateExportForm() {
-            const startDate = document.querySelector('#date_range')._flatpickr.selectedDates[0];
-            const endDate = document.querySelector('#date_range')._flatpickr.selectedDates[1];
+    function formatDateToJST(date) {
+        // UTCから日本時間(JST)に変換
+        const utcOffset = 9 * 60; // JSTはUTC+9時間
+        const localDate = new Date(date.getTime() + utcOffset * 60 * 1000);
+        return localDate.toISOString().split('T')[0];
+    }
 
-            if (!startDate || !endDate) {
-                alert('日付範囲を選択してください。');
-                return false;
+    function filterDataRecords() {
+        const selectedMemberId = document.getElementById('member_id').value;
+        const attendanceRows = document.querySelectorAll('#attendanceTableBody tr');
+
+        attendanceRows.forEach(row => {
+            const memberId = row.getAttribute('data-member-id');
+
+            if ((selectedMemberId === "" || selectedMemberId == memberId) &&
+                (window.startDate === undefined || window.endDate === undefined ||
+                 (row.cells[0].innerText >= window.startDate && row.cells[0].innerText <= window.endDate))) {
+                row.style.display = ''; // 表示
+            } else {
+                row.style.display = 'none'; // 非表示
             }
+        });
+        document.getElementById('export_member_id').value = selectedMemberId;
+    }
 
-            return true;
+    function validateExportForm() {
+        const startDate = document.querySelector('#date_range')._flatpickr.selectedDates[0];
+        const endDate = document.querySelector('#date_range')._flatpickr.selectedDates[1];
+
+        if (!startDate || !endDate) {
+            alert('日付範囲を選択してください。');
+            return false;
         }
-    </script>
+
+        return true;
+    }
+</script>
+
+
+
 </x-app-layout>
+
