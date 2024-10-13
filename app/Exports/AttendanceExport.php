@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Exports;
 
 use App\Models\Attendance;
@@ -8,24 +9,33 @@ use Carbon\Carbon;
 
 class AttendanceExport implements FromCollection, WithHeadings
 {
-    protected $memberId; // メンバーIDを保持
+    protected $memberId;
+    protected $startDate;
+    protected $endDate;
 
-    public function __construct($memberId = null)
+    public function __construct($memberId = null, $startDate = null, $endDate = null)
     {
-        $this->memberId = $memberId; // コンストラクタでメンバーIDを受け取る
+        $this->memberId = $memberId;
+        $this->startDate = $startDate;
+        $this->endDate = $endDate;
     }
 
     public function collection()
     {
         // クエリを作成
-        $query = Attendance::with(['member', 'breakSessions']); // member リレーションを追加
+        $query = Attendance::with(['member', 'breakSessions']);
 
         // メンバーIDが指定されている場合はフィルタリング
         if ($this->memberId) {
             $query->where('member_id', $this->memberId);
         }
 
-        // データを取得し、mapで必要な形式に変換
+        // 日付範囲が指定されている場合
+        if ($this->startDate && $this->endDate) {
+            $query->whereBetween('attendance_date', [$this->startDate, $this->endDate]);
+        }
+
+        // データを取得し、必要な形式に変換
         return $query->get()->map(function($attendance) {
             // 出勤時刻と退勤時刻をCarbonインスタンスに変換
             $clockIn = Carbon::parse($attendance->clock_in);
@@ -54,13 +64,13 @@ class AttendanceExport implements FromCollection, WithHeadings
             $workDurationInHours = round($actualWorkDuration / 60, 2);
 
             return [
-                '氏名' => $attendance->member->name, // メンバー名を追加
+                '氏名' => $attendance->member->name,
                 '日付' => $attendance->attendance_date,
                 '出勤時刻' => $attendance->clock_in,
                 '退勤時刻' => $attendance->clock_out,
-                '休憩時間' => $breakDuration . ' 分', // 分単位の休憩時間
-                '実質労働' => $formattedWorkDuration, // 時間単位の労働時間（例: 2時間 30分）
-                '実質労働（時間）' => $workDurationInHours, // 小数点以下の時間単位（例: 2.5時間）
+                '休憩時間' => $breakDuration . ' 分',
+                '実質労働' => $formattedWorkDuration,
+                '実質労働（時間）' => $workDurationInHours,
                 '備考・作業内容' => $attendance->attendance,
             ];
         });
@@ -69,13 +79,13 @@ class AttendanceExport implements FromCollection, WithHeadings
     public function headings(): array
     {
         return [
-            '氏名', // ヘッダーにメンバー名を追加
-            '日付', // ヘッダーに日付を追加
+            '氏名',
+            '日付',
             '出勤時刻',
             '退勤時刻',
             '休憩時間（分）',
             '労働時間',
-            '労働時間（時間）', // 労働時間を時間単位で表示するカラム
+            '労働時間（時間）',
             '備考・作業内容',
         ];
     }

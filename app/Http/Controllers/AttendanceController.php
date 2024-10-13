@@ -132,12 +132,22 @@ public function destroy(Attendance $attendance)
 }
 public function export(Request $request)
 {
-    // フォームから選択されたメンバーのIDを取得
-    $memberId = $request->input('member_id'); // 'member_id' はフォームの名前
+    // フォームから選択されたメンバーIDと日付範囲を取得
+    $memberId = $request->input('member_id');
+    $dateRange = $request->input('date_range');
+
+    // 日付範囲をパースして開始日と終了日を取得
+    if ($dateRange) {
+        $dates = explode(' から ', $dateRange);
+        $startDate = $dates[0];
+        $endDate = $dates[1];
+    } else {
+        $startDate = null;
+        $endDate = null;
+    }
 
     // エクスポート処理
-    return Excel::download(new AttendanceExport($memberId), '勤怠データ.xlsx');
-    // return Excel::download(new AttendanceExport($memberId), 'attendance_export.xlsx');
+    return Excel::download(new AttendanceExport($memberId, $startDate, $endDate), '勤怠データ.xlsx');
 }
 
 }
