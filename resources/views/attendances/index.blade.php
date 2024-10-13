@@ -21,10 +21,22 @@
 
                     <!-- 日付範囲選択カレンダー -->
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-                        <div>
+                        <!-- <div>
                             <label for="date_range" class="block text-sm font-medium text-gray-700 dark:text-gray-300">日付範囲</label>
                             <input type="text" id="date_range" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="日付範囲を選択" />
-                        </div>
+                        </div> -->
+                        <div>
+    <label for="date_range" class="block text-sm font-medium text-gray-700 dark:text-gray-300">日付範囲</label>
+    <input
+        type="text"
+        id="date_range"
+        name="date_range"
+        class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+        value="{{ $startDate }} から {{ $endDate }}"
+        placeholder="日付範囲を選択"
+    />
+</div>
+
 
                         <div>
                             <label for="member_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">メンバー</label>

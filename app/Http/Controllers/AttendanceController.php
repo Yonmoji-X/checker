@@ -6,6 +6,7 @@ use App\Models\Attendance; // 勤怠データのモデル
 use App\Models\Member;     // メンバーデータのモデル
 use App\Models\BreakSession;
 use App\Models\Group;      // グループデータのモデル
+use Carbon\Carbon;
 use App\Exports\AttendanceExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
@@ -132,6 +133,10 @@ public function destroy(Attendance $attendance)
 }
 public function export(Request $request)
 {
+    // 今月の初日と最終日を取得
+    $startDate = Carbon::now()->startOfMonth()->format('Y-m-d');
+    $endDate = Carbon::now()->endOfMonth()->format('Y-m-d');
+
     // フォームから選択されたメンバーIDと日付範囲を取得
     $memberId = $request->input('member_id');
     $dateRange = $request->input('date_range');
@@ -141,13 +146,20 @@ public function export(Request $request)
         $dates = explode(' から ', $dateRange);
         $startDate = $dates[0];
         $endDate = $dates[1];
-    } else {
-        $startDate = null;
-        $endDate = null;
     }
 
     // エクスポート処理
     return Excel::download(new AttendanceExport($memberId, $startDate, $endDate), '勤怠データ.xlsx');
+}
+
+public function showExportForm()
+{
+    // 今月の初日と最終日をセット
+    $startDate = Carbon::now()->startOfMonth()->format('Y-m-d');
+    $endDate = Carbon::now()->endOfMonth()->format('Y-m-d');
+
+    // ビューに初期値として渡す
+    return view('attendance.export', compact('startDate', 'endDate'));
 }
 
 }
