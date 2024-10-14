@@ -49,15 +49,17 @@
                         </div>
 
                         <div class="mt-4">
-                            <form action="{{ route('attendance.export') }}" method="POST" onsubmit="return validateExportForm();">
-                                @csrf
-                                <input type="hidden" name="member_id" id="export_member_id" value="">
-                                <input type="hidden" name="date_range" id="export_date_range" value="">
-                                <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                    勤怠データをエクスポート
-                                </button>
-                            </form>
-                        </div>
+    <form action="{{ route('attendance.export') }}" method="POST" onsubmit="return validateExportForm();">
+        @csrf
+        <input type="hidden" name="member_id" id="export_member_id" value="">
+        <input type="hidden" name="date_range" id="export_date_range" value="">
+        <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            <img src="{{ asset('images/download_24dp_E8EAED_FILL0_wght400_GRAD0_opsz24.png') }}" alt="Download Icon" class="w-6 h-6 mr-2 text-gray-200 dark:text-gray-200" />
+            <span class="text-gray-800 dark:text-gray-200">勤怠データをエクスポート</span>
+        </button>
+    </form>
+</div>
+
                     </div>
 
                     <div class="overflow-x-auto">
@@ -108,7 +110,6 @@
                             </tbody>
                         </table>
                         <div class="mt-4">
-                            {{ $attendances->links() }}
                         </div>
                     </div>
                 </div>

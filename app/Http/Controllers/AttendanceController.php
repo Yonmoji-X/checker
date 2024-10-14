@@ -47,7 +47,8 @@ class AttendanceController extends Controller
             })
             ->with(['user', 'member', 'breakSessions'])
             ->latest()
-            ->paginate(31);
+            ->get();
+            // ->paginate(31);
 
         $jsonMembers = json_encode($members, JSON_UNESCAPED_UNICODE);
 
