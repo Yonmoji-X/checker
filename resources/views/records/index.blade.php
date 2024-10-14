@@ -158,7 +158,7 @@
             );
 
             const titleTemplate = document.createElement('span');
-            titleTemplate.textContent = `>${title_Template}`;
+            titleTemplate.textContent = `🔹 ${title_Template}`;
             titleTemplate.classList.add(
                 'text-gray-600',
                 'dark:text-gray-400',
@@ -166,26 +166,52 @@
             );
             contentsUl.appendChild(titleTemplate);
 
+            // クラスリストをまとめて追加する関数
+            function addClassList(element) {
+                element.classList.add(
+                    'text-black',
+                    'dark:text-white',
+                    'text-lg',
+                    'font-medium',
+                    'bg-blue-100',
+                    'dark:bg-blue-800',
+                    'px-4',
+                    'py-2',
+                    'rounded-md',
+                    'shadow-sm',
+                    'hover:bg-blue-200',
+                    'dark:hover:bg-blue-700'
+                );
+            }
+
             if (row.check_item != null) {
                 const checkLi = document.createElement('li');
                 checkLi.textContent = row.check_item == 1 ? 'はい' : 'いいえ';
                 contentsUl.appendChild(checkLi);
+                addClassList(checkLi);  // クラスを追加
             }
+
             if (row.photo_item != null) {
                 const photoLi = document.createElement('li');
                 photoLi.textContent = 'ここに画像が入ります。';
                 contentsUl.appendChild(photoLi);
+                addClassList(photoLi);  // クラスを追加
             }
+
             if (row.content_item != null) {
                 const contentLi = document.createElement('li');
                 contentLi.textContent = row.content_item;
                 contentsUl.appendChild(contentLi);
+                addClassList(contentLi);  // クラスを追加
             }
+
             if (row.temperature_item != null) {
                 const temperatureLi = document.createElement('li');
                 temperatureLi.textContent = row.temperature_item;
                 contentsUl.appendChild(temperatureLi);
+                addClassList(temperatureLi);  // クラスを追加
             }
+
 
             item.appendChild(titleBox);
             item.appendChild(contentsUl);
