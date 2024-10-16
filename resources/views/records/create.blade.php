@@ -78,42 +78,42 @@
         }
 
         .form-radio {
-    display: none;
-}
+            display: none;
+        }
 
-.radio-label {
-    background-color: rgb(31, 41, 55 / var(--tw-bg-opacity)); /* ダークグレー */
-    color: #d1d5db; /* ライトグレーの文字色 */
-    font-weight: bold;
-    padding: 0.5rem 1rem;
-    border-radius: 50px; /* 完全に丸く */
-    outline: none;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25); /* 深めのシャドウで立体感 */
-    transition: background-color 0.4s ease, color 0.4s ease, transform 0.3s ease; /* スムーズなトランジション */
-}
+        .radio-label {
+            background-color: rgb(31, 41, 55 / var(--tw-bg-opacity)); /* ダークグレー */
+            color: #d1d5db; /* ライトグレーの文字色 */
+            font-weight: bold;
+            padding: 0.5rem 1rem;
+            border-radius: 50px; /* 完全に丸く */
+            outline: none;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25); /* 深めのシャドウで立体感 */
+            transition: background-color 0.4s ease, color 0.4s ease, transform 0.3s ease; /* スムーズなトランジション */
+        }
 
-.radio-label:hover {
-    background-color: #6b5bff; /* 明るい紫 */
-    color: #ffffff; /* ホワイト */
-    background-image: linear-gradient(145deg, #6b5bff, #8a74ff); /* 鮮やかな紫のグラデーション */
-    transform: translateY(-2px); /* ホバー時に少し上に移動 */
-}
+        .radio-label:hover {
+            background-color: #6b5bff; /* 明るい紫 */
+            color: #ffffff; /* ホワイト */
+            background-image: linear-gradient(145deg, #6b5bff, #8a74ff); /* 鮮やかな紫のグラデーション */
+            transform: translateY(-2px); /* ホバー時に少し上に移動 */
+        }
 
-.form-radio:checked + .radio-label {
-    background-color: #8a44e4; /* 鮮やかな紫 */
-    color: #ffffff; /* ホワイト */
-    /* background-image: linear-gradient(145deg, #8a44e4, #b057ff);  */
-    /* background-image: linear-gradient(145deg, #8a44e4, #007bff); */
-    background-image: linear-gradient(145deg, #b057ff, #007bff);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* 選択時のシャドウを強化 */
-}
+        .form-radio:checked + .radio-label {
+            background-color: #8a44e4; /* 鮮やかな紫 */
+            color: #ffffff; /* ホワイト */
+            /* background-image: linear-gradient(145deg, #8a44e4, #b057ff);  */
+            /* background-image: linear-gradient(145deg, #8a44e4, #007bff); */
+            background-image: linear-gradient(145deg, #b057ff, #007bff);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* 選択時のシャドウを強化 */
+        }
 
-.form-radio:checked + .radio-label:hover {
-    background-color: #9b57ff; /* さらに明るい紫 */
-    color: #ffffff; /* ホワイト */
-    background-image: linear-gradient(145deg, #9b57ff, #bb81ff); /* ホバー時のより明るい輝き */
-    transform: translateY(-2px); /* ホバー時に少し上に移動 */
-}
+        .form-radio:checked + .radio-label:hover {
+            background-color: #9b57ff; /* さらに明るい紫 */
+            color: #ffffff; /* ホワイト */
+            background-image: linear-gradient(145deg, #9b57ff, #bb81ff); /* ホバー時のより明るい輝き */
+            transform: translateY(-2px); /* ホバー時に少し上に移動 */
+        }
 
 
     </style>
