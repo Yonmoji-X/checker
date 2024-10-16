@@ -239,24 +239,46 @@ class RecordController extends Controller
 
     public function update(Request $request, Record $record)
     {
+        // 管理者のみが更新可能
+        // Gate::authorize('isAdmin');
+
         // バリデーションルールを定義
-        $validated = $request->validate([
-            'user_id' => 'required|integer',
-            'member_id' => 'required|integer',
-            'template_id' => 'required|integer',
-            'member_status' => 'required|boolean',
-            'clock_status' => 'required|boolean',
-            'check_item' => 'nullable|boolean',
-            'photo_item' => 'nullable|file|image|max:2048',
+        $request->validate([
+            'check_item' => 'nullable|in:0,1', // "0" または "1" を許可
             'content_item' => 'nullable|string|max:255',
+            'photo_item' => 'nullable|file|image|max:2048',
             'temperature_item' => 'nullable|numeric',
         ]);
 
-        // レコードを更新
-        $record->update($validated);
+        // リクエストからデータを取得
+        $data = $request->only([
+            'check_item',
+            'content_item',
+            'temperature_item'
+        ]);
 
-        return redirect('/records')->with('success', 'Record updated successfully.');
+        // もし photo_item がアップロードされていれば、保存処理を行う
+        if ($request->hasFile('photo_item')) {
+            // 古いファイルを削除する場合
+            if ($record->photo_item) {
+                Storage::delete($record->photo_item);
+            }
+
+            // 新しいファイルを保存
+            $path = $request->file('photo_item')->store('public/photos');
+            $data['photo_item'] = $path;
+        } else {
+            // photo_item がnullであれば何もしない
+            unset($data['photo_item']);
+        }
+
+        // レコードを更新
+        $record->update($data);
+
+        // 成功メッセージと共にリダイレクト
+        return redirect()->route('records.index')->with('success', 'Record updated successfully.');
     }
+
 
     public function destroy(Record $record)
     {
