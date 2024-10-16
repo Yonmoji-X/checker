@@ -132,7 +132,7 @@
 
             titleBox.innerHTML = `
                 <span>${tokyoTime}</span>
-            <!-- <a href="${basePath}/records/${row.id}/edit"
+                <!-- <a href="${basePath}/records/${row.id}/edit"
             class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 mx-2">
                 編集
             </a>
@@ -164,6 +164,12 @@
                 'dark:text-gray-400',
                 'text-sm'
             );
+            // titleTemplate.innerHTML = `🔹 ${title_Template}
+            //     <a href="${basePath}/records/${row.id}/edit"
+            //     class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 mx-2">
+            //         <img src="${basePath}/images/edit_24dp_E8EAED_FILL0_wght400_GRAD0_opsz24.png" alt="編集" class="inline-block w-4 h-4 mr-1">
+            //     </a>`;
+
             contentsUl.appendChild(titleTemplate);
 
             // クラスリストをまとめて追加する関数
@@ -186,28 +192,54 @@
 
             if (row.check_item != null) {
                 const checkLi = document.createElement('li');
-                checkLi.textContent = row.check_item == 1 ? 'はい' : 'いいえ';
+                // checkLi.textContent = row.check_item == 1 ? 'はい' : 'いいえ';
+                console.log(`row.id:${row.id}`)
+                checkLi.innerHTML = `
+                ${row.check_item == 1 ? 'はい' : 'いいえ'}
+                <a href="${basePath}/records/${row.id}/edit"
+                class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 mx-2">
+                    <img src="${basePath}/images/edit_24dp_E8EAED_FILL0_wght400_GRAD0_opsz24.png" alt="編集" class="inline-block w-4 h-4 mr-1">
+                </a>`;
+
                 contentsUl.appendChild(checkLi);
                 addClassList(checkLi);  // クラスを追加
             }
 
             if (row.photo_item != null) {
                 const photoLi = document.createElement('li');
-                photoLi.textContent = 'ここに画像が入ります。';
+                // photoLi.textContent = 'ここに画像が入ります。';
+                photoLi.innerHTML = `
+                ${'ここに画像が入ります。'}
+                <a href="${basePath}/records/${row.id}/edit"
+                class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 mx-2">
+                    <img src="${basePath}/images/edit_24dp_E8EAED_FILL0_wght400_GRAD0_opsz24.png" alt="編集" class="inline-block w-4 h-4 mr-1">
+                </a>`;
                 contentsUl.appendChild(photoLi);
                 addClassList(photoLi);  // クラスを追加
             }
 
             if (row.content_item != null) {
                 const contentLi = document.createElement('li');
-                contentLi.textContent = row.content_item;
+                // contentLi.textContent = row.content_item;
+                contentLi.innerHTML = `
+                ${row.content_item}
+                <a href="${basePath}/records/${row.id}/edit"
+                class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 mx-2">
+                    <img src="${basePath}/images/edit_24dp_E8EAED_FILL0_wght400_GRAD0_opsz24.png" alt="編集" class="inline-block w-4 h-4 mr-1">
+                </a>`;
                 contentsUl.appendChild(contentLi);
                 addClassList(contentLi);  // クラスを追加
             }
 
             if (row.temperature_item != null) {
                 const temperatureLi = document.createElement('li');
-                temperatureLi.textContent = row.temperature_item;
+                // temperatureLi.textContent = row.temperature_item;
+                temperatureLi.innerHTML = `
+                ${row.temperature_item}
+                <a href="${basePath}/records/${row.id}/edit"
+                class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 mx-2">
+                    <img src="${basePath}/images/edit_24dp_E8EAED_FILL0_wght400_GRAD0_opsz24.png" alt="編集" class="inline-block w-4 h-4 mr-1">
+                </a>`;
                 contentsUl.appendChild(temperatureLi);
                 addClassList(temperatureLi);  // クラスを追加
             }

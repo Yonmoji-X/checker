@@ -210,18 +210,32 @@ class RecordController extends Controller
         return view('records.show', compact('record'));
     }
 
-
-
     public function edit(Record $record)
     {
         $userId = Auth::id();
-        $records = Record::with('user')->latest()->get();
-        $templates = Template::where('user_id', $userId)->latest()->get();
-        $jsonTemplates = json_encode($templates, JSON_UNESCAPED_UNICODE);
-        $jsonRecords = json_encode($records, JSON_UNESCAPED_UNICODE);
-        $members = Member::where('user_id', $userId)->latest()->get();
-        return view('records.edit', compact('record', 'templates', 'members', 'jsonTemplates', 'jsonRecords'));
+        $currentUser = Auth::user();
+
+        if ($currentUser->role === 'user') {
+            $group = Group::where('user_id', $userId)->first();
+            if ($group) {
+                $userId = $group->admin_id;
+            }
+        }
+
+        // 指定されたレコードに関連するテンプレートとメンバーを取得
+        $template = Template::where('id', $record->template_id)->first(); // 単一のテンプレートを取得
+        $member = Member::where('id', $record->member_id)->get();
+
+        // JSONエンコード
+        $jsonTemplate = json_encode($template, JSON_UNESCAPED_UNICODE);
+        $jsonMember = json_encode($member, JSON_UNESCAPED_UNICODE);
+
+        return view('records.edit', compact('record', 'template', 'member', 'jsonTemplate', 'jsonMember'));
     }
+
+
+
+
 
     public function update(Request $request, Record $record)
     {
