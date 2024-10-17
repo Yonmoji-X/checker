@@ -172,7 +172,10 @@
                 const titleBox = document.createElement('div');
 
                 const titleP = document.createElement('p');
-                titleP.textContent = row.title;
+                // titleP.textContent = row.title;
+                titleP.innerHTML = `${row.title}<span style="color: red; font-size: 1.2em;"> *</span>`;
+
+
                 titleP.classList.add(
                     'text-gray-600',
                     'dark:text-gray-400',
