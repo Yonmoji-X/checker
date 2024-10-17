@@ -280,7 +280,7 @@
 
         document.getElementById('postForm').addEventListener('submit', function(event) {
         // 確認ダイアログを表示
-        const confirmed = confirm("本当に送信しますか？");
+        const confirmed = confirm("送信してよろしいですか？");
         if (!confirmed) {
             // 確認が取れなかった場合、送信をキャンセル
             event.preventDefault();
