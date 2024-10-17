@@ -111,6 +111,7 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 - □前日の累計を簡単に確認できるように
 -   →ダッシュボードにをワイトボード追加？
 - □前日退勤していなくても、翌日出勤できるように。
+- □チェック項目は必須項目に。→フロントでやる。
 
 
 # テーマカラー候補
