@@ -13,7 +13,7 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg p-6">
-                <form method="POST" action="{{ route('records.store') }}">
+                <form method="POST" action="{{ route('records.store') }}" id="postForm">
                     @csrf
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
                         <div>
@@ -277,6 +277,15 @@
 
         document.getElementById('member_status').addEventListener('change', filterData);
         document.getElementById('clock_status').addEventListener('change', filterData);
+
+        document.getElementById('postForm').addEventListener('submit', function(event) {
+        // 確認ダイアログを表示
+        const confirmed = confirm("本当に送信しますか？");
+        if (!confirmed) {
+            // 確認が取れなかった場合、送信をキャンセル
+            event.preventDefault();
+        }
+    });
         // listItems.forEach(item => {
         //     item.classList.add('text-gray-600', 'dark-text-gray-400', 'text-sm', 'mt-4', 'list-none');
         // });
