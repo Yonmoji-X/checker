@@ -202,43 +202,49 @@
                 );
 
                 if (row.has_check == 1) {
-    const checkLi = document.createElement('li');
-    checkLi.classList.add('radio-group', 'mt-4', 'check-li');
+                    const checkLi = document.createElement('li');
+                    checkLi.classList.add('radio-group', 'mt-4', 'check-li');
 
-    // "はい" ボタンの作成
-    const yesButton = document.createElement('input');
-    yesButton.type = 'radio';
-    yesButton.name = `check_item_${index}`;
-    yesButton.value = '1';
-    yesButton.id = `check_li_yes_${index}`;
-    yesButton.classList.add('form-radio', 'text-indigo-600');
-    yesButton.setAttribute('required', '');  // 必須属性を追加
+                    // "はい" ボタンの作成
+                    const yesButton = document.createElement('input');
+                    yesButton.type = 'radio';
+                    yesButton.name = `check_item_${index}`;
+                    yesButton.value = '1';
+                    yesButton.id = `check_li_yes_${index}`;
+                    yesButton.classList.add('form-radio', 'text-indigo-600');
+                    yesButton.setAttribute('required', '');  // 必須属性を追加
 
-    const yesLabel = document.createElement('label');
-    yesLabel.htmlFor = `check_li_yes_${index}`;
-    yesLabel.textContent = 'はい';
-    yesLabel.classList.add('radio-label', 'inline-flex', 'items-center');
+                    const yesLabel = document.createElement('label');
+                    yesLabel.htmlFor = `check_li_yes_${index}`;
+                    yesLabel.textContent = 'はい';
+                    yesLabel.classList.add('radio-label', 'inline-flex', 'items-center');
 
-    // "いいえ" ボタンの作成
-    const noButton = document.createElement('input');
-    noButton.type = 'radio';
-    noButton.name = `check_item_${index}`;
-    noButton.value = '0';
-    noButton.id = `check_li_no_${index}`;
-    noButton.classList.add('form-radio', 'text-indigo-600');
+                    // "いいえ" ボタンの作成
+                    const noButton = document.createElement('input');
+                    noButton.type = 'radio';
+                    noButton.name = `check_item_${index}`;
+                    noButton.value = '0';
+                    noButton.id = `check_li_no_${index}`;
+                    noButton.classList.add('form-radio', 'text-indigo-600');
 
-    const noLabel = document.createElement('label');
-    noLabel.htmlFor = `check_li_no_${index}`;
-    noLabel.textContent = 'いいえ';
-    noLabel.classList.add('radio-label', 'inline-flex', 'items-center');
+                    const noLabel = document.createElement('label');
+                    noLabel.htmlFor = `check_li_no_${index}`;
+                    noLabel.textContent = 'いいえ';
+                    noLabel.classList.add('radio-label', 'inline-flex', 'items-center');
 
-    // 要素の追加
-    checkLi.appendChild(yesButton);
-    checkLi.appendChild(yesLabel);
-    checkLi.appendChild(noButton);
-    checkLi.appendChild(noLabel);
-    contentsUl.appendChild(checkLi);
-}
+                    // 要素の追加
+                    checkLi.appendChild(yesButton);
+                    checkLi.appendChild(yesLabel);
+                    checkLi.appendChild(noButton);
+                    checkLi.appendChild(noLabel);
+                    contentsUl.appendChild(checkLi);
+                } else {
+                    const hiddenInput = document.createElement('input');
+                    hiddenInput.type = 'hidden';
+                    hiddenInput.name = `check_item_${index}`;
+                    hiddenInput.value = null;
+                    contentsUl.appendChild(hiddenInput);
+                }
 
 
                 if (row.has_content == 1) {
@@ -251,6 +257,12 @@
 
                     contentLi.appendChild(contentInput);
                     contentsUl.appendChild(contentLi);
+                } else {
+                    const hiddenInput = document.createElement('input');
+                    hiddenInput.type = 'hidden';
+                    hiddenInput.name = `content_${index}`;
+                    hiddenInput.value = null;
+                    contentsUl.appendChild(hiddenInput);
                 }
 
                 if (row.has_photo == 1) {
@@ -263,8 +275,39 @@
 
                     photoLi.appendChild(photoInput);
                     contentsUl.appendChild(photoLi);
+                } else {
+                    const hiddenInput = document.createElement('input');
+                    hiddenInput.type = 'hidden';
+                    hiddenInput.name = `photo_${index}`;
+                    hiddenInput.value = null;
+                    contentsUl.appendChild(hiddenInput);
                 }
 
+                if (row.has_temperature == 1) {
+                    const tempLi = document.createElement('li');
+                    const tempInput = document.createElement('input');
+                    // tempInput.style.listStyleType = 'none';
+                    tempInput.type = 'number';
+                    tempInput.step = '0.1';
+                    tempInput.name = `temperature_${index}`;
+                    tempInput.classList.add('block', 'w-full', 'py-2', 'px-3', 'border', 'border-gray-300', 'dark:border-gray-600', 'rounded-md', 'shadow-sm', 'focus:ring-indigo-500', 'focus:border-indigo-500', 'sm:text-sm', 'dark:bg-gray-700', 'dark:text-gray-300', 'check-li');
+                    tempInput.setAttribute('required', '');  // 必須属性を追加
+
+                    const tempLabel = document.createElement('label');
+                    // tempLabel.htmlFor = `temperature_${index}`;
+                    tempLabel.textContent = '℃';
+                    tempLabel.classList.add('ml-2');
+
+                    tempLi.appendChild(tempInput);
+                    tempLi.appendChild(tempLabel);
+                    contentsUl.appendChild(tempLi);
+                } else {
+                    const hiddenInput = document.createElement('input');
+                    hiddenInput.type = 'hidden';
+                    hiddenInput.name = `temperature_${index}`;
+                    hiddenInput.value = null;
+                    contentsUl.appendChild(hiddenInput);
+                }
                 item.appendChild(contentsUl);
                 container.appendChild(item);
             });
