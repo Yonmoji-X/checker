@@ -54,10 +54,13 @@ class RecordController extends Controller
         // メンバーを取得
         $members = Member::where('user_id', $userId)->latest()->get();
 
+        // ------------
+
+        // ------------
 
         // メンバー情報をJSON形式でエンコード
         $jsonMembers = json_encode($members, JSON_UNESCAPED_UNICODE);
-
+        // dd($attendanceData);
         // ビューにデータを渡す
         return view('records.index', compact('records', 'templates', 'members', 'jsonTemplates', 'jsonRecords', 'jsonMembers'));
     }
@@ -86,9 +89,35 @@ class RecordController extends Controller
         $templates = Template::where('user_id', $userId)->latest()->get();
         $jsonTemplates = json_encode($templates, JSON_UNESCAPED_UNICODE);
         $members = Member::where('user_id', $userId)->latest()->get();
+        // 各メンバーの最新の出勤データを取得
+        // ============================================
+        $attendanceData = [];
+        foreach ($members as $member) {
+            $latestAttendance = Attendance::where('member_id', $member->id)
+                ->orderBy('created_at', 'desc')
+                ->first();
+
+            // 出勤状態を判定
+            $status = null;
+            if ($latestAttendance) {
+                if ($latestAttendance->clock_in && !$latestAttendance->clock_out) {
+                    $status = '（出勤中）';
+                } elseif ($latestAttendance->clock_in &&$latestAttendance->clock_out) {
+                    $status = '';
+                }
+            }
+
+            // メンバーIDをキーに最新の出勤データと状態を格納
+            $attendanceData[$member->id] = [
+                'attendance' => $latestAttendance,
+                'status' => $status,
+            ];
+        }
+        // dd($attendanceData);
+        // ============================================
 
         // ビューにデータを渡す
-        return view('records.create', compact('templates', 'members', 'jsonTemplates'));
+        return view('records.create', compact('templates', 'members','attendanceData', 'jsonTemplates'));
     }
 
     public function store(Request $request)
