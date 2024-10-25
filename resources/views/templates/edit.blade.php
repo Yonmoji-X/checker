@@ -89,8 +89,24 @@
                                 <span class="text-red-500 text-xs italic">{{ $message }}</span>
                             @enderror
                         </div>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">表示/非表示</label>
+                            <div>
+                                <label>
+                                    <input type="radio" name="hide" value="0" {{ old('hide', $template->hide) == '0' ? 'checked' : '' }}>
+                                    表示
+                                </label>
+                                <label class="ml-4">
+                                    <input type="radio" name="hide" value="1" {{ old('hide', $template->hide) == '1' ? 'checked' : '' }}>
+                                    非表示
+                                </label>
+                            </div>
+                            @error('hide')
+                                <span class="text-red-500 text-xs italic">{{ $message }}</span>
+                            @enderror
+                        </div>
 
-                        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Update</button>
+                        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">更新</button>
                     </form>
                 </div>
             </div>

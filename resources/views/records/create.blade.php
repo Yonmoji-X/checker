@@ -314,8 +314,10 @@
                     hiddenInput.value = null;
                     contentsUl.appendChild(hiddenInput);
                 }
-                item.appendChild(contentsUl);
-                container.appendChild(item);
+                // if ($template->hide === 0) {
+                    item.appendChild(contentsUl);
+                    container.appendChild(item);
+                // }
             });
         }
 

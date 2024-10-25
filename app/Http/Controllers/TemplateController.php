@@ -107,6 +107,7 @@ class TemplateController extends Controller
             'has_photo' => 'required|boolean',
             'has_content' => 'required|boolean',
             'has_temperature' => 'required|boolean',
+            'hide' => 'required|boolean', // ここを追加
         ]);
 
         // リクエストからデータを取得
@@ -117,7 +118,8 @@ class TemplateController extends Controller
             'has_check',
             'has_photo',
             'has_content',
-            'has_temperature'
+            'has_temperature',
+            'hide' // ここを追加
         ]);
 
         $template->update($data);

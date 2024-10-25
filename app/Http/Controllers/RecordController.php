@@ -86,7 +86,10 @@ class RecordController extends Controller
         }
 
         // 指定した$userIdでテンプレートとメンバーを取得
-        $templates = Template::where('user_id', $userId)->latest()->get();
+        // $templates = Template::where('user_id', $userId)->latest()->get();
+        // hideが0のテンプレートを取得
+        $templates = Template::where('user_id', $userId)->where('hide', 0)->latest()->get();
+
         $jsonTemplates = json_encode($templates, JSON_UNESCAPED_UNICODE);
         $members = Member::where('user_id', $userId)->latest()->get();
         // 各メンバーの最新の出勤データを取得

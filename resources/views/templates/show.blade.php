@@ -23,6 +23,7 @@
                 <li>・文章　欄: {{ $template->has_content ? '✅':'-' }}</li>
                 <li>・温度　欄: {{ $template->has_temperature ? '✅':'-' }}</li>
             </ul>
+            <p class="text-gray-600 dark:text-gray-400 text-sm">表示: {{ $template->hide ? '非表示' : '表示' }}</p>
             <p class="text-gray-600 dark:text-gray-400 text-sm">投稿者: {{ $template->user->name }}</p>
             <div class="text-gray-600 dark:text-gray-400 text-sm">
                 <p>作成日時: {{ $template->created_at->format('Y-m-d H:i') }}</p>
@@ -34,8 +35,8 @@
                 <form action="{{ route('templates.destroy', $template) }}" method="POST" onsubmit="return confirm('本当に削除しますか？');">
                 @csrf
                 @method('DELETE')
-                <button type="submit" class="text-red-500 hover:text-red-700">削除</button>
-                </form>
+                <!-- <button type="submit" class="text-red-500 hover:text-red-700">削除</button>
+                </form> -->
             </div>
             @endif
             </div>
