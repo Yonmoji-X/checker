@@ -357,6 +357,7 @@
                         },
                         success: function(response) {
                             console.log(response); // 成功時の処理
+                            location.reload();
                         },
                         error: function(xhr, status, error) {
                             console.error(error); // エラー処理

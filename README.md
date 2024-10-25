@@ -114,6 +114,8 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 - ☑︎チェック項目は必須項目に。→フロントでやる。
 - □ チェック項目必須フラグ→カラム追加
 - □ 表示非表示フラグ→カラム追加
+- ☑︎ 順序を入れ替えた時の、チェックデータはうまく入らない。
+- □ セレクトボックスをAjaxに変更（今は、jsonデータをjsに渡して原始的に処理している。）
 
 
 # テーマカラー候補
