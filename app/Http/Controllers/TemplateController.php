@@ -156,7 +156,7 @@ class TemplateController extends Controller
         foreach ($sortedIDs as $order => $id) {
             Template::where('id', $id)->update(['order' => $order + 1]);
         }
-
+        session()->flash('order_updated', '順序変更しました。');
         return response()->json(['success' => true]);
     }
 

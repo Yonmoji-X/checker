@@ -319,6 +319,10 @@
 
         window.onload = function() {
             filterData();
+            // チェック項目の順序変更時のダイアログ
+            @if (session('order_updated'))
+                alert("{{ session('order_updated') }}");
+            @endif
         };
 
         document.getElementById('member_status').addEventListener('change', filterData);
