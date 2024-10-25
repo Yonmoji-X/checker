@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 
+
 /*
 注意事項
 これにおいて、usersテーブルのroleカラムがadminではなくuserの場合は、groupテーブルのuser_idが現在ログインしているユーザーのidのデータを探し、そのデータのadmin_idカラムのidを$userIdの部分に入れるようにする。
@@ -40,7 +41,11 @@ class RecordController extends Controller
 
         // 指定した$userIdでレコードを取得
         $records = Record::with('user')->where('user_id', $userId)->latest()->get();
-        $templates = Template::where('user_id', $userId)->latest()->get();
+        // $templates = Template::where('user_id', $userId)->latest()->get();
+        $templates = Template::where('user_id', $userId)
+        ->orderBy('order') // orderカラムで昇順にソート
+        ->latest()
+        ->get();
 
         // JSONエンコード
         $jsonTemplates = json_encode($templates, JSON_UNESCAPED_UNICODE);
@@ -48,6 +53,7 @@ class RecordController extends Controller
 
         // メンバーを取得
         $members = Member::where('user_id', $userId)->latest()->get();
+
 
         // メンバー情報をJSON形式でエンコード
         $jsonMembers = json_encode($members, JSON_UNESCAPED_UNICODE);
@@ -286,4 +292,17 @@ class RecordController extends Controller
         Record::where('head_id', $record->id)->delete();
         return redirect()->route('records.index')->with('success', 'Record deleted successfully.');
     }
+
+    // public function updateOrder(Request $request)
+    // {
+    //     $sortedIDs = $request->input('sortedIDs');
+
+    //     // 並び替えたIDに基づいてorderカラムを更新
+    //     foreach ($sortedIDs as $order => $id) {
+    //         Record::where('id', $id)->update(['order' => $order]);
+    //     }
+
+    //     return response()->json(['success' => true]); // 成功のレスポンスを返す
+    // }
+
 }

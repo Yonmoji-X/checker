@@ -64,6 +64,12 @@ Route::middleware('guest')->group(function () {
     Route::post('/reset-password', [NewPasswordController::class, 'store'])->name('password.update');
 });
 
+// Route::post('/update-order', [RecordController::class, 'updateOrder'])->name('record.updateOrder');
+// Route::post('/update-template-order', [TemplateController::class, 'updateOrder'])->name('template.updateOrder');
+
+Route::post('/update-template-order', [TemplateController::class, 'updateOrder'])->name('template.updateOrder');
+
+
 // ロールベースのミドルウェア設定（必要に応じて）
 // Route::middleware(['role:admin'])->group(function () {
 //     Route::get('/admin', [AdminController::class, 'index'])->name('admin.dashboard');

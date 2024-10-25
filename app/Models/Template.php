@@ -25,6 +25,8 @@ class Template extends Model
         'has_photo',
         'has_content',
         'has_temperature',
+        'order',
+        'hide',
     ];
     public function user()
     {

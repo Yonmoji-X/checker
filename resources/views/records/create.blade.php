@@ -146,6 +146,7 @@
         }
 
         function displayData(filteredData) {
+            filteredData.sort((a, b) => a.order - b.order);
             // 表示コンテナの取得
             const container = document.getElementById('items_container');
 
@@ -168,6 +169,8 @@
                     'border-gray-300',
                     'dark:border-gray-600'
                 );
+                // item.setAttribute('id', 'sortable');
+                item.setAttribute('data-id', row.id); // ここを追加
 
                 const titleBox = document.createElement('div');
 
@@ -332,5 +335,39 @@
         // listItems.forEach(item => {
         //     item.classList.add('text-gray-600', 'dark-text-gray-400', 'text-sm', 'mt-4', 'list-none');
         // });
+        $(function() {
+            $("#items_container").sortable({
+                update: function(event, ui) {
+                    // 並び替えた後の処理
+                    // const item = $(".template")
+                    var sortedIDs = $("#items_container .template").map(function() {
+                            return $(this).data("id"); // 各アイテムのIDを取得
+                        }).get();
+
+
+                    console.log(sortedIDs); // ここでsortedIDsをログに出力
+
+                    // AJAXリクエストを送信
+                    $.ajax({
+                        url: '{{ route("template.updateOrder") }}', // Laravelのルート
+                        method: 'POST',
+                        data: {
+                            sortedIDs: sortedIDs,
+                            _token: '{{ csrf_token() }}' // CSRFトークン
+                        },
+                        success: function(response) {
+                            console.log(response); // 成功時の処理
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(error); // エラー処理
+                        }
+                    });
+                }
+            });
+            $("#items_container").disableSelection();
+        });
+
+
+
     </script>
 </x-app-layout>

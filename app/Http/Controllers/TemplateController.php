@@ -143,4 +143,22 @@ class TemplateController extends Controller
         return redirect()->route('templates.index');
         // #####################Template.php参照#####################
     }
+    public function updateOrder(Request $request)
+    {
+        $sortedIDs = $request->input('sortedIDs'); // sortedIDsを取得
+
+        // もしsortedIDsがnullまたは空であればエラーを返す
+        if (empty($sortedIDs)) {
+            return response()->json(['error' => 'No IDs provided.'], 400);
+        }
+
+        // データベースを更新するロジック
+        foreach ($sortedIDs as $order => $id) {
+            Template::where('id', $id)->update(['order' => $order + 1]);
+        }
+
+        return response()->json(['success' => true]);
+    }
+
+
 }
