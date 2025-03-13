@@ -110,9 +110,12 @@ class AttendanceExport implements FromCollection, WithHeadings
         ];
 
         // どれかのデータに作業内容が含まれている場合は追加
-        if (Record::whereHas('template', fn($q) => $q->where('export', 1))->exists()) {
+        if (Record::whereHas('template', function($q) {
+            $q->where('export', 1);
+        })->exists()) {
             $headings[] = '作業内容';
         }
+
 
         return $headings;
     }
