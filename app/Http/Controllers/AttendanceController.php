@@ -7,6 +7,7 @@ use App\Models\Member;     // メンバーデータのモデル
 use App\Models\BreakSession;
 use App\Models\Group;      // グループデータのモデル
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 use App\Exports\AttendanceExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
@@ -139,8 +140,11 @@ public function export(Request $request)
     $endDate = Carbon::now()->endOfMonth()->format('Y-m-d');
 
     // フォームから選択されたメンバーIDと日付範囲を取得
-    $memberId = $request->input('member_id');
+    $memberId =  (int) $request->input('member_id');
     $dateRange = $request->input('date_range');
+
+    $member = Member::find($memberId);
+    $memberName = $member ? $member->name : '全員';
 
     // 日付範囲をパースして開始日と終了日を取得
     if ($dateRange) {
@@ -150,7 +154,9 @@ public function export(Request $request)
     }
 
     // エクスポート処理
-    return Excel::download(new AttendanceExport($memberId, $startDate, $endDate), '勤怠データ.xlsx');
+    // return Excel::download(new AttendanceExport($memberId, $startDate, $endDate), '勤怠データ.xlsx');
+    return Excel::download(new AttendanceExport($memberId, $startDate, $endDate), sprintf('%s_勤怠データ.xlsx', $memberName));
+
 }
 
 public function showExportForm()

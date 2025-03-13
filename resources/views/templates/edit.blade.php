@@ -105,6 +105,22 @@
                                 <span class="text-red-500 text-xs italic">{{ $message }}</span>
                             @enderror
                         </div>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">出力ファイル反映</label>
+                            <div>
+                                <label>
+                                    <input type="radio" name="export" value="0" {{ old('export', $template->export) == '0' ? 'checked' : '' }}>
+                                    反映しない
+                                </label>
+                                <label class="ml-4">
+                                    <input type="radio" name="export" value="1" {{ old('export', $template->export) == '1' ? 'checked' : '' }}>
+                                    反映する
+                                </label>
+                            </div>
+                            @error('export')
+                                <span class="text-red-500 text-xs italic">{{ $message }}</span>
+                            @enderror
+                        </div>
 
                         <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">更新</button>
                     </form>

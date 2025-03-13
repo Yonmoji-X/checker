@@ -27,6 +27,7 @@ class Template extends Model
         'has_temperature',
         'order',
         'hide',
+        'export',
     ];
     public function user()
     {

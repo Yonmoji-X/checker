@@ -22,6 +22,7 @@ class Record extends Model
         'content_item',
         'head_id',
         'temperature_item',
+        'attendance_id',
     ];
 
     // ユーザーとのリレーション
@@ -40,5 +41,10 @@ class Record extends Model
     public function template()
     {
         return $this->belongsTo(Template::class);
+    }
+
+    public function attendance()
+    {
+        return $this->belongsTo(Atenndance::class);
     }
 }

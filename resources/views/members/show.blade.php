@@ -28,7 +28,7 @@
                 <form action="{{ route('members.destroy', $member) }}" method="POST" onsubmit="return confirm('本当に削除しますか？');">
                 @csrf
                 @method('DELETE')
-                <button type="submit" class="text-red-500 hover:text-red-700">削除</button>
+                <!-- <button type="submit" class="text-red-500 hover:text-red-700">削除</button> -->
                 </form>
             </div>
             @endif

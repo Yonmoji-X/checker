@@ -23,6 +23,7 @@
                 <li>・文章　欄: {{ $template->has_content ? '✅':'-' }}</li>
                 <li>・温度　欄: {{ $template->has_temperature ? '✅':'-' }}</li>
             </ul>
+            <p class="text-gray-600 dark:text-gray-400 text-sm">出力ファイル反映: {{ $template->export ? '✅':'-' }}</p>
             <p class="text-gray-600 dark:text-gray-400 text-sm">表示: {{ $template->hide ? '非表示' : '表示' }}</p>
             <p class="text-gray-600 dark:text-gray-400 text-sm">投稿者: {{ $template->user->name }}</p>
             <div class="text-gray-600 dark:text-gray-400 text-sm">

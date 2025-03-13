@@ -112,12 +112,17 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 -   →ダッシュボードにをワイトボード追加？
 - □前日退勤していなくても、翌日出勤できるように。
 - ☑︎チェック項目は必須項目に。→フロントでやる。
-- □ チェック項目必須フラグ→カラム追加
+- □ チェック項目必須フラグ→カラム追加（必須 or not）
 - □ 表示非表示フラグ→カラム追加（member）
-- □ 表示非表示フラグ→カラム追加（template）
+- ☑︎ 表示非表示フラグ→カラム追加（template）
 - ☑︎ 順序を入れ替えた時の、チェックデータはうまく入らない。
 - □ セレクトボックスをAjaxに変更（今は、jsonデータをjsに渡して原始的に処理している。）
-
+- □ テンプレートは、テンプレートを使用した投稿がない場合のみ変更できる。
+- □ 配下の一般アカウント数の制限
+- □ 任意のテンプレートを出勤簿Excelに反映するフラグを設ける。
+-     →tamplateテーブルにExcel反映フラグのカラム（reflection）を作る    （int）デフォルト非反映(0)
+-     →templateのviewで設定画面作成
+-     →excel出力用のコントローラで
 
 # テーマカラー候補
 - #3300cc セーフカラー
@@ -126,6 +131,18 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 - #111827  黒
 - iPhoneのPWA背景はこれを参照
 - https://sogo.dev/posts/2024/07/pwa-appearance
+
+# コマンド類
+■サーバー起動
+Docker起動
+./vendor/bin/sail up -d
+
+アプリURL:
+http://localhost/
+
+phpmyadminURL:
+http://localhost:8082/
+
 
 
 

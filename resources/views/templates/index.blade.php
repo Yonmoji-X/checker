@@ -25,7 +25,7 @@
                     <li>・文章　欄: {{ $template->has_content ? '✅':'-' }}</li>
                     <li>・温度　欄: {{ $template->has_temperature ? '✅':'-' }}</li>
                 </ul>
-
+                <p class="text-gray-600 dark:text-gray-400 text-sm">（出力ファイル反映）: {{ $template->export ? '✅':'-' }}</p>
                 <p class="text-gray-600 dark:text-gray-400 text-sm">（投稿者: {{ $template->user->name }}）</p>
                 <a href="{{ route('templates.show', $template) }}" class="text-blue-500 hover:text-blue-700">詳細を見る</a>
             </div>
