@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\Attendance;
+use App\Models\Record;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Carbon\Carbon;
@@ -20,10 +21,11 @@ class AttendanceExport implements FromCollection, WithHeadings
         $this->endDate = $endDate;
     }
 
+
     public function collection()
     {
-        // クエリを作成
-        $query = Attendance::with(['member', 'breakSessions']);
+        // クエリを作成（recordもリレーション取得）
+        $query = Attendance::with(['member', 'breakSessions', 'records']);
 
         // メンバーIDが指定されている場合はフィルタリング
         if ($this->memberId) {
@@ -63,6 +65,9 @@ class AttendanceExport implements FromCollection, WithHeadings
             // 労働時間（時間単位）を計算（分を時間に換算、小数点以下も表示）
             $workDurationInHours = round($actualWorkDuration / 60, 2);
 
+            // recordテーブルのcontent_itemカラムを取得（複数ある場合は改行で結合）
+            $contentItems = $attendance->records->pluck('content_item')->implode("\n");
+
             return [
                 '氏名' => $attendance->member->name,
                 '日付' => $attendance->attendance_date,
@@ -72,6 +77,7 @@ class AttendanceExport implements FromCollection, WithHeadings
                 '実質労働' => $formattedWorkDuration,
                 '実質労働（時間）' => $workDurationInHours,
                 '備考・作業内容' => $attendance->attendance,
+                '作業内容' => $contentItems, // 新しく追加
             ];
         });
     }
@@ -87,6 +93,8 @@ class AttendanceExport implements FromCollection, WithHeadings
             '労働時間',
             '労働時間（時間）',
             '備考・作業内容',
+            '作業内容', // 新しく追加
         ];
     }
+
 }

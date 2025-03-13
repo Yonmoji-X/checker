@@ -39,8 +39,13 @@ class Attendance extends Model
         return $this->hasMany(BreakSession::class);
     }
 
+    // public function records()
+    // {
+    //     return $this->hasMany(Record::class);
+    // }
     public function records()
     {
-        return $this->hasMany(Record::class);
+        return $this->hasMany(Record::class, 'attendance_id', 'id');
     }
+
 }
