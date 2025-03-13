@@ -4,6 +4,7 @@ namespace App\Exports;
 
 use App\Models\Attendance;
 use App\Models\Record;
+use App\Models\Template;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Carbon\Carbon;
@@ -21,11 +22,10 @@ class AttendanceExport implements FromCollection, WithHeadings
         $this->endDate = $endDate;
     }
 
-
     public function collection()
     {
         // クエリを作成（recordもリレーション取得）
-        $query = Attendance::with(['member', 'breakSessions', 'records']);
+        $query = Attendance::with(['member', 'breakSessions', 'records.template']);
 
         // メンバーIDが指定されている場合はフィルタリング
         if ($this->memberId) {
@@ -65,10 +65,17 @@ class AttendanceExport implements FromCollection, WithHeadings
             // 労働時間（時間単位）を計算（分を時間に換算、小数点以下も表示）
             $workDurationInHours = round($actualWorkDuration / 60, 2);
 
-            // recordテーブルのcontent_itemカラムを取得（複数ある場合は改行で結合）
-            $contentItems = $attendance->records->pluck('content_item')->implode("\n");
+            // templateのexportが1のrecordのみ取得
+            $contentItems = $attendance->records
+                ->filter(function($record) {
+                    return $record->template && $record->template->export == 1;
+                })
+                ->pluck('content_item')
+                ->implode("\n");
 
-            return [
+
+            // 返却データの作成
+            $data = [
                 '氏名' => $attendance->member->name,
                 '日付' => $attendance->attendance_date,
                 '出勤時刻' => $attendance->clock_in,
@@ -77,14 +84,21 @@ class AttendanceExport implements FromCollection, WithHeadings
                 '実質労働' => $formattedWorkDuration,
                 '実質労働（時間）' => $workDurationInHours,
                 '備考・作業内容' => $attendance->attendance,
-                '作業内容' => $contentItems, // 新しく追加
             ];
+
+            // 作業内容がある場合のみ追加
+            if (!empty($contentItems)) {
+                $data['作業内容'] = $contentItems;
+            }
+
+            return $data;
         });
     }
 
     public function headings(): array
     {
-        return [
+        // '作業内容' を動的に追加するために、データが含まれるかどうかで決定
+        $headings = [
             '氏名',
             '日付',
             '出勤時刻',
@@ -93,8 +107,14 @@ class AttendanceExport implements FromCollection, WithHeadings
             '労働時間',
             '労働時間（時間）',
             '備考・作業内容',
-            '作業内容', // 新しく追加
         ];
+
+        // どれかのデータに作業内容が含まれている場合は追加
+        if (Record::whereHas('template', fn($q) => $q->where('export', 1))->exists()) {
+            $headings[] = '作業内容';
+        }
+
+        return $headings;
     }
 
 }
