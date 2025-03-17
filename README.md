@@ -102,7 +102,7 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 - □デザインの更新
 - ☑︎アプリ化→明日PWAにしたい。
 - ☑︎勤怠管理は、管理アカウントからは削除できるようにしたい。
-- □CSV出力
+- ☑︎CSV出力
 - □勤怠管理に、日にちが加味されていない気がする。修正。
 - □ チェック項目の編集
 ## 修正依頼【重要度：髙】
@@ -120,7 +120,7 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 - □ セレクトボックスをAjaxに変更（今は、jsonデータをjsに渡して原始的に処理している。）
 - □ テンプレートは、テンプレートを使用した投稿がない場合のみ変更できる。
 - □ 配下の一般アカウント数の制限
-- □ 任意のテンプレートを出勤簿Excelに反映するフラグを設ける。
+- ☑︎ 任意のテンプレートを出勤簿Excelに反映するフラグを設ける。
 -     →tamplateテーブルにExcel反映フラグのカラム（reflection）を作る    （int）デフォルト非反映(0)
 -     →templateのviewで設定画面作成
 -     →excel出力用のコントローラで

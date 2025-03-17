@@ -90,7 +90,7 @@
                                 <span class="text-red-500 text-xs italic">{{ $message }}</span>
                             @enderror
                         </div>
-                        <div class="mb-4">
+                        <div class="mb-4" id="edit_option">
                             <label class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">表示/非表示</label>
                             <div>
                                 <label>
@@ -106,9 +106,11 @@
                                 <span class="text-red-500 text-xs italic">{{ $message }}</span>
                             @enderror
                         </div>
-                            <!-- テキスト記入欄の有無が「有」の場合のみ出力ファイル反映の選択肢を表示 -->
+                        <!-- テキスト記入欄の有無が「有」の場合のみ出力ファイル反映の選択肢を表示 -->
+                        <div id="exportOptionsContainer"></div>
+                        <!-- <div class="mb-4">
                             @if(old('has_content', $template->has_content) == 1)
-                                <div class="mb-4">
+                                <div class="mb-4" >
                                     <label class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">出力ファイル反映</label>
                                     <div>
                                         <label>
@@ -124,7 +126,10 @@
                                         <span class="text-red-500 text-xs italic">{{ $message }}</span>
                                     @enderror
                                 </div>
+                            @elseif(old('has_content', $template->has_content) == 0)
+                                <input type="hidden" name="export" value="0">
                             @endif
+                        </div> -->
 
                         <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">更新</button>
                     </form>
@@ -133,3 +138,49 @@
         </div>
     </div>
 </x-app-layout>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const hasContentSelect = document.getElementById("has_content");
+        const exportOptionsContainer = document.getElementById("exportOptionsContainer");
+
+        console.log(`hasContentSelect:${hasContentSelect.value}`);
+        function updateExportOptions() {
+            // 一旦クリア
+            exportOptionsContainer.innerHTML = "";
+
+            if (hasContentSelect.value == "1") {
+                // 「有」の場合、ラジオボタンを追加
+                exportOptionsContainer.innerHTML = `
+                    <div class="mb-4">
+                        <label class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">出力ファイル反映</label>
+                        <div>
+                            <label>
+                                <input type="radio" name="export" value="0" {{ old('export', $template->export) == '0' ? 'checked' : '' }}>
+                                反映しない
+                            </label>
+                            <label class="ml-4">
+                                <input type="radio" name="export" value="1" {{ old('export', $template->export) == '1' ? 'checked' : '' }}>
+                                反映する
+                            </label>
+                        </div>
+                        @error('export')
+                            <span class="text-red-500 text-xs italic">{{ $message }}</span>
+                        @enderror
+                    </div>
+                `;
+            } else {
+                // 「無」の場合、hidden input を追加
+                exportOptionsContainer.innerHTML = `<div class="mb-4">
+                    <input type="hidden" name="export" value="0">
+                </div>`;
+            }
+            console.log(exportOptionsContainer.innerHTML);
+        }
+
+        // 初回読み込み時に適切な状態にする
+        updateExportOptions();
+
+        // select の変更を監視
+        hasContentSelect.addEventListener("change", updateExportOptions);
+    });
+</script>
