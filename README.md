@@ -93,8 +93,9 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 
 
 ## メモ
-- □エクセル出力
+- ☑︎エクセル出力
 - ☑︎メールでアドレス再登録機能
+- □エクセルには式を入れる。
 - □日本語化
 - □チェック機能の並び替え機能
 - □いいえの場合通知したい
@@ -123,6 +124,8 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 -     →tamplateテーブルにExcel反映フラグのカラム（reflection）を作る    （int）デフォルト非反映(0)
 -     →templateのviewで設定画面作成
 -     →excel出力用のコントローラで
+- □チェック時間を、ボタンを押した時間から引く。
+- □ページネーション
 
 # テーマカラー候補
 - #3300cc セーフカラー

@@ -59,6 +59,9 @@
                     @endif
                     <div id="items_container" class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg p-6">
                         <input type="hidden" name="attendance" value=null >
+                        <!-- <input type="hidden" id="clockInTime" name="clock_in_time" value=""> -->
+                        <!-- <input type="hidden" name="clock_in_time" id="clock_in_time"> -->
+
                         <!-- JavaScriptでここにフィルタリングされたデータを表示 -->
                     </div>
 
@@ -119,6 +122,18 @@
 
 
     <script>
+        // ■■追記■■ページロード時間を出勤時間として格納
+        const now = new Date();
+        let pageLoadedTime = now.getFullYear() + '-' +
+            ('0' + (now.getMonth() + 1)).slice(-2) + '-' +
+            ('0' + now.getDate()).slice(-2) + ' ' +
+            ('0' + now.getHours()).slice(-2) + ':' +
+            ('0' + now.getMinutes()).slice(-2) + ':' +
+            ('0' + now.getSeconds()).slice(-2);
+        const clockInTime = pageLoadedTime.split(' ')[1];
+        console.log(pageLoadedTime);
+        // ■■ここまで■■clockInTime
+
         // JSONデータをPHPから受け取る
         const jsonTemplates = `<?= $jsonTemplates ?>`;
 
@@ -194,8 +209,15 @@
                 templateId.value = row.id;
                 templateId.setAttribute('required', '');  // 必須属性を追加
 
+                const clockInTimeInput = document.createElement('input');
+                clockInTimeInput.type = 'hidden';
+                clockInTimeInput.name = 'clock_in_time';
+                clockInTimeInput.value = clockInTime;
+
+
                 titleBox.appendChild(titleP);
                 titleBox.appendChild(templateId);
+                titleBox.appendChild(clockInTimeInput);
                 item.appendChild(titleBox);
 
                 const contentsUl = document.createElement('ul');
@@ -378,6 +400,6 @@
         });
 
 
-
+        console.log(`データ：${data}`)
     </script>
 </x-app-layout>

@@ -122,6 +122,18 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ja.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ja.js"></script>
 <script>
+    // // 画面を開いた時間、初めて操作した時間を取得
+    // const pageLoadTime = new Date();
+    // console.log("ページを開いた時間:", pageLoadTime);
+    // document.addEventListener("click", () => {
+    //     console.log("クリックした時間:", new Date());
+    // });
+    // document.addEventListener("keydown", () => {
+    //     console.log("キーを押した時間:", new Date());
+    // });
+
+
+
     // 日本時間を考慮した日付範囲選択
     document.addEventListener('DOMContentLoaded', function() {
         const today = new Date();

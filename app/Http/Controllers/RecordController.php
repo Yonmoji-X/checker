@@ -125,6 +125,7 @@ class RecordController extends Controller
 
     public function store(Request $request)
     {
+        // dd($request->all());
         // バリデーション
         $validated = $request->validate([
             'member_id' => 'required|integer',
@@ -135,8 +136,10 @@ class RecordController extends Controller
             'photo_item_*' => 'nullable|file|image|max:2048',
             'content_item_*' => 'nullable|string|max:255',
             'temperature_item_*' => 'nullable|numeric',
+            // 'clock_in_time' => 'required|date_format:H:i:s',
+            'clock_in_time' => 'required|date_format:H:i:s',
         ]);
-
+        // dd($validated->all());
         // 現在のユーザーIDを取得
         $userId = Auth::id();
         $createdById = $userId;
@@ -152,6 +155,11 @@ class RecordController extends Controller
 
         // 現在時刻
         $now = Carbon::now('Asia/Tokyo');
+
+        // jsからページロード時間を取得→出勤時間
+        $clockInTime = $request->input('clock_in_time');
+        // dd($request->all());
+        // dd($clockInTime);
 
         // トランザクションの開始
         DB::beginTransaction();
@@ -173,7 +181,7 @@ class RecordController extends Controller
                 $attendance = Attendance::create([
                     'user_id' => $userId,
                     'member_id' => $request->input('member_id'),
-                    'clock_in' => $now,
+                    'clock_in' => $clockInTime,
                     'clock_out' => null,
                     'attendance' => $request->input('attendance'),
                     'attendance_date' => $now->toDateString(),

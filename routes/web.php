@@ -63,12 +63,14 @@ Route::middleware('guest')->group(function () {
     Route::get('/reset-password/{token}', [NewPasswordController::class, 'create'])->name('password.reset');
     Route::post('/reset-password', [NewPasswordController::class, 'store'])->name('password.update');
 });
-
+// Route::post('/record', [RecordController::class, 'store'])->name('record.store');
 // Route::post('/update-order', [RecordController::class, 'updateOrder'])->name('record.updateOrder');
 // Route::post('/update-template-order', [TemplateController::class, 'updateOrder'])->name('template.updateOrder');
 
 Route::post('/update-template-order', [TemplateController::class, 'updateOrder'])->name('template.updateOrder');
 
+// ■■追記■■ページのロード時間を出勤時間に使うため送る
+Route::post('/record', [RecordController::class, 'store'])->name('record.store');
 
 // ロールベースのミドルウェア設定（必要に応じて）
 // Route::middleware(['role:admin'])->group(function () {
