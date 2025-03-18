@@ -49,14 +49,14 @@
                         </div>
 
                         <div class="mt-4">
-    <form action="{{ route('attendance.export') }}" method="POST" onsubmit="return validateExportForm();">
+    <form action="{{ route('attendance.export') }}" method="POST" onsubmit="return validateExportForm();" id="exportData">
         @csrf
         <input type="hidden" name="member_id" id="export_member_id" value="">
         <input type="hidden" name="date_range" id="export_date_range" value="">
-        <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+        <!-- <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
             <img src="{{ asset('images/download_24dp_E8EAED_FILL0_wght400_GRAD0_opsz24.png') }}" alt="Download Icon" class="w-6 h-6 mr-2 text-gray-200 dark:text-gray-200" />
             <span class="text-gray-800 dark:text-gray-200">勤怠データをエクスポート</span>
-        </button>
+        </button> -->
     </form>
 </div>
 
@@ -220,6 +220,37 @@
 
         return true;
     }
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+    const selectMember = document.getElementById("member_id");
+    const exportForm = document.getElementById("exportData");
+
+    // ボタンのHTMLを作成
+    const buttonHtml = `
+        <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            <img src="{{ asset('images/download_24dp_E8EAED_FILL0_wght400_GRAD0_opsz24.png') }}" alt="Download Icon" class="w-6 h-6 mr-2 text-gray-200 dark:text-gray-200" />
+            <span class="text-gray-800 dark:text-gray-200">勤怠データをエクスポート</span>
+        </button>
+    `;
+
+    let buttonElement = null;
+
+    selectMember.addEventListener("change", function () {
+        if (selectMember.value !== "") {
+            if (!buttonElement) {
+                buttonElement = document.createElement("div");
+                buttonElement.innerHTML = buttonHtml;
+                exportForm.appendChild(buttonElement);
+            }
+        } else {
+            if (buttonElement) {
+                buttonElement.remove();
+                buttonElement = null;
+            }
+        }
+    });
+});
 </script>
 
 

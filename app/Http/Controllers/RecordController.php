@@ -160,6 +160,9 @@ class RecordController extends Controller
         $clockInTime = $request->input('clock_in_time');
         // dd($request->all());
         // dd($clockInTime);
+        if ($clockInTime == null) {
+            $clockInTime = $now;
+        }
 
         // トランザクションの開始
         DB::beginTransaction();
