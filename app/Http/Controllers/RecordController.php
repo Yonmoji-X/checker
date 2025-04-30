@@ -198,6 +198,17 @@ class RecordController extends Controller
                     return redirect()->back()->withErrors('既に退勤しています。');
                 }
                 $attendance->update(['clock_out' => $now]);
+
+                // 退勤時、休憩終了してなかったら、退勤時間を休憩終了時間に入れる。
+                $latestBreak = \App\Models\BreakSession::where('user_id', $userId)
+                ->where('member_id', $request->input('member_id')) // メンバーごとの休憩を対象
+                ->latest()
+                ->first();
+
+                if ($latestBreak && $latestBreak->break_in && !$latestBreak->break_out) {
+                    $latestBreak->break_out = $now;
+                    $latestBreak->save();
+                }
             }
 
             // Recordデータを保存
