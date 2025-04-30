@@ -3,7 +3,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-        {{ __('メンバー一覧') }}
+        {{ __('名簿') }}
         </h2>
     </x-slot>
 
@@ -14,6 +14,7 @@
             @foreach ($members as $member)
             <div class="mb-4 p-4 bg-gray-100 dark:bg-gray-700 rounded-lg">
                 <p class="text-gray-800 dark:text-gray-300">{{ $member->member }}</p>
+                <p class="text-gray-600 dark:text-gray-400 text-sm"> {{ $member->is_visible ? '💡表示' : '非表示' }}</p>
                 <p class="text-gray-600 dark:text-gray-400 text-sm">氏名: {{ $member->name }}</p>
                 <p class="text-gray-600 dark:text-gray-400 text-sm">email: {{ $member->email }}</p>
                 <!-- <p class="text-gray-600 dark:text-gray-400 text-sm">備考: {{ $member->content }}</p> -->

@@ -59,7 +59,9 @@ class BreakSessionController extends Controller
         }
 
         // 該当するユーザーのメンバーリストを取得
-        $members = Member::where('user_id', $userId)->latest()->get();
+        $members = Member::where('user_id', $userId)->where('is_visible', 1)
+        ->latest()
+        ->get();
 
         // ビューにデータを渡す
         return view('breaksessions.create', compact('members'));

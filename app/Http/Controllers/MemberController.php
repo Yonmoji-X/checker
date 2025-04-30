@@ -14,11 +14,10 @@ class MemberController extends Controller
      */
     public function index()
     {
-        Gate::authorize('isAdmin');//←追記
+        Gate::authorize('isAdmin'); //←追記
         $userId = Auth::id();
         $members = Member::where('user_id', $userId)->with('user')->latest()->get();
         return view('members.index', compact('members'));
-
     }
 
     /**
@@ -26,7 +25,7 @@ class MemberController extends Controller
      */
     public function create()
     {
-        Gate::authorize('isAdmin');//←追記
+        Gate::authorize('isAdmin'); //←追記
         return view('members.create');
     }
 
@@ -35,18 +34,17 @@ class MemberController extends Controller
      */
     public function store(Request $request)
     {
-        Gate::authorize('isAdmin');//←追記
+        Gate::authorize('isAdmin'); //←追記
+
         $request->validate([
             'name' => 'required|max:64',
-            'email' => 'required|email|max:255', // 'email' バリデーションルールを追加
+            'email' => 'required|email|max:255',
             'content' => 'required|max:255',
+            'is_visible' => 'boolean', // `is_visible` をブール値としてバリデーション
         ]);
 
-        $data = $request->only([
-            'name',
-            'email',
-            'content',
-        ]);
+        $data = $request->only(['name', 'email', 'content']);
+        $data['is_visible'] = $request->has('is_visible') ? 1 : 0; // チェックが入っていれば 1、なければ 0
 
         // ユーザーが認証済みであることを確認し、members リレーションを使用
         $request->user()->members()->create($data);
@@ -59,7 +57,7 @@ class MemberController extends Controller
      */
     public function show(Member $member)
     {
-        Gate::authorize('isAdmin');//←追記
+        Gate::authorize('isAdmin'); //←追記
         return view('members.show', compact('member'));
     }
 
@@ -68,7 +66,7 @@ class MemberController extends Controller
      */
     public function edit(Member $member)
     {
-        Gate::authorize('isAdmin');//←追記
+        Gate::authorize('isAdmin'); //←追記
         return view('members.edit', compact('member'));
     }
 
@@ -77,16 +75,21 @@ class MemberController extends Controller
      */
     public function update(Request $request, Member $member)
     {
-        Gate::authorize('isAdmin');//←追記
+        Gate::authorize('isAdmin'); //←追記
+
         $request->validate([
             'name' => 'required|max:64',
             'email' => 'required|email|max:255',
             'content' => 'required|max:255',
+            'is_visible' => 'boolean', // `is_visible` をブール値としてバリデーション
         ]);
 
-        $member->update($request->only(['name', 'email', 'content']));
+        $data = $request->only(['name', 'email', 'content']);
+        $data['is_visible'] = $request->has('is_visible') ? 1 : 0; // チェックボックスがオンなら 1、それ以外なら 0
 
-        return redirect()->route('members.index');
+        $member->update($data);
+
+        return redirect()->route('members.index')->with('success', 'メンバー情報が更新されました');
     }
 
     /**
@@ -94,8 +97,7 @@ class MemberController extends Controller
      */
     public function destroy(Member $member)
     {
-
-        Gate::authorize('isAdmin');//←追記
+        Gate::authorize('isAdmin'); //←追記
         $member->delete();
         return redirect()->route('members.index');
     }

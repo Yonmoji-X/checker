@@ -39,7 +39,10 @@ class AttendanceController extends Controller
             }
         }
 
-        $members = Member::where('user_id', $userId)->latest()->get();
+        $members = Member::where('user_id', $userId)
+        ->where('is_visible', 1)
+        ->latest()
+        ->get();
 
         // 勤怠データを日付範囲でフィルタリング
         $attendances = Attendance::where('user_id', $userId)

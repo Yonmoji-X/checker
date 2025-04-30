@@ -13,7 +13,8 @@ class Member extends Model
         'user_id',
         'name',
         'email',
-        'content'
+        'content',
+        'is_visible',
     ];
     public function user()
     {

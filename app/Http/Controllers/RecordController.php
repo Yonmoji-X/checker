@@ -52,7 +52,9 @@ class RecordController extends Controller
         $jsonRecords = json_encode($records, JSON_UNESCAPED_UNICODE);
 
         // メンバーを取得
-        $members = Member::where('user_id', $userId)->latest()->get();
+        $members = Member::where('user_id', $userId)->where('is_visible', 1)
+        ->latest()
+        ->get();
 
         // ------------
 
