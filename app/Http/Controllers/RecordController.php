@@ -133,7 +133,8 @@ class RecordController extends Controller
             'member_id' => 'required|integer',
             'member_status' => 'required|boolean',
             'clock_status' => 'required|boolean',
-            'template_id_*' => 'required|integer',
+            'template_id_*' => 'nullable|integer',
+            // 'template_id_*' => 'required|integer',
             'check_item_*' => 'nullable|boolean',
             'photo_item_*' => 'nullable|file|image|max:2048',
             'content_item_*' => 'nullable|string|max:255',
@@ -210,32 +211,50 @@ class RecordController extends Controller
                     $latestBreak->save();
                 }
             }
-
+        
             // Recordデータを保存
-            foreach ($request->all() as $key => $value) {
-                if (strpos($key, 'template_id_') === 0) {
-                    $index = str_replace('template_id_', '', $key);
-                    $maxId = Record::max('id') + 1;
-                    $head_id = $maxId - (int)$index;
+            $templateIds = collect($request->all())
+                ->filter(fn($v, $k) => str_starts_with($k, 'template_id_'));
 
-                    $recordData = [
-                        'user_id' => $userId,
-                        'created_by' => $createdById,
-                        'member_id' => $request->input('member_id'),
-                        'template_id' => $value,
-                        'member_status' => $request->input('member_status'),
-                        'clock_status' => $request->input('clock_status'),
-                        'attendance_id' => $attendance->id ?? null, // Attendance IDをセット
-                        'check_item' => $request->input("check_item_$index"),
-                        'content_item' => $request->input("content_$index"),
-                        'temperature_item' => $request->input("temperature_$index"),
-                        'photo_item' => $request->hasFile("photo_$index")
-                            ? $request->file("photo_$index")->store('photos', 'public')
-                            : null,
-                        'head_id' => $head_id,
-                    ];
+            if ($templateIds->isEmpty()) {
+                // templateがない場合でも最低限のRecordを作成
+                Record::create([
+                    'user_id' => $userId,
+                    'created_by' => $createdById,
+                    'member_id' => $request->input('member_id'),
+                    'template_id' => null,  // ここは null に
+                    'member_status' => $request->input('member_status'),
+                    'clock_status' => $request->input('clock_status'),
+                    'attendance_id' => $attendance->id ?? null,
+                    'head_id' => 1,
+                ]);
+            } else {
+                foreach ($request->all() as $key => $value) {
+                    if (strpos($key, 'template_id_') === 0) {
+                        $index = str_replace('template_id_', '', $key);
+                        $maxId = Record::max('id') + 1;
+                        $head_id = $maxId - (int)$index;
 
-                    Record::create($recordData);
+                        $recordData = [
+                            'user_id' => $userId,
+                            'created_by' => $createdById,
+                            'member_id' => $request->input('member_id'),
+                            'template_id' => $value,
+                            'member_status' => $request->input('member_status'),
+                            'clock_status' => $request->input('clock_status'),
+                            'attendance_id' => $attendance->id ?? null, // Attendance IDをセット
+                            'check_item' => $request->input("check_item_$index"),
+                            'content_item' => $request->input("content_$index"),
+                            'temperature_item' => $request->input("temperature_$index"),
+                            'photo_item' => $request->hasFile("photo_$index")
+                                ? $request->file("photo_$index")->store('photos', 'public')
+                                : null,
+                            'head_id' => $head_id,
+                        ];
+
+                        Record::create($recordData);
+
+                    }
                 }
             }
 

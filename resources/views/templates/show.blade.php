@@ -19,7 +19,7 @@
             <p class="text-gray-600 dark:text-gray-400 text-sm"> {{ $template->clock_status ? '出勤時':'退勤時' }}</p>
             <ul class="text-gray-600 dark:text-gray-400 text-sm">
                 <li>・Check 欄: {{ $template->has_check ? '✅':'-' }}</li>
-                <li>・写真　欄: {{ $template->has_photo ? '✅':'-' }}</li>
+                <!-- <li>・写真　欄: {{ $template->has_photo ? '✅':'-' }}</li> -->
                 <li>・文章　欄: {{ $template->has_content ? '✅':'-' }}</li>
                 <li>・温度　欄: {{ $template->has_temperature ? '✅':'-' }}</li>
             </ul>

@@ -1,0 +1,19 @@
+初期起動
+WSL立ち上げ
+>wsl -d Ubuntu
+
+ディレクトリに移動
+>cd /mnt/c/Users/yushi/projects/checker
+
+起動
+>./vendor/bin/sail up -d
+-d：デタッチドモード（バックグラウンド実行）
+
+ログ確認
+>./vendor/bin/sail logs -f
+-f：リアルタイム表示
+
+
+コマンドの実行方法2パターン
+> ./vendor/bin/sail コマンド
+> docker-compose exec laravel.test コマンド

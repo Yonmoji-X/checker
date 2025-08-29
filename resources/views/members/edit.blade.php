@@ -23,7 +23,7 @@
                     @enderror
                 </div>
                 <div class="mb-4">
-                    <label for="email" class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Email</label>
+                    <label for="email" class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">メールアドレス</label>
                     <input type="text" name="email" id="email" value="{{ $member->email }}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline">
                     @error('email')
                         <span class="text-red-500 text-xs italic">{{ $message }}</span>
@@ -37,14 +37,24 @@
                     @enderror
                 </div>
                 <!-- トグルボタン -->
-                <div class="mb-4">
+                <!-- <div class="mb-4">
                     <label for="is_visible" class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">表示設定</label>
                     <label class="inline-flex items-center cursor-pointer">
-                        <!-- <span class="mr-2 text-sm">OFF</span> -->
                         <input type="checkbox" name="is_visible" id="is_visible" {{ $member->is_visible ? 'checked' : '' }} class="toggle-checkbox">
                         <span class="ml-2 text-sm">表示</span>
                     </label>
+                </div> -->
+                <div class="mb-4">
+                    <label for="is_visible" class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">表示設定</label>
+                    <label for="is_visible" class="inline-flex items-center">
+                        <input type="checkbox" name="is_visible" id="is_visible" value="1"
+                            {{ $member->is_visible ? 'checked' : '' }}>
+                        <span class="ml-2">表示</span>
+                    </label>
                 </div>
+
+
+
 
                 <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">更新</button>
             </form>

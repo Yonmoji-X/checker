@@ -1,5 +1,6 @@
 <!-- resources/views/members/create.blade.php -->
 
+
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
@@ -37,6 +38,7 @@
                                 <span class="text-red-500 text-xs italic">{{ $message }}</span>
                             @enderror
                         </div>
+                        <input type="hidden" name="is_visible" value="1">
 
                         <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">登録</button>
                     </form>

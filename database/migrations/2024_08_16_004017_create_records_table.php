@@ -24,6 +24,7 @@ return new class extends Migration
                 ->onDelete('restrict'); // メンバーが削除された場合の制限
 
             $table->foreignId('template_id')
+                ->nullable() 
                 ->constrained('templates') // 'templates' テーブルの 'id' を参照→templatesテーブルにないものは入れない
                 ->onDelete('restrict'); // テンプレートが削除された場合の制限
 

@@ -40,11 +40,13 @@ class MemberController extends Controller
             'name' => 'required|max:64',
             'email' => 'required|email|max:255',
             'content' => 'required|max:255',
-            'is_visible' => 'boolean', // `is_visible` をブール値としてバリデーション
+            // 'is_visible' => 'boolean', // `is_visible` をブール値としてバリデーション
+            'is_visible' => 'sometimes|boolean', // `is_visible` をブール値としてバリデーション
         ]);
 
         $data = $request->only(['name', 'email', 'content']);
-        $data['is_visible'] = $request->has('is_visible') ? 1 : 0; // チェックが入っていれば 1、なければ 0
+        $data['is_visible'] = $request->has('is_visible'); // チェックが入っていれば 1、なければ 0
+        // $data['is_visible'] = $request->has('is_visible') ? 1 : 0; // チェックが入っていれば 1、なければ 0
 
         // ユーザーが認証済みであることを確認し、members リレーションを使用
         $request->user()->members()->create($data);
@@ -81,11 +83,13 @@ class MemberController extends Controller
             'name' => 'required|max:64',
             'email' => 'required|email|max:255',
             'content' => 'required|max:255',
-            'is_visible' => 'boolean', // `is_visible` をブール値としてバリデーション
+            // 'is_visible' => 'boolean', // `is_visible` をブール値としてバリデーション
+            'is_visible' => 'sometimes|boolean', // `is_visible` をブール値としてバリデーション
         ]);
 
         $data = $request->only(['name', 'email', 'content']);
-        $data['is_visible'] = $request->has('is_visible') ? 1 : 0; // チェックボックスがオンなら 1、それ以外なら 0
+        // $data['is_visible'] = $request->has('is_visible') ? 1 : 0; // チェックボックスがオンなら 1、それ以外なら 0
+        $data['is_visible'] = $request->boolean('is_visible');
 
         $member->update($data);
 

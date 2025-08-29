@@ -38,6 +38,7 @@ class Attendance extends Model
     {
         return $this->hasMany(BreakSession::class);
     }
+    
 
     // public function records()
     // {

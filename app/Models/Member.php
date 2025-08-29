@@ -16,6 +16,16 @@ class Member extends Model
         'content',
         'is_visible',
     ];
+
+        /**
+     * キャスト設定
+     */
+    protected $casts = [
+        'is_visible' => 'boolean',
+    ];
+
+
+    
     public function user()
     {
         return $this->belongsTo(User::class);
