@@ -58,12 +58,23 @@ class AttendanceExport implements FromCollection, WithHeadings
             }
 
             // 労働時間を「時間」形式に変換（時間と分に分ける）
-            $hours = floor($actualWorkDuration / 60);
-            $minutes = $actualWorkDuration % 60;
-            $formattedWorkDuration = sprintf('%d時間 %d分', $hours, $minutes);
+            // $hours = floor($actualWorkDuration / 60);
+            // $minutes = $actualWorkDuration % 60;
+            // $formattedWorkDuration = sprintf('%d時間 %d分', $hours, $minutes);
+
+            // 労働時間を「Excel 関数」形式で出力
+            // $rowNumber = 'ROW()'; // Excel 側で自動的に行番号を取得
+            $formattedWorkDuration = '=INT(INDIRECT("G"&ROW())) & "時間" & ROUND((INDIRECT("G"&ROW()) - INT(INDIRECT("G"&ROW()))) * 60, 0) & "分"';
+
 
             // 労働時間（時間単位）を計算（分を時間に換算、小数点以下も表示）
-            $workDurationInHours = round($actualWorkDuration / 60, 2);
+            // $workDurationInHours = round($actualWorkDuration / 60, 2);
+
+            // 労働時間（時間単位）も Excel 関数
+            $workDurationInHours = '=ROUND(HOUR(INDIRECT("D"&ROW()) - INDIRECT("C"&ROW())) +
+       MINUTE(INDIRECT("D"&ROW()) - INDIRECT("C"&ROW()))/60 +
+       SECOND(INDIRECT("D"&ROW()) - INDIRECT("C"&ROW()))/3600 -
+       SUBSTITUTE(INDIRECT("E"&ROW()), "分", "")/60, 2)';
 
             // templateのexportが1のrecordのみ取得
             $contentItems = $attendance->records
