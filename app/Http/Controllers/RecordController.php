@@ -140,7 +140,7 @@ class RecordController extends Controller
             'content_item_*' => 'nullable|string|max:255',
             'temperature_item_*' => 'nullable|numeric',
             // 'clock_in_time' => 'required|date_format:H:i:s',
-            'clock_in_time' => 'required|date_format:H:i:s',
+            'clock_in_time' => 'nullable|date_format:H:i:s',
         ]);
         // dd($validated->all());
         // 現在のユーザーIDを取得
@@ -168,7 +168,11 @@ class RecordController extends Controller
         // }
 
         // 出勤時間はサーバー時間を使う
-        $clockInTime = $now;
+        // $clockInTime = $now;
+        $clockInTime = $request->input('clock_in_time');
+        if (!$clockInTime) {
+            $clockInTime = now()->format('H:i:s'); // サーバー時間をセット
+        }
 
         // トランザクションの開始
         DB::beginTransaction();
@@ -218,18 +222,23 @@ class RecordController extends Controller
             // Recordデータを保存
             $templateIds = collect($request->all())
                 ->filter(fn($v, $k) => str_starts_with($k, 'template_id_'));
+            // dd($templateIds);
+            // dd($templateIds, $templateIds->toArray(), $templateIds->isEmpty());
 
             if ($templateIds->isEmpty()) {
+                // ⭐ template_id がない場合は登録せず、警告メッセージを返す
+                // return redirect()->back()->withErrors('アイテムを作成してください。');
                 // templateがない場合でも最低限のRecordを作成
+                // ⭐ テンプレートがない場合は最低限の Record を作成
                 Record::create([
-                    'user_id' => $userId,
-                    'created_by' => $createdById,
-                    'member_id' => $request->input('member_id'),
-                    'template_id' => null,  // ここは null に
+                    'user_id'       => $userId,
+                    'created_by'    => $createdById,
+                    'member_id'     => $request->input('member_id'),
+                    'template_id'   => null, // 無し
                     'member_status' => $request->input('member_status'),
-                    'clock_status' => $request->input('clock_status'),
+                    'clock_status'  => $request->input('clock_status'),
                     'attendance_id' => $attendance->id ?? null,
-                    'head_id' => 1,
+                    'head_id'       => Record::max('id') + 1,
                 ]);
             } else {
                 foreach ($request->all() as $key => $value) {
