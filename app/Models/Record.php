@@ -40,7 +40,7 @@ class Record extends Model
     // テンプレートとのリレーション
     public function template()
     {
-        return $this->belongsTo(Template::class)->wihtDefault();
+        return $this->belongsTo(Template::class);
     }
 
     public function attendance()
