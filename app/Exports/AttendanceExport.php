@@ -7,9 +7,10 @@ use App\Models\Record;
 use App\Models\Template;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use Carbon\Carbon;
 
-class AttendanceExport implements FromCollection, WithHeadings
+class AttendanceExport implements FromCollection, WithHeadings, WithColumnWidths
 {
     protected $memberId;
     protected $startDate;
@@ -117,18 +118,33 @@ class AttendanceExport implements FromCollection, WithHeadings
             '休憩時間（分）',
             '労働時間',
             '労働時間（時間）',
-            '備考・作業内容',
+            '備考',
         ];
 
         // どれかのデータに作業内容が含まれている場合は追加
         if (Record::whereHas('template', function($q) {
             $q->where('export', 1);
         })->exists()) {
-            $headings[] = '作業内容';
+            $headings[] = '補足';
         }
 
 
         return $headings;
+    }
+
+    public function columnWidths(): array
+    {
+        return [
+            'A' => 14, // 氏名
+            'B' => 10, // 日付
+            'C' => 10, // 出勤時刻
+            'D' => 10, // 退勤時刻
+            'E' => 15, // 休憩時間（分）
+            'F' => 17, // 労働時間
+            'G' => 20, // 労働時間（時間）
+            'H' => 30, // 備考・作業内容
+            'I' => 50, // 作業内容（必要に応じて追加）
+        ];
     }
 
 }
