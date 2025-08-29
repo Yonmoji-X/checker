@@ -159,13 +159,16 @@ class RecordController extends Controller
         // 現在時刻
         $now = Carbon::now('Asia/Tokyo');
 
-        // jsからページロード時間を取得→出勤時間
-        $clockInTime = $request->input('clock_in_time');
-        // dd($request->all());
-        // dd($clockInTime);
-        if ($clockInTime == null) {
-            $clockInTime = $now;
-        }
+        // // jsからページロード時間を取得→出勤時間
+        // $clockInTime = $request->input('clock_in_time');
+        // // dd($request->all());
+        // // dd($clockInTime);
+        // if ($clockInTime == null) {
+        //     $clockInTime = $now;
+        // }
+
+        // 出勤時間はサーバー時間を使う
+        $clockInTime = $now;
 
         // トランザクションの開始
         DB::beginTransaction();

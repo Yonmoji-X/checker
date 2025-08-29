@@ -57,7 +57,7 @@
                             @enderror
                         </div>
 
-                        <div class="mb-4">
+                        <!-- <div class="mb-4">
                             <label for="has_photo" class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">写真投稿の有無</label>
                             <select name="has_photo" id="has_photo" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline">
                                 <option value="0" {{ old('has_photo', $template->has_photo) == '0' ? 'selected' : '' }}>無</option>
@@ -66,7 +66,9 @@
                             @error('has_photo')
                                 <span class="text-red-500 text-xs italic">{{ $message }}</span>
                             @enderror
-                        </div>
+                        </div> -->
+                        <!-- 写真投稿の有無（固定値0） -->
+                        <input type="hidden" name="has_photo" value="0">
 
                         <!-- テキスト記入欄の有無 -->
                         <div class="mb-4">
