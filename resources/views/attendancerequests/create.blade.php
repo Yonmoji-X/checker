@@ -49,7 +49,11 @@
                         </div>
                         <div class="flex-1">
                             <label for="attendance_date" class="block text-gray-700 dark:text-gray-300 font-medium mb-2">出勤日</label>
-                            <input type="date" name="attendance_date" id="attendance_date" class="w-full py-2 px-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:ring-2 focus:ring-blue-400 focus:outline-none" required>
+                            <!-- <input type="date" name="attendance_date" id="attendance_date" class="w-full py-2 px-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:ring-2 focus:ring-blue-400 focus:outline-none" required> -->
+                             <input type="date" name="attendance_date" id="attendance_date"
+                                max="{{ date('Y-m-d') }}"
+                                class="w-full py-2 px-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:ring-2 focus:ring-blue-400 focus:outline-none" required>
+
                             @error('attendance_date')
                                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                             @enderror
