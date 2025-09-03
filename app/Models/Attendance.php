@@ -16,6 +16,8 @@ class Attendance extends Model
         'clock_out',
         'attendance',
         'attendance_date',
+        'attendance_request_id', // 申請ID
+        'is_post_request',       // 承認時フラグ
     ];
 
     /**

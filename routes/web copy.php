@@ -48,20 +48,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/attendancerequests/create', [AttendanceRequestController::class, 'create'])->name('attendancerequests.create');
     Route::post('/attendancerequests', [AttendanceRequestController::class, 'store'])->name('attendancerequests.store');
 
-    // 勤怠申請一覧（ユーザー用）
-    Route::get('/attendancerequests', [AttendanceRequestController::class, 'index'])->name('attendancerequests.index');
-
     // 勤怠申請（管理者用）
-    // 管理者用
-    Route::middleware(['auth'])->group(function () {
+    Route::middleware(['can:admin'])->group(function () {
         Route::get('/attendancerequests', [AttendanceRequestController::class, 'index'])->name('attendancerequests.index');
         Route::get('/attendancerequests/{id}/edit', [AttendanceRequestController::class, 'edit'])->name('attendancerequests.edit');
         Route::put('/attendancerequests/{id}', [AttendanceRequestController::class, 'update'])->name('attendancerequests.update');
-        Route::post('attendancerequests/{id}/approve', [AttendanceRequestController::class, 'approve'])->name('attendancerequests.approve');
         Route::post('/attendancerequests/{id}/reject', [AttendanceRequestController::class, 'reject'])->name('attendancerequests.reject');
     });
-
-
 
     // PUT メソッド（attendances 更新用）
     Route::put('/attendances/{id}', [AttendanceController::class, 'update']);

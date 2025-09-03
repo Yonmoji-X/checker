@@ -27,7 +27,7 @@ class BreakSessionController extends Controller
 
         // ログインユーザーに関連するBreakSessionを取得し、関連するMemberをロード
         $breaksessions = BreakSession::where('user_id', $userId)
-                                    ->with('member')  // memberリレーションをロード
+                                    ->with('member', 'attendanceRequest')  // memberリレーションをロード
                                     ->orderBy('created_at', 'desc')
                                     ->get();
 

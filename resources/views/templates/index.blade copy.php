@@ -8,7 +8,7 @@
     </x-slot>
 
     <div class="py-6">
-        <div class="max-w-xl mx-auto sm:px-6 lg:px-8 space-y-6 ">
+        <div class="max-w-xl mx-auto sm:px-6 lg:px-8 space-y-6">
 
             @foreach ($templates as $template)
             <div class="p-6 bg-white dark:bg-gray-800 shadow-md rounded-3xl overflow-hidden transition-transform transform hover:scale-[1.02]">

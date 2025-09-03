@@ -11,51 +11,53 @@
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <a href="{{ url('/records/create') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4 inline-block">
-                        出退勤
-                    </a>
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-                        <div>
-                            <!-- <input type="hidden" name=""> -->
-                            <label for="member_status" class="block text-sm font-medium text-gray-700 dark:text-gray-300">メンバーの種類</label>
-                            <select name="member_status" id="member_status" onchange="filterDataRecords()" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                                <!-- <option value="">選択してください</option> -->
-                                <option value="0">従業員</option>
-                                <option value="1">管理者</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label for="clock_status" class="block text-sm font-medium text-gray-700 dark:text-gray-300">ステータス</label>
-                            <select name="clock_status" id="clock_status" onchange="filterDataRecords()" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                                <!-- <option value="">選択してください</option> -->
-                                <option value="1">出勤時</option>
-                                <option value="0">退勤時</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label for="member_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">メンバー</label>
-                            <select name="member_id" id="member_id" onchange="filterDataRecords()" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                                @foreach ($members as $member)
-                                        <option value="{{ $member->id }}">{{ $member->name }}</option>
-                                
-                                @endforeach
-                            </select>
-                        </div>
+        <div class="flex justify-center max-w-3xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg w-full max-w-xl p-6">
+                <a href="{{ url('/records/create') }}" 
+                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4 inline-block">
+                    出退勤
+                </a>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+                    <div>
+                        <label for="member_status" class="block text-sm font-medium text-gray-700 dark:text-gray-300">メンバーの種類</label>
+                        <select name="member_status" id="member_status" onchange="filterDataRecords()"
+                                class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white dark:bg-gray-700
+                                    dark:border-gray-600 dark:text-gray-300 rounded-lg shadow-sm focus:outline-none
+                                    focus:ring-2 focus:ring-blue-400 focus:border-blue-400 sm:text-sm">
+                            <option value="0">従業員</option>
+                            <option value="1">管理者</option>
+                        </select>
                     </div>
-                    <div id="items_container" class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg p-6">
-                        <!-- JavaScriptでここにフィルタリングされたデータを表示 -->
+                    <div>
+                        <label for="clock_status" class="block text-sm font-medium text-gray-700 dark:text-gray-300">ステータス</label>
+                        <select name="clock_status" id="clock_status" onchange="filterDataRecords()"
+                                class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white dark:bg-gray-700
+                                    dark:border-gray-600 dark:text-gray-300 rounded-lg shadow-sm focus:outline-none
+                                    focus:ring-2 focus:ring-blue-400 focus:border-blue-400 sm:text-sm">
+                            <option value="1">出勤時</option>
+                            <option value="0">退勤時</option>
+                        </select>
                     </div>
-                    <!-- ==================== -->
-
-                    <!-- ==================== -->
+                    <div>
+                        <label for="member_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">メンバー</label>
+                        <select name="member_id" id="member_id" onchange="filterDataRecords()"
+                                class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white dark:bg-gray-700
+                                    dark:border-gray-600 dark:text-gray-300 rounded-lg shadow-sm focus:outline-none
+                                    focus:ring-2 focus:ring-blue-400 focus:border-blue-400 sm:text-sm">
+                            @foreach ($members as $member)
+                                <option value="{{ $member->id }}">{{ $member->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
 
+                <div id="items_container" class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg p-6">
+                    <!-- JavaScriptでここにフィルタリングされたデータを表示 -->
+                </div>
             </div>
         </div>
     </div>
+
     <script>
     let basePath = "{{ url('/') }}";
     console.log("_basePath_");

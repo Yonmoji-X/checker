@@ -13,6 +13,7 @@ class BreakSession extends Model
         'created_by',
         'member_id',
         'attendance_id',
+        'attendance_request_id', // 申請データのID
         'break_in',
         'break_out',
         'break_duration',
@@ -40,5 +41,10 @@ class BreakSession extends Model
     public function attendance()
     {
         return $this->belongsTo(Attendance::class);
+    }
+
+    public function attendanceRequest()
+    {
+        return $this->belongsTo(AttendanceRequest::class);
     }
 }

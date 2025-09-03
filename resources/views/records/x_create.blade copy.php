@@ -11,8 +11,8 @@
     </x-slot>
 
     <div class="py-12">
-        <div class="flex justify-center max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg max-w-xl w-full p-6">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg p-6">
                 <form method="POST" action="{{ route('records.store') }}" id="postForm">
                     @csrf
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
