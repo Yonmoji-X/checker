@@ -8,7 +8,7 @@
     </x-slot>
 
     <div class="py-8">
-        <div class="max-w-2xl mx-auto sm:px-6 lg:px-8 mt-6">
+        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8 mt-6">
             <div class="bg-white dark:bg-gray-800 shadow-md sm:rounded-lg overflow-hidden">
                 <!-- 横スクロール対応のラッパー -->
                 <div class="overflow-x-auto">
