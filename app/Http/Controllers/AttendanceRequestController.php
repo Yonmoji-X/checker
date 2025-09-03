@@ -32,9 +32,33 @@ class AttendanceRequestController extends Controller
      */
     public function create()
     {
-        $members = Member::all();
+        // 現在のユーザーIDを取得
+        $userId = Auth::id();
+
+        // 現在のログインユーザー情報を取得
+        $currentUser = Auth::user();
+
+        // ユーザーが「user」ロールの場合
+        if ($currentUser->role === 'user') {
+            // groupテーブルから現在のユーザーIDに関連するadmin_idを取得
+            $group = Group::where('user_id', $userId)->first();
+
+            // groupが存在すれば、admin_idを$userIdとして使用
+            if ($group) {
+                $userId = $group->admin_id;
+            }
+        }
+
+        // 該当するユーザーのメンバーリストを取得（is_visible フィルターも必要なら追加）
+        $members = Member::where('user_id', $userId)
+            ->where('is_visible', 1)
+            ->latest()
+            ->get();
+
+        // ビューにデータを渡す
         return view('attendancerequests.create', compact('members'));
     }
+
 
     /**
      * 保存処理
