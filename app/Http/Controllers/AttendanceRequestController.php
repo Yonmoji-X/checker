@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Attendance;
 use App\Models\AttendanceRequest;
 use App\Models\Member;
+use App\Models\Group;   
 use App\Models\BreakSession;
 
 use Illuminate\Http\Request;
@@ -38,7 +39,7 @@ class AttendanceRequestController extends Controller
         // 現在のログインユーザー情報を取得
         $currentUser = Auth::user();
 
-        // ユーザーが「user」ロールの場合
+        // ユーザーがuser roleの場合
         if ($currentUser->role === 'user') {
             // groupテーブルから現在のユーザーIDに関連するadmin_idを取得
             $group = Group::where('user_id', $userId)->first();
@@ -48,13 +49,7 @@ class AttendanceRequestController extends Controller
                 $userId = $group->admin_id;
             }
         }
-
-        // 該当するユーザーのメンバーリストを取得（is_visible フィルターも必要なら追加）
-        $members = Member::where('user_id', $userId)
-            ->where('is_visible', 1)
-            ->latest()
-            ->get();
-
+        $members = Member::where('user_id', $userId)->latest()->get();
         // ビューにデータを渡す
         return view('attendancerequests.create', compact('members'));
     }
