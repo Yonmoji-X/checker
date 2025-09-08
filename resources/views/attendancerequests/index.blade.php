@@ -84,13 +84,18 @@
         const tableBody = document.getElementById('attendanceRequestTableBody'); // ← typo修正
         const paginationContainer = document.getElementById('paginationContainer');
 
+        // filter用の絶対URLをrouteで取得
+        const filterUrl = "{{ route('attendancerequests.filter') }}"
+
         function fetchAttendanceRequests(url = null) {
             const params = new URLSearchParams();
             if(memberSelect.value) params.append('member_id', memberSelect.value);
             if(startDateInput.value) params.append('start_date', startDateInput.value);
             if(endDateInput.value) params.append('end_date', endDateInput.value);
 
-            url = url || `/attendancerequests/filter?${params.toString()}`;
+            // url = url || `/attendancerequests/filter?${params.toString()}`;
+            url = url || filterUrl + '?' + params.toString();
+            // url = url || `{filterUrl}?${params.toString()}`;
 
             fetch(url)
                 .then(res => res.json())

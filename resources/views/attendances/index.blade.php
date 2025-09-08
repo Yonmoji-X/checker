@@ -123,6 +123,9 @@ const exportMemberInput = document.getElementById('export_member_id');
 const exportStartInput = document.getElementById('export_start_date');
 const exportEndInput = document.getElementById('export_end_date');
 
+// filter用の絶対URLをrouteで取得（本番環境でのパスずれ防止）
+const filterUrl = "{{ route('attendances.filter') }}"
+
 function updateExportInputs() {
     exportMemberInput.value = memberSelect.value;
     exportStartInput.value = startDateInput.value;
@@ -135,7 +138,9 @@ function fetchAttendances(url = null) {
     if(startDateInput.value) params.append('start_date', startDateInput.value);
     if(endDateInput.value) params.append('end_date', endDateInput.value);
 
-    url = url || `/attendances/filter?${params.toString()}`;
+    // url = url || `/attendances/filter?${params.toString()}`;
+    url = url || filterUrl + '?' + params.toString();
+    // url = url || `{filterUrl}?${params.toString()}`;
 
     fetch(url)
         .then(res => res.json())
