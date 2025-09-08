@@ -34,9 +34,18 @@
                         <label for="member_id" class="block text-gray-700 dark:text-gray-300 font-medium mb-2">メンバー</label>
                         <select name="member_id" id="member_id" class="w-full py-2 px-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:ring-2 focus:ring-blue-400 focus:outline-none">
                             @foreach ($members as $member)
-                                <option value="{{ $member->id }}">{{ $member->name }}</option>
+                                @php
+                                    // そのメンバーが現在休憩中かチェック
+                                    $isCurrentlyOnBreak = $member->attendances()->latest('attendance_date')->first()?->breakSessions->contains(function($breakSession) {
+                                        return $breakSession->break_in && is_null($breakSession->break_out);
+                                    });
+                                @endphp
+                                <option value="{{ $member->id }}">
+                                    {{ $member->name }}@if($isCurrentlyOnBreak) （休憩中）@endif
+                                </option>
                             @endforeach
                         </select>
+
                         @error('breaksession')
                             <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                         @enderror

@@ -34,7 +34,7 @@ class AttendanceController extends Controller
 
         $attendances = $query->whereBetween('attendance_date', [$startDate, $endDate])
                             ->orderByDesc('attendance_date')
-                            ->paginate(5)
+                            ->paginate(7)
                             ->withQueryString();
 
         return view('attendances.index', compact('members', 'attendances', 'startDate', 'endDate'));
@@ -60,7 +60,7 @@ class AttendanceController extends Controller
 
         $attendances = $query->whereBetween('attendance_date', [$startDate, $endDate])
                             ->orderByDesc('attendance_date')
-                            ->paginate(5)
+                            ->paginate(7)
                             ->withQueryString();
 
         $rows = view('attendances._table_rows', compact('attendances'))->render();
