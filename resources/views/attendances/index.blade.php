@@ -113,64 +113,64 @@
     </div>
 
 <script>
-const memberSelect = document.getElementById('member_id');
-const startDateInput = document.getElementById('start_date');
-const endDateInput = document.getElementById('end_date');
-const tableBody = document.getElementById('attendanceTableBody');
-const paginationContainer = document.getElementById('paginationContainer');
+    const memberSelect = document.getElementById('member_id');
+    const startDateInput = document.getElementById('start_date');
+    const endDateInput = document.getElementById('end_date');
+    const tableBody = document.getElementById('attendanceTableBody');
+    const paginationContainer = document.getElementById('paginationContainer');
 
-const exportMemberInput = document.getElementById('export_member_id');
-const exportStartInput = document.getElementById('export_start_date');
-const exportEndInput = document.getElementById('export_end_date');
+    const exportMemberInput = document.getElementById('export_member_id');
+    const exportStartInput = document.getElementById('export_start_date');
+    const exportEndInput = document.getElementById('export_end_date');
 
-// filter用の絶対URLをrouteで取得（本番環境でのパスずれ防止）
-const filterUrl = "{{ route('attendances.filter') }}"
+    // filter用の絶対URLをrouteで取得（本番環境でのパスずれ防止）
+    const filterUrl = "{{ route('attendances.filter') }}"
 
-function updateExportInputs() {
-    exportMemberInput.value = memberSelect.value;
-    exportStartInput.value = startDateInput.value;
-    exportEndInput.value = endDateInput.value;
-}
+    function updateExportInputs() {
+        exportMemberInput.value = memberSelect.value;
+        exportStartInput.value = startDateInput.value;
+        exportEndInput.value = endDateInput.value;
+    }
 
-function fetchAttendances(url = null) {
-    const params = new URLSearchParams();
-    if(memberSelect.value) params.append('member_id', memberSelect.value);
-    if(startDateInput.value) params.append('start_date', startDateInput.value);
-    if(endDateInput.value) params.append('end_date', endDateInput.value);
+    function fetchAttendances(url = null) {
+        const params = new URLSearchParams();
+        if(memberSelect.value) params.append('member_id', memberSelect.value);
+        if(startDateInput.value) params.append('start_date', startDateInput.value);
+        if(endDateInput.value) params.append('end_date', endDateInput.value);
 
-    // url = url || `/attendances/filter?${params.toString()}`;
-    url = url || filterUrl + '?' + params.toString();
-    // url = url || `{filterUrl}?${params.toString()}`;
+        // url = url || `/attendances/filter?${params.toString()}`;
+        url = url || filterUrl + '?' + params.toString();
+        // url = url || `{filterUrl}?${params.toString()}`;
 
-    fetch(url)
-        .then(res => res.json())
-        .then(data => {
-            tableBody.innerHTML = data.rows;
-            paginationContainer.innerHTML = data.pagination;
-            updateExportInputs();
-            attachPaginationLinks();
-        })
-        .catch(err => console.error(err));
-}
+        fetch(url)
+            .then(res => res.json())
+            .then(data => {
+                tableBody.innerHTML = data.rows;
+                paginationContainer.innerHTML = data.pagination;
+                updateExportInputs();
+                attachPaginationLinks();
+            })
+            .catch(err => console.error(err));
+    }
 
-function attachPaginationLinks() {
-    document.querySelectorAll('#paginationContainer a').forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            fetchAttendances(this.href);
+    function attachPaginationLinks() {
+        document.querySelectorAll('#paginationContainer a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                fetchAttendances(this.href);
+            });
         });
+    }
+
+    // 初期ロード時にAjaxでデータ取得
+    document.addEventListener('DOMContentLoaded', () => {
+        fetchAttendances();
     });
-}
 
-// 初期ロード時にAjaxでデータ取得
-document.addEventListener('DOMContentLoaded', () => {
-    fetchAttendances();
-});
-
-// セレクターや日付変更でAjax更新
-memberSelect.addEventListener('change', () => fetchAttendances());
-startDateInput.addEventListener('change', () => fetchAttendances());
-endDateInput.addEventListener('change', () => fetchAttendances());
+    // セレクターや日付変更でAjax更新
+    memberSelect.addEventListener('change', () => fetchAttendances());
+    startDateInput.addEventListener('change', () => fetchAttendances());
+    endDateInput.addEventListener('change', () => fetchAttendances());
 </script>
 
 </x-app-layout>

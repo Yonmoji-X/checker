@@ -6,7 +6,6 @@ use App\Models\BreakSession;
 use App\Models\Attendance;
 use App\Models\Member;
 use App\Models\Group;
-use App\Models\AttendanceRequest;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -16,106 +15,23 @@ class BreakSessionController extends Controller
     /**
      * リソースの一覧を表示します。
      */
-    public function index(Request $request)
+    public function index()
     {
-        // $user = Auth::user();
+        $user = Auth::user();
 
-        // if ($user->role === 'admin') {
-        //     $userId = $user->id;
-        // } else {
-        //     $userId = Group::where('user_id', $user->id)->value('admin_id');
-        // }
-
-        // // ログインユーザーに関連するBreakSessionを取得し、関連するMemberをロード
-        // $breaksessions = BreakSession::where('user_id', $userId)
-        //                             ->with('member', 'attendanceRequest')  // memberリレーションをロード
-        //                             ->orderBy('created_at', 'desc')
-        //                             // ->paginate(7);
-        //                             ->get();
-
-        // return view('breaksessions.index', compact('breaksessions'));
-
-        $userId = Auth::id();
-        $currentUser = Auth::user();
-
-        if ($currentUser->role === 'user') {
-            $group = Group::where('user_id', $userId)->first();
-            if ($group) $userId = $group->admin_id;
+        if ($user->role === 'admin') {
+            $userId = $user->id;
+        } else {
+            $userId = Group::where('user_id', $user->id)->value('admin_id');
         }
 
-        $members = Member::where('user_id', $userId)->where('is_visible', 1)->get();
+        // ログインユーザーに関連するBreakSessionを取得し、関連するMemberをロード
+        $breaksessions = BreakSession::where('user_id', $userId)
+                                    ->with('member', 'attendanceRequest')  // memberリレーションをロード
+                                    ->orderBy('created_at', 'desc')
+                                    ->get();
 
-        $startDate = $request->start_date ?? now()->startOfMonth()->format('Y-m-d');
-        $endDate = $request->end_date ?? now()->endOfMonth()->format('Y-m-d');
-        $memberId = $request->member_id ?? null;
-
-        $query = BreakSession::where('user_id', $userId)->with(['member', 'attendanceRequest']);
-        if ($memberId) $query->where('member_id', $memberId);
-
-        // $breaksessions = $query
-        //     ->whereDate('created_at', '>=', $startDate)
-        //     ->whereDate('created_at', '<=', $endDate)
-        //     ->orderByDesc('created_at')
-        //     ->paginate(7)
-        //     ->withQueryString();
-        $breaksessions = $query
-                        ->whereHas('attendance', function($q) use ($startDate, $endDate) {
-                            $q->whereDate('attendance_date', '>=', $startDate)
-                            ->whereDate('attendance_date', '<=', $endDate);
-                        })
-                        ->with(['attendance', 'member'])
-                        ->orderByDesc('created_at') // 表示順は必要に応じて変更可能
-                        ->paginate(7)
-                        ->withQueryString();
-
-        return view('breaksessions.index', compact('breaksessions', 'members', 'startDate', 'endDate'));
-    
-    }
-
-        // Ajax用フィルタ
-    public function filter(Request $request)
-    {
-        $userId = Auth::id();
-        $currentUser = Auth::user();
-
-        if ($currentUser->role === 'user') {
-            $group = Group::where('user_id', $userId)->first();
-            if ($group) $userId = $group->admin_id;
-        }
-
-        $members = Member::where('user_id', $userId)->where('is_visible', 1)->get();
-
-        $startDate = $request->start_date ?? now()->startOfMonth()->format('Y-m-d');
-        $endDate = $request->end_date ?? now()->endOfMonth()->format('Y-m-d');
-        $memberId = $request->member_id ?? null;
-
-        $query = BreakSession::where('user_id', $userId)->with(['member', 'attendanceRequest']);
-        if ($memberId) $query->where('member_id', $memberId);
-
-        // $breaksessions = $query
-        //     ->whereDate('created_at', '>=', $startDate)
-        //     ->whereDate('created_at', '<=', $endDate)
-        //     ->orderByDesc('created_at')
-        //     ->paginate(7)
-        //     ->withQueryString();
-        $breaksessions = $query
-                        ->whereHas('attendance', function($q) use ($startDate, $endDate) {
-                            $q->whereDate('attendance_date', '>=', $startDate)
-                            ->whereDate('attendance_date', '<=', $endDate);
-                        })
-                        ->with(['attendance', 'member'])
-                        ->orderByDesc('created_at') // 表示順は必要に応じて変更可能
-                        ->paginate(7)
-                        ->withQueryString();
-
-
-        $rows = view('breaksessions._table_rows', compact('breaksessions'))->render();
-        $pagination = view('breaksessions._pagination', compact('breaksessions'))->render();
-
-        return response()->json([
-            'rows' => $rows,
-            'pagination' => $pagination,
-        ]);
+        return view('breaksessions.index', compact('breaksessions'));
     }
 
 

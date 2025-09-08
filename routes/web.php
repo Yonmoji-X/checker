@@ -40,7 +40,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/attendances', [AttendanceController::class, 'index']);
     Route::get('/attendances/filter', [AttendanceController::class, 'filter'])->name('attendances.filter');
     Route::put('/attendances/{id}', [AttendanceController::class, 'update']);
-
+    
+    // 休憩
+    Route::get('/breaksessions', [BreakSessionController::class, 'index']);
+    Route::get('/breaksessions/filter', [BreakSessionController::class, 'filter'])->name('breaksessions.filter');
+    
     // リソースコントローラ
     Route::resource('templates', TemplateController::class);
     Route::resource('members', MemberController::class);
