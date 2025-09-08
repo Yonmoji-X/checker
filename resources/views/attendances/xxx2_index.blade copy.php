@@ -5,7 +5,6 @@
         </h2>
     </x-slot>
 
-    
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
@@ -27,8 +26,7 @@
                         </script>
                     @endif
 
-                    <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-6">
-                    <!-- <div class="mb-6 flex flex-wrap items-end gap-4"> -->
+                    <div class="mb-6 flex flex-wrap items-end gap-4">
                         <div>
                             <label for="member_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">メンバー</label>
                             <select id="member_id" class="mt-1 block w-full py-2 px-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 rounded-md">
@@ -50,13 +48,12 @@
                         </div>
 
                         <div>
-                            <!-- <label for="end_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300"></label> -->
-                            <form id="exportForm" action="{{ route('attendance.export') }}" method="POST" >
+                            <form id="exportForm" action="{{ route('attendance.export') }}" method="POST">
                                 @csrf
                                 <input type="hidden" name="member_id" id="export_member_id" value="">
                                 <input type="hidden" name="start_date" id="export_start_date" value="">
                                 <input type="hidden" name="end_date" id="export_end_date" value="">
-                                <button type="submit" class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-md shadow mt-6"
+                                <button type="submit" class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-md shadow"
                                     style="background-color:#217346; color:white;">
                                     ダウンロード
                                 </button>
@@ -64,47 +61,27 @@
                         </div>
                     </div>
 
-                    <!-- <div class="overflow-x-auto">
-                        <table class="min-w-[720px] table-fixed mx-auto divide-y divide-gray-200 dark:divide-gray-700">
-                            <thead class="bg-gray-50 dark:bg-gray-800">
-                                <tr>
-                                    <th class="w-1/6 min-w-[120px] px-4 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">日付</th>
-                                    <th class="w-1/6 min-w-[120px] px-4 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">出勤</th>
-                                    <th class="w-1/6 min-w-[120px] px-4 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">退勤</th>
-                                    <th class="w-1/6 min-w-[120px] px-4 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">従業員名</th>
-                                    <th class="w-1/6 min-w-[120px] px-4 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">休憩時間</th>
-                                    <th class="w-1/6 min-w-[120px] px-4 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">備考</th>
-                                </tr>
-                            </thead>
-                            <tbody id="attendanceTableBody">
-                                {{-- 初期は空、JSで描画 --}}
-                            </tbody>
-                        </table>
-                        <div id="paginationContainer" class="mt-4">
-                            {{-- 初期は空、JSで描画 --}}
-                        </div>
-                    </div> -->
-                    
                     <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                        <table class="min-w-full table-fixed mx-auto divide-y divide-gray-200 dark:divide-gray-700">
                             <thead class="bg-gray-50 dark:bg-gray-800">
                                 <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">日付</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">出勤</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">退勤</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">従業員名</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">休憩時間</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">備考</th>
+                                    <th class="w-1/6 px-4 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">日付</th>
+                                    <th class="w-1/6 px-4 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">出勤</th>
+                                    <th class="w-1/6 px-4 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">退勤</th>
+                                    <th class="w-1/6 px-4 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">従業員名</th>
+                                    <th class="w-1/6 px-4 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">休憩時間</th>
+                                    <th class="w-1/6 px-4 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">備考</th>
                                 </tr>
                             </thead>
                             <tbody id="attendanceTableBody">
-                                {{-- 初期は空、JSで描画 --}}
+                                @include('attendances._table_rows', ['attendances' => $attendances])
                             </tbody>
                         </table>
                         <div id="paginationContainer" class="mt-4">
-                            {{-- 初期は空、JSで描画 --}}
+                            @include('attendances._pagination', ['attendances' => $attendances])
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -155,15 +132,12 @@ function attachPaginationLinks() {
     });
 }
 
-// 初期ロード時にAjaxでデータ取得
-document.addEventListener('DOMContentLoaded', () => {
-    fetchAttendances();
-});
-
-// セレクターや日付変更でAjax更新
 memberSelect.addEventListener('change', () => fetchAttendances());
 startDateInput.addEventListener('change', () => fetchAttendances());
 endDateInput.addEventListener('change', () => fetchAttendances());
+
+updateExportInputs();
+attachPaginationLinks();
 </script>
 
 </x-app-layout>

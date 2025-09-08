@@ -39,11 +39,11 @@
                                             {{ Str::limit($member->content, 20) }}
                                         </span>
                                         <!-- ホバー時に表示されるツールチップ -->
-                                        <div class="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-2 hidden group-hover:block 
+                                        <!-- <div class="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-2 hidden group-hover:block 
                                                     w-64 max-h-40 overflow-auto bg-gray-800 text-white text-xs rounded py-2 px-3 z-50 
                                                     whitespace-pre-wrap break-words shadow-lg">
                                             {{ $member->content }}
-                                        </div>
+                                        </div> -->
                                     </td>
 
 
@@ -57,6 +57,9 @@
                             @endforeach
                         </tbody>
                     </table>
+                    <div class="mt-4 p-4">
+                        {{ $members->links() }}
+                    </div>
                 </div>
             </div>
         </div>

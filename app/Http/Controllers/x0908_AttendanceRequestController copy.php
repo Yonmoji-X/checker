@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Http\Controllers;
 
 use App\Models\Attendance;
@@ -17,65 +16,18 @@ class AttendanceRequestController extends Controller
     /**
      * 管理者一覧
      */
-    public function index(Request $request) 
+    public function index()
     {
-        $userId = Auth::id();
-        $currentUser = Auth::user();
-
-        if ($currentUser->role === 'user') {
-            $group = Group::where('user_id', $userId)->first();
-            if ($group) $userId = $group->admin_id;
+        if (Auth::user()->role !== 'admin') {
+            abort(403, 'このページにアクセスする権限がありません。');
         }
 
-        $members = Member::where('user_id', $userId)->where('is_visible', 1)->get();
-
-        $startDate = $request->start_date ?? now()->startOfMonth()->format('Y-m-d');
-        $endDate = $request->end_date ?? now()->endOfMonth()->format('Y-m-d');
-        $memberId = $request->member_id ?? null;
-
-        $query = AttendanceRequest::where('user_id', $userId)->with(['member', 'user']); // ← where 小文字
-        if ($memberId) $query->where('member_id', $memberId);
-
-        $attendancerequests = $query->whereBetween('attendance_date', [$startDate, $endDate])
-                            ->orderByDesc('attendance_date')
-                            ->paginate(3)
-                            ->withQueryString();
-
-        return view('attendancerequests.index', compact('members', 'attendancerequests', 'startDate', 'endDate'));
+        $requests = AttendanceRequest::with('member', 'user')
+            ->orderBy('created_at', 'desc')
+            ->get();
+        return view('attendancerequests.index', compact('requests'));
     }
 
-    public function filter(Request $request)
-    {
-        $userId = Auth::id();
-        $currentUser = Auth::user();
-
-        if ($currentUser->role === 'user') {
-            $group = Group::where('user_id', $userId)->first();
-            if ($group) $userId = $group->admin_id;
-        }
-
-        $memberId = $request->member_id ?? null;
-        $startDate = $request->start_date ?? now()->startOfMonth()->format('Y-m-d');
-        $endDate = $request->end_date ?? now()->endOfMonth()->format('Y-m-d');
-
-        $query = AttendanceRequest::where('user_id', $userId)->with('member', 'user'); // ← where 小文字
-        if ($memberId) $query->where('member_id', $memberId);
-
-        $attendancerequests = $query->whereBetween('attendance_date', [$startDate, $endDate])
-                            ->orderByDesc('attendance_date')
-                            ->paginate(5)
-                            ->withQueryString();
-
-        $rows = view('attendancerequests._table_rows', compact('attendancerequests'))->render();
-        $pagination = view('attendancerequests._pagination', compact('attendancerequests'))->render();
-
-        return response()->json([
-            'rows' => $rows,
-            'pagination' => $pagination,
-        ]);
-    }
-
-    
     /**
      * 作成フォーム
      */

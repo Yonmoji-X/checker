@@ -103,7 +103,10 @@
 
             </div>
             @endforeach
-
+            <div class="mt-4 p-4">
+                {{ $templates->links() }}
+            </div>
         </div>
+
     </div>
 </x-app-layout>

@@ -36,6 +36,11 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    // 勤怠
+    Route::get('/attendances', [AttendanceController::class, 'index']);
+    Route::get('/attendances/filter', [AttendanceController::class, 'filter'])->name('attendances.filter');
+    Route::put('/attendances/{id}', [AttendanceController::class, 'update']);
+
     // リソースコントローラ
     Route::resource('templates', TemplateController::class);
     Route::resource('members', MemberController::class);
@@ -45,6 +50,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('breaksessions', BreakSessionController::class);
 
     // 勤怠申請（ユーザー用）
+    Route::get('/attendancerequests', [AttendanceRequestController::class, 'index'])->name('attendancerequests.index');
+    Route::get('/attendancerequests/filter', [AttendanceRequestController::class, 'filter'])->name('attendancerequests.filter');
     Route::get('/attendancerequests/create', [AttendanceRequestController::class, 'create'])->name('attendancerequests.create');
     Route::post('/attendancerequests', [AttendanceRequestController::class, 'store'])->name('attendancerequests.store');
 

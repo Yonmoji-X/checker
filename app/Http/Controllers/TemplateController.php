@@ -20,7 +20,11 @@ class TemplateController extends Controller
         // -------------------------------------------
         Gate::authorize('isAdmin'); //←roleがadminの人以外は入れない。
         $userId = Auth::id();
-        $templates = Template::where('user_id', $userId)->with('user')->latest()->get();
+        $templates = Template::where('user_id', $userId)
+                    ->with('user')
+                    ->latest()
+                    ->paginate(3);
+                    // ->get();
         return view('templates.index', compact('templates'));
 
         // $templates = Template::where('user_id', $userId)->with('user')->latest()->get();

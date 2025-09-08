@@ -16,7 +16,11 @@ class MemberController extends Controller
     {
         Gate::authorize('isAdmin'); //←追記
         $userId = Auth::id();
-        $members = Member::where('user_id', $userId)->with('user')->latest()->get();
+        $members = Member::where('user_id', $userId)
+                ->with('user')
+                ->latest()
+                ->paginate(5);
+                // ->get();
         return view('members.index', compact('members'));
     }
 

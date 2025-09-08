@@ -2,174 +2,106 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Attendance; // 勤怠データのモデル
-use App\Models\Member;     // メンバーデータのモデル
-use App\Models\BreakSession;
-use App\Models\Group;      // グループデータのモデル
-use Carbon\Carbon;
-use Illuminate\Support\Str;
+use App\Models\Attendance;
+use App\Models\Member;
+use App\Models\Group;
 use App\Exports\AttendanceExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth; // 認証情報を扱うファサード
-
-/*
-注意事項
-これにおいて、usersテーブルのroleカラムがadminではなくuserの場合は、groupテーブルのuser_idが現在ログインしているユーザーのidのデータを探し、そのデータのadmin_idカラムのidを$userIdの部分に入れるようにする。
-*/
+use Illuminate\Support\Facades\Auth;
 
 class AttendanceController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    // index表示
     public function index(Request $request)
     {
         $userId = Auth::id();
         $currentUser = Auth::user();
 
-        // リクエストから日付範囲を取得
-        $startDate = '2000-01-01'; // すべてのデータの最初の可能な日付 (または任意の開始日)
-        $endDate = now()->toDateString(); // 現在の日付まで
+        if ($currentUser->role === 'user') {
+            $group = Group::where('user_id', $userId)->first();
+            if ($group) $userId = $group->admin_id;
+        }
+
+        $members = Member::where('user_id', $userId)->where('is_visible', 1)->get();
+
+        $startDate = $request->start_date ?? now()->startOfMonth()->format('Y-m-d');
+        $endDate = $request->end_date ?? now()->endOfMonth()->format('Y-m-d');
+        $memberId = $request->member_id ?? null;
+
+        $query = Attendance::where('user_id', $userId)->with(['member', 'breakSessions']);
+        if ($memberId) $query->where('member_id', $memberId);
+
+        $attendances = $query->whereBetween('attendance_date', [$startDate, $endDate])
+                            ->orderByDesc('attendance_date')
+                            ->paginate(5)
+                            ->withQueryString();
+
+        return view('attendances.index', compact('members', 'attendances', 'startDate', 'endDate'));
+    }
+
+    // Ajax用フィルタ
+    public function filter(Request $request)
+    {
+        $userId = Auth::id();
+        $currentUser = Auth::user();
 
         if ($currentUser->role === 'user') {
             $group = Group::where('user_id', $userId)->first();
-            if ($group) {
-                $userId = $group->admin_id;
-            }
+            if ($group) $userId = $group->admin_id;
         }
 
-        $members = Member::where('user_id', $userId)
-        ->where('is_visible', 1)
-        ->latest()
-        ->get();
+        $memberId = $request->member_id ?? null;
+        $startDate = $request->start_date ?? now()->startOfMonth()->format('Y-m-d');
+        $endDate = $request->end_date ?? now()->endOfMonth()->format('Y-m-d');
 
-        // 勤怠データを日付範囲でフィルタリング
-        $attendances = Attendance::where('user_id', $userId)
-            ->when($startDate && $endDate, function ($query) use ($startDate, $endDate) {
-                return $query->whereBetween('attendance_date', [$startDate, $endDate]);
-            })
-            ->with(['user', 'member', 'breakSessions'])
-            ->latest()
-            ->get();
-            // ->paginate(31);
+        $query = Attendance::where('user_id', $userId)->with(['member', 'breakSessions']);
+        if ($memberId) $query->where('member_id', $memberId);
 
-        $jsonMembers = json_encode($members, JSON_UNESCAPED_UNICODE);
+        $attendances = $query->whereBetween('attendance_date', [$startDate, $endDate])
+                            ->orderByDesc('attendance_date')
+                            ->paginate(5)
+                            ->withQueryString();
 
-        // ビューにデータを渡す
-        return view('attendances.index', compact('attendances', 'members', 'jsonMembers', 'startDate', 'endDate'));
+        $rows = view('attendances._table_rows', compact('attendances'))->render();
+        $pagination = view('attendances._pagination', compact('attendances'))->render();
+
+        return response()->json([
+            'rows' => $rows,
+            'pagination' => $pagination,
+        ]);
     }
 
-
-
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        // 現在のユーザーIDを取得
-        $userId = Auth::id();
-
-        // ログインユーザーのメンバーだけを取得
-        $members = Member::where('user_id', $userId)->latest()->get();
-
-        return view('attendances.create', compact('members'));
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        // 勤怠データを保存するコードを追加します
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Attendance $attendance)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Attendance $attendance)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
+    // 備考更新
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'attendance' => 'required|string|max:255', // バリデーション
-        ]);
+        $request->validate(['attendance' => 'required|string|max:255']);
 
         $attendance = Attendance::findOrFail($id);
         $attendance->attendance = $request->attendance;
         $attendance->save();
 
-        // セッションフラッシュメッセージを設定
-        return redirect()->route('attendances.index')->with('success', '更新成功しました。');
+        return redirect()->back()->with('success', '更新成功しました。');
     }
 
+    // 削除
+    public function destroy(Attendance $attendance)
+    {
+        $attendance->breakSessions()->delete();
+        $attendance->delete();
 
-
-    /**
-     * Remove the specified resource from storage.
-     */
-/**
- * Remove the specified resource from storage.
- */
-public function destroy(Attendance $attendance)
-{
-    // まず関連するBreakSessionレコードを削除
-    $attendance->breakSessions()->delete();
-
-    // その後、Attendanceレコードを削除
-    $attendance->delete();
-
-    return redirect()->route('attendances.index')->with('success', 'Attendance and related BreakSessions deleted successfully.');
-}
-public function export(Request $request)
-{
-    // 今月の初日と最終日を取得
-    $startDate = Carbon::now()->startOfMonth()->format('Y-m-d');
-    $endDate = Carbon::now()->endOfMonth()->format('Y-m-d');
-
-    // フォームから選択されたメンバーIDと日付範囲を取得
-    $memberId =  (int) $request->input('member_id');
-    $dateRange = $request->input('date_range');
-
-    $member = Member::find($memberId);
-    $memberName = $member ? $member->name : '全員';
-
-    // 日付範囲をパースして開始日と終了日を取得
-    if ($dateRange) {
-        $dates = explode(' から ', $dateRange);
-        $startDate = $dates[0];
-        $endDate = $dates[1];
+        return redirect()->back()->with('success', '削除成功しました。');
     }
 
-    // エクスポート処理
-    // return Excel::download(new AttendanceExport($memberId, $startDate, $endDate), '勤怠データ.xlsx');
-    return Excel::download(new AttendanceExport($memberId, $startDate, $endDate), sprintf('%s_勤怠データ.xlsx', $memberName));
+    // Excel出力
+    public function export(Request $request)
+    {
+        $memberId = $request->input('member_id');
+        $startDate = $request->input('start_date') ?? now()->startOfMonth()->format('Y-m-d');
+        $endDate = $request->input('end_date') ?? now()->endOfMonth()->format('Y-m-d');
 
-}
+        $memberName = $memberId ? Member::find($memberId)->name : '全員';
 
-public function showExportForm()
-{
-    // 今月の初日と最終日をセット
-    $startDate = Carbon::now()->startOfMonth()->format('Y-m-d');
-    $endDate = Carbon::now()->endOfMonth()->format('Y-m-d');
-
-    // ビューに初期値として渡す
-    return view('attendance.export', compact('startDate', 'endDate'));
-}
-
+        return Excel::download(new AttendanceExport($memberId, $startDate, $endDate), "{$memberName}_勤怠データ.xlsx");
+    }
 }
