@@ -65,10 +65,12 @@
                             </thead>
                             <tbody id="attendanceRequestTableBody" class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                                 {{-- 初期は空、JSで描画 --}}
+                                @include('attendancerequests._table_rows')
                             </tbody>
                         </table>
                         <div id="paginationContainer" class="mt-4">
                             {{-- 初期は空、JSで描画 --}}
+                            @include('attendancerequests._pagination')
                         </div>
                     </div>
                 </div>

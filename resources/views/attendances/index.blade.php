@@ -5,7 +5,7 @@
         </h2>
     </x-slot>
 
-    
+
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
@@ -99,10 +99,12 @@
                             </thead>
                             <tbody id="attendanceTableBody">
                                 {{-- 初期は空、JSで描画 --}}
+                                @include('attendances._table_rows')
                             </tbody>
                         </table>
                         <div id="paginationContainer" class="mt-4">
                             {{-- 初期は空、JSで描画 --}}
+                            @include('attendances._pagination')
                         </div>
                     </div>
                 </div>
