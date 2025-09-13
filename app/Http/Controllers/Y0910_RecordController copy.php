@@ -7,8 +7,6 @@ use App\Models\Template;
 use App\Models\Member;
 use App\Models\Group;
 use Illuminate\Http\Request;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -22,8 +20,111 @@ use Carbon\Carbon;
 
 class RecordController extends Controller
 {
-  
+    // public function index()
+    // {
+    //     // 現在のユーザーIDを取得
+    //     $userId = Auth::id();
+
+    //     // 現在のログインユーザー情報を取得
+    //     $currentUser = Auth::user();
+
+    //     // ユーザーがuser roleの場合
+    //     if ($currentUser->role === 'user') {
+    //         // groupテーブルから現在のユーザーIDに関連するadmin_idを取得
+    //         $group = Group::where('user_id', $userId)->first();
+
+    //         // groupが存在すれば、admin_idを$userIdとして使用
+    //         if ($group) {
+    //             $userId = $group->admin_id;
+    //         }
+    //     }
+
+    //     // 指定した$userIdでレコードを取得
+    //     $records = Record::with('user')->where('user_id', $userId)->latest()->get();
+    //     // $templates = Template::where('user_id', $userId)->latest()->get();
+    //     $templates = Template::where('user_id', $userId)
+    //     ->orderBy('order') // orderカラムで昇順にソート
+    //     ->latest()
+    //     ->get();
+
+    //     // JSONエンコード
+    //     $jsonTemplates = json_encode($templates, JSON_UNESCAPED_UNICODE);
+    //     $jsonRecords = json_encode($records, JSON_UNESCAPED_UNICODE);
+
+    //     // メンバーを取得
+    //     $members = Member::where('user_id', $userId)->where('is_visible', 1)
+    //     ->latest()
+    //     ->get();
+
+    //     // ------------
+
+    //     // ------------
+
+    //     // メンバー情報をJSON形式でエンコード
+    //     $jsonMembers = json_encode($members, JSON_UNESCAPED_UNICODE);
+    //     // dd($attendanceData);
+    //     // ビューにデータを渡す
+    //     return view('records.index', compact('records', 'templates', 'members', 'jsonTemplates', 'jsonRecords', 'jsonMembers'));
+    // }
+
     public function index(Request $request)
+    {
+        $userId = Auth::id();
+        $currentUser = Auth::user();
+
+        if ($currentUser->role == 'user') {
+            $group = Group::where('user_id', $userId)->first();
+            if ($group) $userId = $group->admin_id;
+        }
+
+        $members = Member::where('user_id', $userId)
+                        ->where('is_visible', 1)
+                        ->get();
+
+        $startDate = $request->start_date ?? now()->startOfMonth()->format('Y-m-d');
+        $endDate   = $request->end_date   ?? now()->endOfMonth()->format('Y-m-d');
+        $templateMemberStatus = $request->member_status ?? 0;
+        $templateClockStatus  = $request->clock_status ?? 1;
+
+        // head_id ごとにグループ化
+        $recordsQuery = Record::where('user_id', $userId)
+            ->with(['member', 'template', 'attendance'])
+            ->whereHas('attendance', fn($q) => $q
+            ->whereDate('attendance_date', '>=', $startDate)
+            ->whereDate('attendance_date', '<=', $endDate))
+            ->orderByDesc('created_at');
+
+        $records = $recordsQuery->get()->groupBy('head_id');
+
+        // ページネーション
+        $page = $request->get('page', 1);
+        $perPage = 5;
+        $pagedData = $records->forPage($page, $perPage);
+
+        $paginatedGroups = new \Illuminate\Pagination\LengthAwarePaginator(
+            $pagedData,
+            $records->count(),
+            $perPage,
+            $page,
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
+
+        $templates = Template::where('user_id', $userId)
+                            ->where('member_status', $templateMemberStatus)
+                            ->get();
+
+        return view('records.index', compact(
+            'members',
+            'paginatedGroups',
+            'templates',
+            'startDate',
+            'endDate',
+            'templateMemberStatus',
+            'templateClockStatus'
+        ));
+    }
+
+    public function filter(Request $request)
     {
         $userId = Auth::id();
         $currentUser = Auth::user();
@@ -39,71 +140,38 @@ class RecordController extends Controller
         $templateMemberStatus = $request->member_status ?? 0;
         $templateClockStatus  = $request->clock_status ?? 1;
 
-        // まず head_id のみを distinct でページネーション
-        $headQuery = Record::select('head_id')
-            ->whereBetween('created_at', [$startDate, $endDate])
-            ->where('user_id', $userId);
+        // head_id 単位でページネーション用に取得
+        $headIdsQuery = Record::where('user_id', $userId)
+            ->when($memberId, fn($q) => $q->where('member_id', $memberId))
+            ->whereHas('attendance', fn($q) => $q->whereDate('attendance_date', '>=', $startDate)
+                                                ->whereDate('attendance_date', '<=', $endDate))
+            ->when($templateClockStatus !== null, fn($q) => $q->where('clock_status', $templateClockStatus))
+            ->select('head_id')
+            ->groupBy('head_id')
+            ->orderByRaw('MAX(created_at) DESC');
 
-        if ($memberId) {
-            $headQuery->where('member_id', $memberId);
-        }
-        if ($templateMemberStatus) {
-            $headQuery->where('member_status', $templateMemberStatus);
-        }
-        if ($templateClockStatus) {
-            $headQuery->where('clock_status', $templateClockStatus);
-        }
+        $headIds = $headIdsQuery->paginate(5)->withQueryString();
 
-        $perPage = 10;
-        $headIds = $headQuery->distinct()
-            ->orderBy('head_id', 'desc')
-            ->paginate($perPage);
-
-        // ページングされた head_id に属するレコードを取得（template を eager load）
-        $grouped = Record::query()
-            ->with('template') // ★ここを追加
-            ->where('user_id', $userId)
-            ->whereBetween('created_at', [$startDate, $endDate])
+        // head_id に該当する records をまとめて取得
+        $records = Record::where('user_id', $userId)
+            ->with(['member', 'template', 'attendance'])
             ->whereIn('head_id', $headIds->pluck('head_id'))
-            ->where(function($query) {
-                $query->where('check_item', 1)
-                    ->orWhereNotNull('photo_item')
-                    ->orWhereNotNull('content_item')
-                    ->orWhere('temperature_item', '!=', null);
-            })
-            ->orderBy('created_at', 'desc')
             ->get()
             ->groupBy('head_id');
-        // dd($grouped);
 
-        // 部分ビューを返す処理
-        $rows = view('records._table_rows', ['groups' => $grouped])->render();
-        $pagination = view('records._pagination', ['groups' => $headIds])->render();
+        $templates = Template::where('user_id', $userId)
+                            ->where('member_status', $templateMemberStatus)
+                            ->get();
 
-        if ($request->ajax()) {
-            return response()->json([
-                'rows' => $rows,
-                'pagination' => $pagination
-            ]);
-        }
+        $rows = view('records._table_rows', ['recordsGroups' => $records, 'templates' => $templates])->render();
+        $pagination = view('records._pagination', ['headIds' => $headIds])->render();
 
-        return view('records.index', [
-            'groups'    => $grouped,
-            'paged'     => $headIds,
-            'startDate' => $startDate,
-            'endDate'   => $endDate,
-            'templateMemberStatus'=> $templateMemberStatus, 
-            'templateClockStatus' => $templateClockStatus,  
-            'memberId'  => $memberId,
-            'members'   => Member::where('user_id', $userId)->get(),
+        return response()->json([
+            'rows' => $rows,
+            'pagination' => $pagination,
         ]);
     }
 
-
-    public function filter(Request $request) 
-    {
-        return $this->index($request);
-    }
 
 
 

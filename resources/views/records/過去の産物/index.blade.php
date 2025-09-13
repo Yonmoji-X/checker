@@ -8,7 +8,7 @@
 
     <div class="py-12">
         <div class="flex justify-center max-w-3xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg w-full max-w-3xl p-6">
+            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg w-full max-w-xl p-6">
                 <div class="grid grid-cols-1 sm:grid-cols-5 gap-4 mb-6">
                     <div>
                         <label for="member_status" class="block text-sm font-medium text-gray-700 dark:text-gray-300">メンバーの種類</label>
@@ -37,15 +37,9 @@
                                     dark:border-gray-600 dark:text-gray-300 rounded-lg shadow-sm focus:outline-none
                                     focus:ring-2 focus:ring-blue-400 focus:border-blue-400 sm:text-sm">
                             <option value="">全員</option>
-                            <!-- @foreach ($members as $member)
-                                <option value="{{ $member->id }}">{{ $member->name }}</option>
-                            @endforeach -->
                             @foreach ($members as $member)
-                                <option value="{{ $member->id }}" {{ ($memberId ?? '') == $member->id ? 'selected' : '' }}>
-                                    {{ $member->name }}
-                                </option>
+                                <option value="{{ $member->id }}">{{ $member->name }}</option>
                             @endforeach
-
                         </select>
                     </div>
                     <div>
@@ -110,24 +104,13 @@
             });
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
-            fetchRecords(); 
-            attachPaginationLinks();
-        });
-
-
         // document.addEventListener('DOMContentLoaded', () => {
         //     fetchRecords();
         // });
-        // document.addEventListener('DOMContentLoaded', function() {
-        //     const memberSelect = document.getElementById('member_id');
-        //     fetchRecords(memberSelect.value); // 初期値で fetch
-        // });
 
-        // document.addEventListener('DOMContentLoaded', () => {
-        //     attachPaginationLinks();
-        // });
-
+        document.addEventListener('DOMContentLoaded', () => {
+            attachPaginationLinks();
+        });
 
     </script>
 

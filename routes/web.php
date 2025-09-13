@@ -45,6 +45,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/breaksessions', [BreakSessionController::class, 'index']);
     Route::get('/breaksessions/filter', [BreakSessionController::class, 'filter'])->name('breaksessions.filter');
     
+    // レコード
+    Route::get('/records', [RecordController::class, 'index']);
+    Route::get('/records/filter', [RecordController::class, 'filter'])->name('records.filter');
+
     // リソースコントローラ
     Route::resource('templates', TemplateController::class);
     Route::resource('members', MemberController::class);
