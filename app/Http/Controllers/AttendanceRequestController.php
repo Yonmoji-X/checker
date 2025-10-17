@@ -97,7 +97,9 @@ class AttendanceRequestController extends Controller
                 $userId = $group->admin_id;
             }
         }
-        $members = Member::where('user_id', $userId)->latest()->get();
+        // $members = Member::where('user_id', $userId)->latest()->get();
+        // 表示のユーザーのみ取得
+        $members = Member::where('user_id', $userId)->where('is_visible', 1)->get();
         // ビューにデータを渡す
         return view('attendancerequests.create', compact('members'));
     }

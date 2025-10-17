@@ -38,6 +38,7 @@ class RecordController extends Controller
         $memberId  = $request->member_id ?? null;
         $templateMemberStatus = $request->member_status ?? 0;
         $templateClockStatus  = $request->clock_status ?? 1;
+        $members = Member::where('user_id', $userId)->where('is_visible', 1)->get();
 
         // まず head_id のみを distinct でページネーション
         $headQuery = Record::select('head_id')
@@ -95,7 +96,8 @@ class RecordController extends Controller
             'templateMemberStatus'=> $templateMemberStatus, 
             'templateClockStatus' => $templateClockStatus,  
             'memberId'  => $memberId,
-            'members'   => Member::where('user_id', $userId)->get(),
+            'members'   => $members,
+            // 'members'   => Member::where('user_id', $userId)->get(),
         ]);
     }
 
@@ -172,7 +174,10 @@ class RecordController extends Controller
         $templates = Template::where('user_id', $userId)->where('hide', 0)->latest()->get();
 
         $jsonTemplates = json_encode($templates, JSON_UNESCAPED_UNICODE);
+        // $membersは出退勤時に行うし、recordsテーブルでis_visibleが選択されてたら良いので、ここは正味あんまり関係ない。
         $members = Member::where('user_id', $userId)->latest()->get();
+        // 表示状態のメンバーのみ取得。
+        // $members = Member::where('user_id', $userId)->where('is_visible', 1)->get();
         // 各メンバーの最新の出勤データを取得
         // ============================================
         $attendanceData = [];
