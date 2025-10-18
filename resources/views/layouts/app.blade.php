@@ -9,9 +9,9 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="/checker/images/app-icon-180.png">
     <meta name="theme-color" content="#111827">
-    <meta name="apple-mobile-web-app-title" content="AC-Sync">
+    <meta name="apple-mobile-web-app-title" content="SafeTimeCard">
 
-    <title>{{ $title ?? 'AC-Sync' }}</title>
+    <title>{{ $title ?? 'SafeTimeCard' }}</title>
 
     <link rel="manifest" href="{{ asset('manifest.json') }}">
     <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
