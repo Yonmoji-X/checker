@@ -37,7 +37,8 @@
             :class="{
                 'translate-x-64 md:translate-x-0': open,  // モバイル時のみ右スライド
             }"
-            class="flex-1 flex flex-col relative transform transition-transform duration-300 ease-in-out md:ml-64"
+            class="flex-1 flex flex-col relative transform transition-transform duration-300 ease-in-out"
+
         >
             <!-- Header -->
             @isset($header)
