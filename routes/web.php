@@ -11,6 +11,8 @@ use App\Http\Controllers\BreakSessionController;
 use App\Http\Controllers\AttendanceRequestController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\NewPasswordController;
+// Stripe
+use App\Http\Controllers\StripeController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -89,6 +91,14 @@ Route::middleware('auth')->group(function () {
 
     // テンプレート順序更新
     Route::post('/update-template-order', [TemplateController::class, 'updateOrder'])->name('template.updateOrder');
+
+
+    // Stirpe
+    Route::get('/checkout', [StripeController::class, 'index'])->name('checkout');
+    Route::post('/create-checkout-session', [StripeController::class, 'createSession'])->name('checkout.session');
+    Route::get('/checkout/success', [StripeController::class, 'success'])->name('checkout.success');
+    Route::get('/checkout/cancel', [StripeController::class, 'cancel'])->name('checkout.cancel');
+    
 });
 
 // サービスワーカー

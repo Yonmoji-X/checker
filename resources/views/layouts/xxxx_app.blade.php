@@ -29,15 +29,16 @@
     <!-- ✅ Alpine.js 全体スコープ -->
     <div x-data="{ open: false }" class="min-h-screen flex flex-col md:flex-row relative transition-all duration-300">
 
-        <!-- ✅ サイドバー -->
+        <!-- サイドバー -->
         @include('layouts.aside')
 
-        <!-- ✅ メインコンテンツ -->
+        <!-- メインコンテンツ -->
         <div
             :class="{
-                'translate-x-64 md:translate-x-0': open,  // モバイル時のみ右スライド
+                'translate-x-64 md:translate-x-0': open,
+                'translate-x-0': !open
             }"
-            class="flex-1 flex flex-col relative transform transition-transform duration-300 ease-in-out md:ml-64"
+            class="flex-1 flex flex-col relative transform transition-transform duration-300 ease-in-out"
         >
             <!-- Header -->
             @isset($header)
@@ -54,7 +55,7 @@
             </main>
         </div>
 
-        <!-- ✅ 背景フェード（モバイル時のみ） -->
+        <!-- 背景フェード（モバイル時のみ） -->
         <div
             x-show="open"
             @click="open = false"
