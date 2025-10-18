@@ -105,15 +105,16 @@
                             {{ __('管理アカウント一覧') }}
                         </x-nav-link>
                     </div>
+                    
+                    <!-- 決済 -->
+                    <div>
+                        <p class="text-xs text-gray-400 uppercase mt-4 mb-1">決済</p>
+                        <x-nav-link :href="route('checkout')" :active="request()->routeIs('checkout')">
+                            {{ __('Checkout（決済）') }}
+                        </x-nav-link>
+                    </div>
                 @endif
 
-                <!-- 決済 -->
-                <div>
-                    <p class="text-xs text-gray-400 uppercase mt-4 mb-1">決済</p>
-                    <x-nav-link :href="route('checkout')" :active="request()->routeIs('checkout')">
-                        {{ __('Checkout（決済）') }}
-                    </x-nav-link>
-                </div>
             </nav>
         </div>
 
