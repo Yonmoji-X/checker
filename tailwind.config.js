@@ -8,6 +8,12 @@ export default {
         './storage/framework/views/*.php',
         './resources/views/**/*.blade.php',
     ],
+    
+    safelist: [
+    'bg-gray-400', 'hover:bg-gray-500', 'text-white',
+    'bg-green-600', 'hover:bg-green-700',
+    'bg-blue-600', 'hover:bg-blue-700'
+    ],
 
     theme: {
         extend: {

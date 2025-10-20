@@ -7,32 +7,8 @@
 
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <x-plan-card />
+            {{-- コントローラから渡された $plans を渡す --}}
+            <x-plan-card :plans="$plans" />
         </div>
     </div>
-
-    <!-- Stripe JS -->
-    <script src="https://js.stripe.com/v3/"></script>
-
-    <script>
-        const stripe = Stripe('{{ env('STRIPE_KEY') }}');
-
-        async function createCheckout(planKey) {
-            const res = await fetch('{{ route("checkout.session") }}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: JSON.stringify({ plan: planKey })
-            });
-            const result = await res.json();
-
-            if(result.redirect){
-                window.location.href = result.redirect;
-            } else if(result.id){
-                stripe.redirectToCheckout({ sessionId: result.id });
-            }
-        }
-    </script>
 </x-app-layout>
