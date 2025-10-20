@@ -49,7 +49,7 @@
                 <div>
                     <p class="text-xs text-gray-400 uppercase mt-4 mb-1">勤怠管理</p>
                     <x-nav-link :href="route('attendances.index')" :active="request()->routeIs('attendances.index')">
-                        {{ __('勤怠管理') }}
+                        {{ __('勤怠データ') }}
                     </x-nav-link>
                     <x-nav-link :href="route('breaksessions.index')" :active="request()->routeIs('breaksessions.index')">
                         {{ __('休憩データ') }}
@@ -60,49 +60,52 @@
                 <div>
                     <p class="text-xs text-gray-400 uppercase mt-4 mb-1">申請</p>
                     <x-nav-link :href="route('attendancerequests.create')" :active="request()->routeIs('attendancerequests.create')">
-                        {{ __('事後申請') }}
+                        {{ __('申請') }}
                     </x-nav-link>
                     @if (auth()->user()->role === 'admin')
                         <x-nav-link :href="route('attendancerequests.index')" :active="request()->routeIs('attendancerequests.index')">
-                            {{ __('申請一覧') }}
+                            {{ __('一覧') }}
                         </x-nav-link>
                     @endif
                 </div>
 
                 <!-- チェック一覧 -->
-                <x-nav-link :href="route('records.index')" :active="request()->routeIs('records.index')">
-                    {{ __('チェック一覧') }}
-                </x-nav-link>
+                 <div>
+                    <p class="text-xs text-gray-400 uppercase mt-4 mb-1">チェック項目</p>
+                    <x-nav-link :href="route('records.index')" :active="request()->routeIs('records.index')">
+                        {{ __('一覧') }}
+                    </x-nav-link>
+                </div>
 
                 <!-- 管理者メニュー -->
                 @if (auth()->user()->role === 'admin')
                     <div>
                         <p class="text-xs text-gray-400 uppercase mt-4 mb-1">アイテム</p>
                         <x-nav-link :href="route('templates.create')" :active="request()->routeIs('templates.create')">
-                            {{ __('アイテム作成') }}
+                            {{ __('作成') }}
                         </x-nav-link>
                         <x-nav-link :href="route('templates.index')" :active="request()->routeIs('templates.index')">
-                            {{ __('アイテム一覧') }}
+                            {{ __('一覧') }}
                         </x-nav-link>
                     </div>
 
                     <div>
                         <p class="text-xs text-gray-400 uppercase mt-4 mb-1">名簿</p>
                         <x-nav-link :href="route('members.create')" :active="request()->routeIs('members.create')">
-                            {{ __('名簿登録') }}
+                            {{ __('登録') }}
                         </x-nav-link>
                         <x-nav-link :href="route('members.index')" :active="request()->routeIs('members.index')">
-                            {{ __('名簿一覧') }}
+                            {{ __('一覧') }}
                         </x-nav-link>
                     </div>
 
                     <div>
-                        <p class="text-xs text-gray-400 uppercase mt-4 mb-1">管理</p>
+                        <p class="text-xs text-gray-400 uppercase mt-4 mb-1">管理アカウント</p>
                         <x-nav-link :href="route('groups.create')" :active="request()->routeIs('groups.create')">
-                            {{ __('管理アカウント登録') }}
+                            {{ __('登録') }}
                         </x-nav-link>
                         <x-nav-link :href="route('groups.index')" :active="request()->routeIs('groups.index')">
-                            {{ __('管理アカウント一覧') }}
+                            {{ __('一覧') }}
                         </x-nav-link>
                     </div>
                     
@@ -111,6 +114,9 @@
                         <p class="text-xs text-gray-400 uppercase mt-4 mb-1">決済</p>
                         <x-nav-link :href="route('checkout')" :active="request()->routeIs('checkout')">
                             {{ __('Checkout（決済）') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('checkout.plan')" :active="request()->routeIs('checkout.plan')">
+                            {{ __('マイプラン') }}
                         </x-nav-link>
                     </div>
                 @endif

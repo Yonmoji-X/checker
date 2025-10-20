@@ -8,6 +8,7 @@
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             
+            <!-- 横並びカード -->
             <div class="flex flex-wrap gap-6 justify-center">
                 
                 @php
@@ -17,32 +18,28 @@
                             'price' => '¥0',
                             'key' => 'free',
                             'price_id' => config('stripe.plans.free'),
-                            'bg' => 'bg-green-50 dark:bg-green-900',
-                            'text' => 'text-green-700 dark:text-green-300',
-                            'button' => 'bg-green-600 hover:bg-green-700 text-white',
                         ],
                         [
                             'name' => 'スタンダードプラン',
                             'price' => '¥1,980',
                             'key' => 'standard',
                             'price_id' => config('stripe.plans.standard'),
-                            'bg' => 'bg-blue-50 dark:bg-blue-900',
-                            'text' => 'text-blue-700 dark:text-blue-300',
-                            'button' => 'bg-blue-600 hover:bg-blue-700 text-white',
                         ],
                     ];
                 @endphp
 
                 @foreach($plans as $plan)
-                <div class="p-6 {{ $plan['bg'] }} shadow-md rounded-3xl hover:scale-[1.02] transform transition-transform w-80 flex flex-col justify-between">
+                <div class="p-6 bg-white dark:bg-gray-800 shadow-md rounded-3xl hover:scale-[1.02] transform transition-transform w-80 flex flex-col justify-between">
                     
                     <div>
-                        <h3 class="text-xl sm:text-2xl font-bold {{ $plan['text'] }} mb-2">{{ $plan['name'] }}</h3>
+                        <h3 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">{{ $plan['name'] }}</h3>
                         <p class="text-gray-600 dark:text-gray-300 mb-4">{{ $plan['price'] }}</p>
                     </div>
+                    <!-- <p>これはテストです。</p>
+                    <p>決済しないでください。</p> -->
 
                     <button 
-                        class="font-semibold py-2 px-4 rounded-xl transition-colors {{ $plan['button'] }}"
+                        class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-xl transition-colors"
                         onclick="createCheckout('{{ $plan['key'] }}')"
                     >
                         購入する
@@ -59,6 +56,7 @@
     <script src="https://js.stripe.com/v3/"></script>
 
     <script>
+        // Stripe公開キーを設定
         const stripe = Stripe('{{ env('STRIPE_KEY') }}');
 
         async function createCheckout(priceIdOrPlan) {
@@ -73,11 +71,13 @@
 
             const result = await response.json();
 
+            // 無料プランの場合はStripeをスキップして直接リダイレクト
             if (result.redirect) {
                 window.location.href = result.redirect;
                 return;
             }
 
+            // 有料プランはStripeの決済画面へ
             await stripe.redirectToCheckout({ sessionId: result.id });
         }
     </script>

@@ -94,10 +94,18 @@ Route::middleware('auth')->group(function () {
 
 
     // Stirpe
+    // Route::get('/checkout', [StripeController::class, 'index'])->name('checkout');
+    // Route::post('/create-checkout-session', [StripeController::class, 'createSession'])->name('checkout.session');
+    // Route::get('/checkout/success', [StripeController::class, 'success'])->name('checkout.success');
+    // Route::get('/checkout/cancel', [StripeController::class, 'cancel'])->name('checkout.cancel');
+
     Route::get('/checkout', [StripeController::class, 'index'])->name('checkout');
     Route::post('/create-checkout-session', [StripeController::class, 'createSession'])->name('checkout.session');
     Route::get('/checkout/success', [StripeController::class, 'success'])->name('checkout.success');
     Route::get('/checkout/cancel', [StripeController::class, 'cancel'])->name('checkout.cancel');
+    Route::get('checkout/plan', [StripeController::class, 'myPlan'])->name('checkout.plan');
+    Route::get('/checkout/free-success', [StripeController::class, 'freeSuccess'])->name('checkout.free_success');
+
     
 });
 
