@@ -1,6 +1,4 @@
 <?php
-// app/Http/Middleware/RoleMiddleware.php
-
 namespace App\Http\Middleware;
 
 use Closure;
@@ -9,20 +7,24 @@ use Illuminate\Support\Facades\Auth;
 
 class RoleMiddleware
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
-     * @param  string  $role
-     * @return mixed
-     */
     public function handle(Request $request, Closure $next, $role)
     {
-        if (Auth::check() && Auth::user()->role === $role) {
-            return $next($request);
+        $user = Auth::user();
+
+        if (!$user) {
+            return redirect('/'); // 未ログイン
         }
 
-        return redirect('/'); // Redirect to home or another page if the user does not have the required role
+        // 役割チェック
+        if ($user->role !== $role) {
+            return redirect('/'); // 役割違い
+        }
+
+        // 管理者でプラン未選択の場合
+        if ($role === 'admin' && !$user->stripe_plan) {
+            return redirect()->route('checkout.plan')->with('message', 'まずプランを選択してください');
+        }
+
+        return $next($request);
     }
 }

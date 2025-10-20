@@ -63,11 +63,11 @@
             class="fixed inset-0 bg-black bg-opacity-40 z-40 md:hidden"
         ></div>
         
+        {{-- 🔹 plan未選択なら、強制選択 --}}
+        @if(auth()->check() && auth()->user()->role === 'admin' && empty(auth()->user()->stripe_plan))
+            <x-plan-modal />
+        @endif
     </div>
-    {{-- 🔹 plan未選択なら、強制選択 --}}
-    @if(auth()->check() && auth()->user()->role === 'admin' && empty(auth()->user()->stripe_plan))
-        <x-plan-modal />
-    @endif
 
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 </body>

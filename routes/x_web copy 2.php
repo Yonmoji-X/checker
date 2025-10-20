@@ -26,27 +26,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 });
 
-
-// Route::middleware(['auth', 'verified'])->group(function () {
-//     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-// });
-
-// ダッシュボード（認証＋メール確認必須）
-// Route::middleware(['auth', 'verified'])->group(function () {
-//     Route::get('/dashboard', function() {
-//         $user = auth()->user();
-
-//         // admin かつ plan が未選択ならプラン選択画面にリダイレクト
-//         if ($user->role === 'admin' && empty($user->stripe_plan)) {
-//             return redirect()->route('checkout.plan');
-//         }
-
-//         // 通常のダッシュボード
-//         return app(\App\Http\Controllers\DashboardController::class)->index();
-//     })->name('dashboard');
-// });
-
-
 // タイムページ
 Route::get('/time', function () {
     return view('time');

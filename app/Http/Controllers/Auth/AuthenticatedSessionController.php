@@ -28,7 +28,15 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        $user = $request->user();
+
+        // 管理者でプラン未選択の場合はプラン選択画面へ
+        if ($user->role === 'admin' && !$user->stripe_plan) {
+            return redirect()->route('checkout.plan')->with('message', 'まずプランを選択してください');
+        }
+
+        // 通常はダッシュボードへ
+        return redirect()->intended(route('dashboard'));
     }
 
     /**
@@ -39,7 +47,6 @@ class AuthenticatedSessionController extends Controller
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
 
         return redirect('/');
