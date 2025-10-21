@@ -48,6 +48,25 @@ class MemberController extends Controller
             'is_visible' => 'sometimes|boolean', // `is_visible` をブール値としてバリデーション
         ]);
 
+
+        $user = $request->user();
+        if ($user->role === 'admin') {
+            // 名簿の数
+            $memberCount = $user->members()->count();
+
+            // 現在のプラン
+            $plan = $user->stripe_plan ?? 'free';
+            $price_id = config("stripe.plans.$plan") ?? $plan; // planがprice_idならそのまま使う
+            $limit = config("stripe.limits.$price_id");
+            // プランの名簿上限値（stripe.php参照）
+
+            // 上限チェック
+            if (!is_null($limit) && $memberCount >= $limit) {
+                return redirect()->route('members.index')
+                    ->with('error', "現在のプランでは最大{$limit}名までしか登録できません。...");
+            }
+        }
+
         $data = $request->only(['name', 'email', 'content']);
         $data['is_visible'] = $request->has('is_visible'); // チェックが入っていれば 1、なければ 0
         // $data['is_visible'] = $request->has('is_visible') ? 1 : 0; // チェックが入っていれば 1、なければ 0

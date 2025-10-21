@@ -7,8 +7,19 @@ return [
     // 単純な price_id 用
     'plans' => [
         'free' => env('STRIPE_PLAN_FREE'),
+        // 'light' => env('STRIPE_PLAN_LIGHT'),
         'standard' => env('STRIPE_PLAN_STANDARD'),
         // 'premium' => env('STRIPE_PLAN_PREMIUM'),
+    ],
+
+    // 名簿（メンバー）数制限
+    'limits' => [
+        env('STRIPE_PLAN_FREE') => 1,
+        // env('STRIPE_PLAN_LIGHT') => 10,
+        env('STRIPE_PLAN_STANDARD') => 30,
+        /*
+        env('STRIPE_PLAN_PREMIUM') => null, // 無制限
+        */
     ],
 
     // プランカードで使う表示情報
