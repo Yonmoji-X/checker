@@ -43,7 +43,7 @@ class BreakSessionController extends Controller
             if ($group) $userId = $group->admin_id;
         }
 
-        $members = Member::where('user_id', $userId)->where('is_visible', 1)->withPlanLimit() ->get();
+        $members = Member::where('user_id', $userId)->where('is_visible', 1)->withPlanLimit()->reorder()->orderByRaw('name COLLATE utf8mb4_ja_0900_as_cs ASC')->get();
 
         $startDate = $request->start_date ?? now()->startOfMonth()->format('Y-m-d');
         $endDate = $request->end_date ?? now()->endOfMonth()->format('Y-m-d');
@@ -83,7 +83,7 @@ class BreakSessionController extends Controller
             if ($group) $userId = $group->admin_id;
         }
 
-        $members = Member::where('user_id', $userId)->where('is_visible', 1)->withPlanLimit() ->get();
+        $members = Member::where('user_id', $userId)->where('is_visible', 1)->withPlanLimit()->reorder()->orderByRaw('name COLLATE utf8mb4_ja_0900_as_cs ASC')->get();
 
         $startDate = $request->start_date ?? now()->startOfMonth()->format('Y-m-d');
         $endDate = $request->end_date ?? now()->endOfMonth()->format('Y-m-d');
@@ -144,8 +144,8 @@ class BreakSessionController extends Controller
 
         // 該当するユーザーのメンバーリストを取得
         $members = Member::where('user_id', $userId)->where('is_visible', 1)
-        ->latest()
-        ->withPlanLimit() 
+        ->withPlanLimit()
+        ->reorder()->orderByRaw('name COLLATE utf8mb4_ja_0900_as_cs ASC')
         ->get();
 
         // ビューにデータを渡す
