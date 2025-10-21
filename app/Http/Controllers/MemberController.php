@@ -55,9 +55,13 @@ class MemberController extends Controller
             $memberCount = $user->members()->count();
 
             // 現在のプラン
-            $plan = $user->stripe_plan ?? 'free';
-            $price_id = config("stripe.plans.$plan") ?? $plan; // planがprice_idならそのまま使う
-            $limit = config("stripe.limits.$price_id");
+            // $plan = $user->stripe_plan ?? 'free';
+            // $price_id = config("stripe.plans.$plan") ?? $plan; // planがprice_idならそのまま使う
+            // $limit = config("stripe.limits.$price_id");
+
+            $userPlanKey = $user->stripe_plan; // price_id なら price_id を使う
+            $plan = collect(config('stripe.plans_list'))->firstWhere('price_id', $userPlanKey);
+            $limit = $plan['limit'] ?? null;
             // プランの名簿上限値（stripe.php参照）
 
             // 上限チェック
