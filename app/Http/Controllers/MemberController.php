@@ -42,11 +42,11 @@ class MemberController extends Controller
 
         $request->validate([
             'name' => 'required|max:64',
-            'email' => 'required|email|max:255',
-            'content' => 'required|max:255',
-            // 'is_visible' => 'boolean', // `is_visible` をブール値としてバリデーション
-            'is_visible' => 'sometimes|boolean', // `is_visible` をブール値としてバリデーション
+            'email' => 'nullable|email|max:255',   // ← required → nullable に変更
+            'content' => 'nullable|max:255',       // ← required → nullable に変更
+            'is_visible' => 'sometimes|boolean',
         ]);
+
 
 
         $user = $request->user();
@@ -60,7 +60,7 @@ class MemberController extends Controller
             // $limit = config("stripe.limits.$price_id");
 
             $userPlanKey = $user->stripe_plan; // price_id なら price_id を使う
-            $plan = collect(config('stripe.plans_list'))->firstWhere('price_id', $userPlanKey);
+            $plan = collect(config('stripe.plans_list'))->firstWhere('stripe_plan', $userPlanKey);
             $limit = $plan['limit'] ?? null;
             // プランの名簿上限値（stripe.php参照）
 

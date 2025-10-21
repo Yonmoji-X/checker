@@ -31,7 +31,7 @@ class StripeController extends Controller
 
         // 無料プランは Stripe をスキップ
         if ($planKey === 'free') {
-            $user->stripe_plan = $plan['price_id'];
+            $user->stripe_plan = $plan['stripe_plan'];
             $user->stripe_status = 'active';
             $user->stripe_subscription_id = null;
             $user->stripe_customer_id = null;
@@ -47,7 +47,7 @@ class StripeController extends Controller
         $session = Session::create([
             'payment_method_types' => ['card'],
             'line_items' => [[
-                'price' => $plan['price_id'],
+                'price' => $plan['stripe_plan'],
                 'quantity' => 1,
             ]],
             'mode' => 'subscription',
@@ -101,7 +101,7 @@ class StripeController extends Controller
         $customerId = $user->stripe_customer_id;
 
         $plans = collect(config('stripe.plans_list'));
-        $plan = $plans->firstWhere('price_id', $planId);
+        $plan = $plans->firstWhere('stripe_plan', $planId);
         $planName = $plan['name'] ?? '未購入';
 
         return view('checkout.plan', compact(
