@@ -27,7 +27,7 @@ class AttendanceRequestController extends Controller
             if ($group) $userId = $group->admin_id;
         }
 
-        $members = Member::where('user_id', $userId)->where('is_visible', 1)->get();
+        $members = Member::where('user_id', $userId)->where('is_visible', 1)->withPlanLimit()->get();
 
         $startDate = $request->start_date ?? now()->startOfMonth()->format('Y-m-d');
         $endDate = $request->end_date ?? now()->endOfMonth()->format('Y-m-d');
@@ -99,7 +99,7 @@ class AttendanceRequestController extends Controller
         }
         // $members = Member::where('user_id', $userId)->latest()->get();
         // 表示のユーザーのみ取得
-        $members = Member::where('user_id', $userId)->where('is_visible', 1)->get();
+        $members = Member::where('user_id', $userId)->where('is_visible', 1)->withPlanLimit()->get();
         // ビューにデータを渡す
         return view('attendancerequests.create', compact('members'));
     }
@@ -146,7 +146,12 @@ class AttendanceRequestController extends Controller
         }
 
         $requestData = AttendanceRequest::findOrFail($id);
-        $members = Member::all();
+        // $members = Member::all();
+        $members = Member::where('user_id', auth()->id())   // 自分のメンバーだけ
+                 ->where('is_visible', 1)           // 表示可能なものだけ
+                 ->withPlanLimit()                  // プラン上限を適用
+                 ->get();
+
         return view('attendancerequests.edit', compact('requestData', 'members'));
     }
 

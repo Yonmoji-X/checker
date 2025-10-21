@@ -23,7 +23,7 @@ class AttendanceController extends Controller
             if ($group) $userId = $group->admin_id;
         }
 
-        $members = Member::where('user_id', $userId)->where('is_visible', 1)->get();
+        $members = Member::where('user_id', $userId)->where('is_visible', 1)->withPlanLimit()->get();
 
         $startDate = $request->start_date ?? now()->startOfMonth()->format('Y-m-d');
         $endDate = $request->end_date ?? now()->endOfMonth()->format('Y-m-d');
@@ -100,7 +100,7 @@ class AttendanceController extends Controller
         $startDate = $request->input('start_date') ?? now()->startOfMonth()->format('Y-m-d');
         $endDate = $request->input('end_date') ?? now()->endOfMonth()->format('Y-m-d');
 
-        $memberName = $memberId ? Member::find($memberId)->name : '全員';
+        $memberName = $memberId ? Member::find($memberId)->withPlanLimit()->name : '全員';
 
         return Excel::download(new AttendanceExport($memberId, $startDate, $endDate), "{$memberName}_勤怠データ.xlsx");
     }

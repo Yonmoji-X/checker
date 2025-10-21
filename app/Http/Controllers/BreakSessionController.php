@@ -43,7 +43,7 @@ class BreakSessionController extends Controller
             if ($group) $userId = $group->admin_id;
         }
 
-        $members = Member::where('user_id', $userId)->where('is_visible', 1)->get();
+        $members = Member::where('user_id', $userId)->where('is_visible', 1)->withPlanLimit() ->get();
 
         $startDate = $request->start_date ?? now()->startOfMonth()->format('Y-m-d');
         $endDate = $request->end_date ?? now()->endOfMonth()->format('Y-m-d');
@@ -83,7 +83,7 @@ class BreakSessionController extends Controller
             if ($group) $userId = $group->admin_id;
         }
 
-        $members = Member::where('user_id', $userId)->where('is_visible', 1)->get();
+        $members = Member::where('user_id', $userId)->where('is_visible', 1)->withPlanLimit() ->get();
 
         $startDate = $request->start_date ?? now()->startOfMonth()->format('Y-m-d');
         $endDate = $request->end_date ?? now()->endOfMonth()->format('Y-m-d');
@@ -145,6 +145,7 @@ class BreakSessionController extends Controller
         // 該当するユーザーのメンバーリストを取得
         $members = Member::where('user_id', $userId)->where('is_visible', 1)
         ->latest()
+        ->withPlanLimit() 
         ->get();
 
         // ビューにデータを渡す

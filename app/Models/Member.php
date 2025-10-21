@@ -25,6 +25,7 @@ class Member extends Model
     ];
 
 
+
     
     public function user()
     {
@@ -48,5 +49,24 @@ class Member extends Model
     public function breakSessions()
     {
         return $this->hasMany(BreakSession::class);
+    }
+
+
+    // Stripeプランで名簿の人数制限を全ページに適応するためのフィルタ
+    public function scopeWithPlanLimit($query, $user = null) {
+        $user = $user ?? auth()->user();
+        if ($user->role !== 'admin') {
+            return $query;
+        }
+        $planKey = $user->stripe_plan;
+        $plan = collect(config('stripe.plans_list'))->firstWhere('stripe_plan', $planKey);
+        $limit = $plan['limit'] ?? null;
+    
+        if ($limit !== null) {
+            // 古いデータ順に取得して上限に制限
+            $query->orderBy('created_at', 'asc')->limit($limit);
+        }
+    
+        return $query;
     }
 }

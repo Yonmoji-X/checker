@@ -38,7 +38,7 @@ class RecordController extends Controller
         $memberId  = $request->member_id ?? null;
         $templateMemberStatus = $request->member_status ?? 0;
         $templateClockStatus  = $request->clock_status ?? 1;
-        $members = Member::where('user_id', $userId)->where('is_visible', 1)->get();
+        $members = Member::where('user_id', $userId)->where('is_visible', 1)->withPlanLimit()->get();
 
         // まず head_id のみを distinct でページネーション
         $headQuery = Record::select('head_id')
@@ -175,7 +175,8 @@ class RecordController extends Controller
 
         $jsonTemplates = json_encode($templates, JSON_UNESCAPED_UNICODE);
         // $membersは出退勤時に行うし、recordsテーブルでis_visibleが選択されてたら良いので、ここは正味あんまり関係ない。
-        $members = Member::where('user_id', $userId)->latest()->get();
+        // $members = Member::where('user_id', $userId)->latest()->withPlanLimit()->get();
+        $members = Member::where('user_id', $userId)->withPlanLimit()->get();
         // 表示状態のメンバーのみ取得。
         // $members = Member::where('user_id', $userId)->where('is_visible', 1)->get();
         // 各メンバーの最新の出勤データを取得
@@ -402,7 +403,7 @@ class RecordController extends Controller
 
         // 指定されたレコードに関連するテンプレートとメンバーを取得
         $template = Template::where('id', $record->template_id)->first(); // 単一のテンプレートを取得
-        $member = Member::where('id', $record->member_id)->get();
+        $member = Member::where('id', $record->member_id)->withPlanLimit()->get();
 
         // JSONエンコード
         $jsonTemplate = json_encode($template, JSON_UNESCAPED_UNICODE);

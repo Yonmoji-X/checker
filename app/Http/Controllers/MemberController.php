@@ -14,15 +14,37 @@ class MemberController extends Controller
      */
     public function index()
     {
-        Gate::authorize('isAdmin'); //←追記
-        $userId = Auth::id();
-        $members = Member::where('user_id', $userId)
-                ->with('user')
-                ->latest()
-                ->paginate(5);
-                // ->get();
-        return view('members.index', compact('members'));
+        Gate::authorize('isAdmin');
+        $user = Auth::user();
+
+        $members = Member::where('user_id', $user->id)
+                        ->with('user')
+                        ->oldest()
+                        ->paginate(5);
+
+        // プラン関係
+        $planName = null;
+        $limit = null;
+        $memberCount = $members->total(); // ページネーション込みの総件数
+
+        // 管理者でかつプラン制限がある場合のみフラグを追加
+        if ($user->role === 'admin') {
+            $plan = collect(config('stripe.plans_list'))->firstWhere('stripe_plan', $user->stripe_plan);
+            $planName = $plan['name'] ?? '不明';
+            $limit = $plan['limit'] ?? null;
+
+            if (!is_null($limit)) {
+                $members->getCollection()->transform(function($member, $key) use ($limit) {
+                    $member->is_over_limit = $key >= $limit;
+                    return $member;
+                });
+            }
+        }
+
+        // return view('members.index', compact('members'));
+        return view('members.index', compact('members', 'planName', 'memberCount', 'limit'));
     }
+
 
     /**
      * Show the form for creating a new resource.
