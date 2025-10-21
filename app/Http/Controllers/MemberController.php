@@ -19,31 +19,33 @@ class MemberController extends Controller
 
         $members = Member::where('user_id', $user->id)
                         ->with('user')
-                        ->oldest()
+                        ->reorder()
+                        ->orderByRaw('name COLLATE utf8mb4_ja_0900_as_cs ASC')
                         ->paginate(5);
 
-        // プラン関係
+        // プラン情報
         $planName = null;
         $limit = null;
-        $memberCount = $members->total(); // ページネーション込みの総件数
+        $memberCount = $members->total(); // 全メンバー数
 
-        // 管理者でかつプラン制限がある場合のみフラグを追加
         if ($user->role === 'admin') {
             $plan = collect(config('stripe.plans_list'))->firstWhere('stripe_plan', $user->stripe_plan);
             $planName = $plan['name'] ?? '不明';
             $limit = $plan['limit'] ?? null;
-
-            if (!is_null($limit)) {
-                $members->getCollection()->transform(function($member, $key) use ($limit) {
-                    $member->is_over_limit = $key >= $limit;
-                    return $member;
-                });
-            }
         }
 
-        // return view('members.index', compact('members'));
+        // ページをまたいで全体の順序で over_limit を判定
+        $currentPage = $members->currentPage();
+        $perPage = $members->perPage();
+
+        foreach ($members as $index => $member) {
+            $globalIndex = ($currentPage - 1) * $perPage + $index + 1;
+            $member->is_over_limit = $limit && $globalIndex > $limit;
+        }
+
         return view('members.index', compact('members', 'planName', 'memberCount', 'limit'));
     }
+
 
 
     /**
@@ -98,9 +100,10 @@ class MemberController extends Controller
         // $data['is_visible'] = $request->has('is_visible') ? 1 : 0; // チェックが入っていれば 1、なければ 0
 
         // ユーザーが認証済みであることを確認し、members リレーションを使用
-        $request->user()->members()->create($data);
+        $member = $request->user()->members()->create($data);
 
-        return redirect()->route('members.index');
+        return redirect()->route('members.index')
+                ->with('success', "{$member->name} の登録が完了しました");
     }
 
     /**
@@ -127,14 +130,19 @@ class MemberController extends Controller
     public function update(Request $request, Member $member)
     {
         Gate::authorize('isAdmin'); //←追記
-
         $request->validate([
             'name' => 'required|max:64',
-            'email' => 'required|email|max:255',
-            'content' => 'required|max:255',
-            // 'is_visible' => 'boolean', // `is_visible` をブール値としてバリデーション
-            'is_visible' => 'sometimes|boolean', // `is_visible` をブール値としてバリデーション
+            'email' => 'nullable|email|max:255',   // ← required → nullable に変更
+            'content' => 'nullable|max:255',       // ← required → nullable に変更
+            'is_visible' => 'sometimes|boolean',
         ]);
+        // $request->validate([
+        //     'name' => 'required|max:64',
+        //     'email' => 'required|email|max:255',
+        //     'content' => 'required|max:255',
+        //     // 'is_visible' => 'boolean', // `is_visible` をブール値としてバリデーション
+        //     'is_visible' => 'sometimes|boolean', // `is_visible` をブール値としてバリデーション
+        // ]);
 
         $data = $request->only(['name', 'email', 'content']);
         // $data['is_visible'] = $request->has('is_visible') ? 1 : 0; // チェックボックスがオンなら 1、それ以外なら 0

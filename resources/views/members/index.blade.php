@@ -1,6 +1,22 @@
 <!-- resources/views/members/index.blade.php -->
 
 <x-app-layout>
+    <!-- 成功メッセージ -->
+    @if (session('success'))
+        <div class="max-w-3xl mx-auto mb-4">
+            <div class="p-4 mb-4 text-green-800 bg-green-100 rounded-lg dark:bg-green-800 dark:text-green-200" role="alert">
+                {{ session('success') }}
+            </div>
+        </div>
+    @endif
+
+    <!-- エラーメッセージ（既存のもの） -->
+    @if (session('error'))
+        <x-member-max-modal 
+            :message="session('error')" 
+            :change-plan-route="route('checkout')" 
+        />
+    @endif
 
 
     <x-slot name="header">
