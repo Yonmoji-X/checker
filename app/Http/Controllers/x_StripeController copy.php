@@ -17,21 +17,12 @@ class StripeController extends Controller
 
     public function createSession(Request $request)
     {
-        $planKey = $request->input('plan'); // free / standard / premium
-        $plans = collect(config('stripe.plans_list'));
-
-        // プラン情報を取得
-        $plan = $plans->firstWhere('key', $planKey);
-
-        if (!$plan) {
-            return response()->json(['error' => 'プランが見つかりません'], 400);
-        }
-
-        $user = $request->user();
+        $plan = $request->input('plan');
 
         // 無料プランは Stripe をスキップ
-        if ($planKey === 'free') {
-            $user->stripe_plan = $plan['price_id'];
+        if ($plan === 'free') {
+            $user = $request->user();
+            $user->stripe_plan = config('stripe.plans.free');
             $user->stripe_status = 'active';
             $user->stripe_subscription_id = null;
             $user->stripe_customer_id = null;
@@ -44,16 +35,22 @@ class StripeController extends Controller
 
         Stripe::setApiKey(config('stripe.secret'));
 
+        $priceId = match ($plan) {
+            'standard' => config('stripe.plans.standard'),
+            'premium' => config('stripe.plans.premium', null),
+            default => config('stripe.plans.free'),
+        };
+
         $session = Session::create([
             'payment_method_types' => ['card'],
             'line_items' => [[
-                'price' => $plan['price_id'],
+                'price' => $priceId,
                 'quantity' => 1,
             ]],
             'mode' => 'subscription',
             'success_url' => route('checkout.success') . '?session_id={CHECKOUT_SESSION_ID}',
             'cancel_url' => route('checkout.cancel'),
-            'customer_email' => $user->email,
+            'customer_email' => $request->user()->email,
         ]);
 
         return response()->json(['id' => $session->id]);
@@ -95,14 +92,18 @@ class StripeController extends Controller
     public function myPlan()
     {
         $user = auth()->user();
+
         $planId = $user->stripe_plan;
         $status = $user->stripe_status;
         $subscriptionId = $user->stripe_subscription_id;
         $customerId = $user->stripe_customer_id;
 
-        $plans = collect(config('stripe.plans_list'));
-        $plan = $plans->firstWhere('price_id', $planId);
-        $planName = $plan['name'] ?? '未購入';
+        $planNames = [
+            env('STRIPE_PLAN_FREE') => 'フリープラン',
+            env('STRIPE_PLAN_STANDARD') => 'スタンダードプラン',
+        ];
+
+        $planName = $planNames[$planId] ?? '未購入';
 
         return view('checkout.plan', compact(
             'planName',

@@ -6,6 +6,7 @@
             <div>
                 <h3 class="text-xl sm:text-2xl font-bold {{ $plan['text'] }} mb-2">{{ $plan['name'] }}</h3>
                 <p class="text-gray-600 dark:text-gray-300 mb-4">{{ $plan['price'] }} / 月</p>
+                <p class="text-gray-600 dark:text-gray-300 mb-4">{{ $plan['limit'] }} 名の名簿登録が可能。</p>
             </div>
             <button 
                 class="font-semibold py-2 px-4 rounded-xl transition-colors {{ $plan['button'] }}"

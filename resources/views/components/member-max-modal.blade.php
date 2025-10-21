@@ -2,12 +2,19 @@
 
 @props([
     'message' => null,
-    'changePlanRoute' => route('checkout') // プラン変更ページのルート
+    'changePlanRoute' => route('checkout'),
+    'currentMembers' => null, // 現在の登録人数
+    'limit' => null,          // 上限
 ])
 
 @if(session('error') || !empty($message))
     @php
-        $displayMessage = session('error') ?? $message ?? "このプランでは名簿の上限に達しています。";
+        $displayMessage = $message ?? session('error') ?? "このプランでは名簿の上限に達しています。";
+
+        // 上限と現在人数が渡されていれば具体的に表示
+        if($limit !== null && $currentMembers !== null) {
+            $displayMessage = "このプランでは名簿の上限は {$limit} 人です。現在 {$currentMembers} 人登録されています。";
+        }
     @endphp
 
     {{-- 背景オーバーレイ --}}
@@ -32,7 +39,6 @@
     {{-- 背景スクロール禁止 --}}
     <script>
         document.body.style.overflow = 'hidden';
-        // Escで閉じられないようにする（誤操作防止）
         document.addEventListener('keydown', e => { if(e.key === "Escape") e.preventDefault(); });
     </script>
 @endif
