@@ -20,7 +20,7 @@ class MemberController extends Controller
         $members = Member::where('user_id', $user->id)
                         ->with('user')
                         ->reorder()
-                        ->orderByRaw('name COLLATE utf8mb4_ja_0900_as_cs ASC')
+                        ->orderByRaw('name COLLATE utf8mb4_unicode_520_ci ASC')
                         ->paginate(5);
 
         // プラン情報
