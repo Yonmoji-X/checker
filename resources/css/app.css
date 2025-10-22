@@ -5,6 +5,32 @@
 @tailwind components;
 @tailwind utilities;
 
-html {
-  background-color: #111827; /* ビューポート外の背景色 */
+
+/* ビューポート外の背景色 */
+/* html {
+  background-color: #111827; 
+} */
+
+/* デフォルトはライトモード（白背景） */
+html, body {
+  background-color: #ffffff;
+  color: #111827; /* 文字色も調整 */
 }
+
+/* ダークモードの場合は黒背景 */
+@media (prefers-color-scheme: dark) {
+  html, body {
+    background-color: #111827;
+    color: #ffffff;
+  }
+}
+
+/* 
+body {
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+
+body.loaded {
+  opacity: 1;
+} */
