@@ -4,7 +4,7 @@
     <div class="md:hidden flex items-center justify-between bg-gray-800 text-white p-4">
         <div class="flex items-center space-x-2">
             <img src="{{ asset('images/app-icon-192.png') }}" alt="App Icon" class="h-8 w-8 rounded-full" />
-            <span class="font-semibold text-lg">AC-Sync</span>
+            <span class="font-semibold text-lg">SafeTimeCard</span>
         </div>
         <button @click="open = !open" class="focus:outline-none">
             <svg x-show="!open" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
