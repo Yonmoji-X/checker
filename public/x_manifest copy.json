@@ -1,24 +1,24 @@
 {
-  "name": "SafeTimeCard",
-  "short_name": "SafeTimeCard",
-  "start_url": "/",
+  "name": "AC-Sync PWA",
+  "short_name": "AC-Sync",
+  "start_url": "/checker/",
   "display": "standalone",
   "background_color": "#111827",
   "theme_color": "#3300cc",
-  "scope": "/",
+  "scope": "/checker/",
   "icons": [
     {
-      "src": "/images/app-icon-192-rounded.png",
+      "src": "/checker/images/app-icon-192-rounded.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/images/app-icon-512-rounded.png",
+      "src": "/checker/images/app-icon-512-rounded.png",
       "sizes": "512x512",
       "type": "image/png"
     },
     {
-      "src": "/images/app-icon-180.png",
+      "src": "/checker/images/app-icon-180.png",
       "sizes": "180x180",
       "type": "image/png"
     }

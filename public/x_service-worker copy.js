@@ -2,13 +2,13 @@
 var CACHE_NAME = 'pwa-sample-caches-v6'; // バージョンを更新
 
 var urlsToCache = [
-    "/",                        // アプリケーションのルート
-    "/index.php",               // メインエントリーポイント
-    "/build/assets/app-DZp4A-7N.css",  // CSSファイル
-    "/build/assets/app-CH09qwMe.js",   // JSファイル
-    "/images/app-icon-192.png",       // アイコン画像
-    "/manifest.json",           // マニフェストファイル
-    "/favicon.ico"              // Favicon
+    "/checker/",                        // アプリケーションのルート
+    "/checker/index.php",               // メインエントリーポイント
+    "/checker/build/assets/app-DZp4A-7N.css",  // CSSファイル
+    "/checker/build/assets/app-CH09qwMe.js",   // JSファイル
+    "/checker/images/app-icon-192.png",       // アイコン画像
+    "/checker/manifest.json",           // マニフェストファイル
+    "/checker/favicon.ico"              // Favicon
 ];
 
 // インストール処理
@@ -51,7 +51,7 @@ self.addEventListener('activate', function(event) {
 // サービスワーカーの登録処理
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', function() {
-        navigator.serviceWorker.register('/service-worker.js')
+        navigator.serviceWorker.register('/checker/service-worker.js')
             .then(function(registration) {
                 console.log('ServiceWorker registration successful with scope: ', registration.scope);
             })
