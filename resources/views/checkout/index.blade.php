@@ -11,4 +11,7 @@
             <x-plan-card :plans="$plans" />
         </div>
     </div>
+
+    <!-- {{-- モーダルを追加 --}}
+    <x-plan-change-modal /> -->
 </x-app-layout>
