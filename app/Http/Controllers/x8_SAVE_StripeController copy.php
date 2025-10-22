@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Stripe\Stripe;
 use Stripe\Checkout\Session;
-use Stripe\Customer;
 use Stripe\Subscription;
 use Stripe\PaymentMethod;
 
@@ -21,7 +20,7 @@ class StripeController extends Controller
     }
 
     /**
-     * Checkout セッション作成または無料プラン登録
+     * Checkout セッション作成またはサブスク更新
      */
     public function createSession(Request $request)
     {
@@ -34,38 +33,15 @@ class StripeController extends Controller
         }
 
         $user = $request->user();
-        Stripe::setApiKey(config('stripe.secret'));
 
         // -------------------------
-        // 1️⃣ 無料プランの場合
+        // free プランは Stripe を使わず更新
         // -------------------------
         if ($planKey === 'free') {
-            // Stripe顧客が未作成なら作成（カード不要）
-            if (!$user->stripe_customer_id) {
-                $customer = Customer::create([
-                    'email' => $user->email,
-                    'name'  => $user->name,
-                    'metadata' => [
-                        'app_user_id' => $user->id,
-                    ],
-                ]);
-                $user->stripe_customer_id = $customer->id;
-            }
-
-            // Stripe上でも「無料プランのサブスク」を作成
-            $subscription = Subscription::create([
-                'customer' => $user->stripe_customer_id,
-                'items' => [
-                    ['price' => $plan['stripe_plan']],
-                ],
-                'trial_period_days' => 0,
-                'payment_behavior' => 'default_incomplete', // 無料なので課金なし
-            ]);
-
-            // DB更新
             $user->stripe_plan = $plan['stripe_plan'];
-            $user->stripe_status = $subscription->status;
-            $user->stripe_subscription_id = $subscription->id;
+            $user->stripe_status = 'active';
+            $user->stripe_subscription_id = null;
+            $user->stripe_customer_id = null;
             $user->save();
 
             return response()->json([
@@ -73,14 +49,16 @@ class StripeController extends Controller
             ]);
         }
 
+        Stripe::setApiKey(config('stripe.secret'));
+
         // -------------------------
-        // 2️⃣ 有料プランの場合
+        // 既存 Stripe 顧客
         // -------------------------
         if ($user->stripe_customer_id) {
             $hasPaymentMethod = $this->customerHasPaymentMethod($user->stripe_customer_id);
 
             if ($user->stripe_subscription_id && $hasPaymentMethod) {
-                // サブスク更新（プラン変更）
+                // サブスク更新
                 $subscription = Subscription::update(
                     $user->stripe_subscription_id,
                     [
@@ -99,12 +77,14 @@ class StripeController extends Controller
                     'redirect' => route('checkout.success'),
                 ]);
             } else {
-                // 支払い情報がない場合はCheckoutへ
+                // 支払い方法がない場合は Checkout で入力を促す
                 return $this->createCheckoutSession($user, $plan);
             }
         }
 
-        // Stripe未登録顧客
+        // -------------------------
+        // 新規顧客（Stripe に登録されていない）
+        // -------------------------
         return $this->createCheckoutSession($user, $plan);
     }
 
@@ -171,7 +151,7 @@ class StripeController extends Controller
     }
 
     /**
-     * 現在のプラン情報
+     * ユーザーの現在のプラン情報
      */
     public function myPlan()
     {
@@ -190,7 +170,7 @@ class StripeController extends Controller
     }
 
     /**
-     * 顧客に支払い方法が登録されているか確認
+     * Stripe 顧客に支払い方法があるか確認
      */
     private function customerHasPaymentMethod($customerId)
     {
@@ -198,6 +178,7 @@ class StripeController extends Controller
             'customer' => $customerId,
             'type' => 'card',
         ]);
+
         return count($paymentMethods->data) > 0;
     }
 }
