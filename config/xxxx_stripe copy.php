@@ -11,8 +11,8 @@ return [
             'key' => 'free',
             'stripe_plan' => env('STRIPE_PLAN_FREE'),
             'limit' => 1,
-            'bg' => 'bg-gray-50 dark:bg-gray-900',
-            'text' => 'text-gray-700 dark:text-gray-300',
+            'bg' => 'bg-green-50 dark:bg-green-900',
+            'text' => 'text-green-700 dark:text-green-300',
             'button' => 'bg-gray-400 hover:bg-gray-500 text-white',
         ],
         [
@@ -21,15 +21,9 @@ return [
             'key' => 'light',
             'stripe_plan' => env('STRIPE_PLAN_LIGHT'),
             'limit' => 5,
-            'bg' => 'bg-green-50 dark:bg-green-900',
-            'text' => 'text-green-700 dark:text-green-300',
-            'button' => 'bg-green-600 hover:bg-green-700 text-white',
-            /*
-            // オレンジの場合
             'bg' => 'bg-orange-50 dark:bg-orange-900',
             'text' => 'text-orange-700 dark:text-orange-300',
             'button' => 'bg-orange-600 hover:bg-orange-700 text-white',
-            */
         ],
         [
             'name' => 'スタンダードプラン',

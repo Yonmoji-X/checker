@@ -9,18 +9,12 @@ use Stripe\Subscription;
 
 class StripeController extends Controller
 {
-    /**
-     * プラン一覧ページ
-     */
     public function index()
     {
         $plans = config('stripe.plans_list');
         return view('checkout.index', compact('plans'));
     }
 
-    /**
-     * Checkout セッション作成（初回購入用）
-     */
     public function createSession(Request $request)
     {
         $planKey = $request->input('plan'); // free / light / standard / premium
@@ -32,15 +26,33 @@ class StripeController extends Controller
         }
 
         $user = $request->user();
+        Stripe::setApiKey(config('stripe.secret'));
 
         // -------------------------
-        // 初回 free プラン選択時（Stripe に接続しない）
+        // 無料プランを選択した場合
         // -------------------------
-        if ($planKey === 'free' && !$user->stripe_customer_id) {
+        if ($planKey === 'free') {
+            if ($user->stripe_subscription_id) {
+                $subscription = Subscription::retrieve($user->stripe_subscription_id);
+
+                // 既存 subscription item ID を取得
+                $itemId = $subscription->items->data[0]->id ?? null;
+
+                if ($itemId) {
+                    Subscription::update($user->stripe_subscription_id, [
+                        'cancel_at_period_end' => false,
+                        'proration_behavior' => 'none',
+                        'items' => [[
+                            'id' => $itemId,
+                            'price' => $plan['stripe_plan'], // Stripe 上の Free プラン price ID
+                        ]],
+                    ]);
+                }
+            }
+
+            // ローカルDB更新
             $user->stripe_plan = $plan['stripe_plan'];
             $user->stripe_status = 'active';
-            $user->stripe_subscription_id = null;
-            $user->stripe_customer_id = null;
             $user->save();
 
             return response()->json([
@@ -49,68 +61,36 @@ class StripeController extends Controller
         }
 
         // -------------------------
-        // 既存顧客や有料プランの場合は updateSubscription に委譲
-        // -------------------------
-        return $this->updateSubscription($request);
-    }
-
-    /**
-     * サブスクリプション更新用（既存 Stripe 顧客用）
-     */
-    public function updateSubscription(Request $request)
-    {
-        $planKey = $request->input('plan'); // free / light / standard / premium
-        $plans = collect(config('stripe.plans_list'));
-        $plan = $plans->firstWhere('key', $planKey);
-
-        if (!$plan) {
-            return response()->json(['error' => 'プランが見つかりません'], 400);
-        }
-
-        $user = $request->user();
-        Stripe::setApiKey(config('stripe.secret'));
-
-        // -------------------------
-        // free プランも含め Stripe 上でサブスク更新
+        // 有料プランを選択した場合
         // -------------------------
         if ($user->stripe_customer_id && $user->stripe_subscription_id) {
-            try {
-                $subscription = Subscription::update(
-                    $user->stripe_subscription_id,
-                    [
-                        'items' => [
-                            ['price' => $plan['stripe_plan']],
-                        ],
-                        'proration_behavior' => 'create_prorations', // 日割り請求対応
-                    ]
-                );
+            $subscription = Subscription::retrieve($user->stripe_subscription_id);
+            $itemId = $subscription->items->data[0]->id ?? null;
 
+            if ($itemId) {
+                $updatedSub = Subscription::update($user->stripe_subscription_id, [
+                    'cancel_at_period_end' => false,
+                    'proration_behavior' => 'create_prorations',
+                    'items' => [[
+                        'id' => $itemId,
+                        'price' => $plan['stripe_plan'],
+                    ]],
+                ]);
+
+                // ローカル DB 更新
                 $user->stripe_plan = $plan['stripe_plan'];
-                $user->stripe_status = $subscription->status;
+                $user->stripe_status = $updatedSub->status;
                 $user->save();
 
-                // free プランの場合は専用ページへ
-                $redirectRoute = $planKey === 'free' ? 'checkout.free_success' : 'checkout.success';
-
-                return response()->json(['redirect' => route($redirectRoute)]);
-            } catch (\Exception $e) {
-                // 更新失敗時は Checkout Session に誘導
-                return $this->createCheckoutSession($user, $plan);
+                return response()->json([
+                    'redirect' => route('checkout.success'),
+                ]);
             }
         }
 
         // -------------------------
-        // 初回有料プラン購入（Stripe 上に顧客なし）
+        // 初回有料プラン購入用（Checkoutセッション作成）
         // -------------------------
-        return $this->createCheckoutSession($user, $plan);
-    }
-
-    /**
-     * Stripe Checkout セッション作成（初回有料プラン購入用）
-     */
-    private function createCheckoutSession($user, $plan)
-    {
-        Stripe::setApiKey(config('stripe.secret'));
         $session = Session::create([
             'payment_method_types' => ['card'],
             'line_items' => [[
@@ -126,9 +106,6 @@ class StripeController extends Controller
         return response()->json(['id' => $session->id]);
     }
 
-    /**
-     * Checkout 成功時
-     */
     public function success(Request $request)
     {
         $sessionId = $request->get('session_id');
@@ -152,25 +129,16 @@ class StripeController extends Controller
         return view('checkout.success');
     }
 
-    /**
-     * 無料プラン成功ページ
-     */
     public function freeSuccess()
     {
         return view('checkout.free_success');
     }
 
-    /**
-     * キャンセルページ
-     */
     public function cancel()
     {
         return view('checkout.cancel');
     }
 
-    /**
-     * ユーザーの現在のプラン情報
-     */
     public function myPlan()
     {
         $user = auth()->user();
