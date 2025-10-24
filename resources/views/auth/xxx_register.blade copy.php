@@ -40,7 +40,7 @@
             <x-input-error :messages="$errors->get('role')" class="mt-2" />
         </div>
 
-        <!-- 利用規約確認ボタン -->
+        <!-- 利用規約ボタン -->
         <div class="mt-4">
             <button type="button" id="open-terms-btn" class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">
                 利用規約を確認
@@ -49,12 +49,11 @@
 
         <!-- 登録ボタン -->
         <div class="flex items-center justify-end mt-4">
-            <a href="{{ route('login') }}" class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md">
+            <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('login') }}">
                 すでに登録済みですか?
             </a>
 
-            <!-- 修正ポイント: type="button" -->
-            <button type="button" id="register-btn" class="ms-4 bg-gray-400 text-white py-2 px-4 rounded cursor-not-allowed">
+            <button type="submit" id="register-btn" class="ms-4 bg-gray-400 text-white py-2 px-4 rounded cursor-not-allowed" disabled>
                 登録
             </button>
         </div>
@@ -65,15 +64,36 @@
         <div class="bg-white dark:bg-gray-900 rounded-lg w-3/4 max-w-3xl p-6 flex flex-col max-h-[90vh]">
             <h2 class="text-xl font-bold mb-4 text-gray-900 dark:text-gray-100">利用規約</h2>
 
-            <!-- スクロール可能な規約テキスト -->
             <div id="terms-box" class="overflow-y-auto p-4 border rounded bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 mb-4" style="height: 60vh;">
-                <p>本利用規約（以下「本規約」といいます。）は、〜（省略）〜</p>
-                @for ($i = 0; $i < 30; $i++)
-                    <p>…十分にスクロール可能な内容…</p>
-                @endfor
+                <p>本利用規約（以下「本規約」といいます。）は、[会社名]…</p>
+                <p>第1条…</p>
+                <p>第2条…</p>
+                <p>第3条…</p>
+                <p>第4条…</p>
+                <p>第5条…</p>
+                <p>第6条…</p>
+                <p>第7条…</p>
+                <p>第8条…</p>
+                <p>第9条…</p>
+                <p>附則…</p>
+                <p>※十分にスクロール可能なテキストを入れてください</p>
+                <p>…</p>
+                <p>…</p>
+                <p>…</p>
+                <p>…</p>
+                <p>…</p>
+                <p>…</p>
+                <p>…</p>
+                <p>…</p>
+                <p>…</p>
+                <p>…</p>
+                <p>…</p>
+                <p>…</p>
+                <p>…</p>
+                <p>…</p>
+                <p>…</p>
             </div>
 
-            <!-- 同意ボタン -->
             <button id="terms-agree-btn" class="bg-gray-400 text-white py-2 px-4 rounded disabled:opacity-50" disabled>
                 同意して閉じる
             </button>
@@ -91,7 +111,7 @@
 
             let agreed = false;
 
-            // モーダルを開く
+            // 利用規約ボタン
             openBtn.addEventListener('click', () => {
                 modal.classList.remove('hidden');
             });
@@ -110,23 +130,18 @@
                 modal.classList.add('hidden');
                 agreed = true;
 
-                // 登録ボタンを有効化
-                registerBtn.removeAttribute('disabled');
+                // 登録ボタン有効化
+                registerBtn.disabled = false;
                 registerBtn.classList.remove('bg-gray-400', 'cursor-not-allowed');
                 registerBtn.classList.add('bg-blue-600', 'hover:bg-blue-700', 'cursor-pointer');
             });
 
             // 登録ボタン押下
             registerBtn.addEventListener('click', (e) => {
-                e.preventDefault();
                 if (!agreed) {
+                    e.preventDefault();
                     modal.classList.remove('hidden');
-                    return;
                 }
-
-                // 通常送信（バリデーションやCSRF維持）
-                registerBtn.disabled = true;
-                form.requestSubmit(); // ✅ form.submit()ではなくこれ！
             });
         });
     </script>

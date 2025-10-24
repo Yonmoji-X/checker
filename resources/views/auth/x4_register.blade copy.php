@@ -53,8 +53,7 @@
                 すでに登録済みですか?
             </a>
 
-            <!-- 修正ポイント: type="button" -->
-            <button type="button" id="register-btn" class="ms-4 bg-gray-400 text-white py-2 px-4 rounded cursor-not-allowed">
+            <button type="submit" id="register-btn" class="ms-4 bg-gray-400 text-white py-2 px-4 rounded cursor-not-allowed">
                 登録
             </button>
         </div>
@@ -67,7 +66,20 @@
 
             <!-- スクロール可能な規約テキスト -->
             <div id="terms-box" class="overflow-y-auto p-4 border rounded bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 mb-4" style="height: 60vh;">
-                <p>本利用規約（以下「本規約」といいます。）は、〜（省略）〜</p>
+                <p>本利用規約（以下「本規約」といいます。）は、[会社名]（以下「当社」といいます。）が提供するサブスクリプションサービス（以下「本サービス」といいます。）の利用条件を定めるものです。本サービスの利用者（以下「ユーザー」といいます。）は、本規約に同意した上で本サービスを利用するものとします。</p>
+
+                <p>第1条（適用）…</p>
+                <p>第2条（利用登録）…</p>
+                <p>第3条（利用料金および支払方法）…</p>
+                <p>第4条（サービスの提供）…</p>
+                <p>第5条（禁止事項）…</p>
+                <p>第6条（契約の解除）…</p>
+                <p>第7条（免責事項）…</p>
+                <p>第8条（個人情報の取扱い）…</p>
+                <p>第9条（準拠法および裁判管轄）…</p>
+                <p>附則…</p>
+
+                <!-- 長文ダミー -->
                 @for ($i = 0; $i < 30; $i++)
                     <p>…十分にスクロール可能な内容…</p>
                 @endfor
@@ -87,11 +99,10 @@
             const agreeBtn = document.getElementById('terms-agree-btn');
             const termsBox = document.getElementById('terms-box');
             const registerBtn = document.getElementById('register-btn');
-            const form = document.getElementById('register-form');
 
             let agreed = false;
 
-            // モーダルを開く
+            // 利用規約モーダルを開く
             openBtn.addEventListener('click', () => {
                 modal.classList.remove('hidden');
             });
@@ -110,23 +121,18 @@
                 modal.classList.add('hidden');
                 agreed = true;
 
-                // 登録ボタンを有効化
-                registerBtn.removeAttribute('disabled');
+                // 登録ボタンを有効化して見た目変更
                 registerBtn.classList.remove('bg-gray-400', 'cursor-not-allowed');
                 registerBtn.classList.add('bg-blue-600', 'hover:bg-blue-700', 'cursor-pointer');
             });
 
             // 登録ボタン押下
             registerBtn.addEventListener('click', (e) => {
-                e.preventDefault();
                 if (!agreed) {
+                    e.preventDefault(); // 同意してなければモーダル表示
                     modal.classList.remove('hidden');
-                    return;
                 }
-
-                // 通常送信（バリデーションやCSRF維持）
-                registerBtn.disabled = true;
-                form.requestSubmit(); // ✅ form.submit()ではなくこれ！
+                // 同意済みならフォーム送信される
             });
         });
     </script>

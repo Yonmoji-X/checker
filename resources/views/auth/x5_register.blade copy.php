@@ -53,8 +53,12 @@
                 すでに登録済みですか?
             </a>
 
-            <!-- 修正ポイント: type="button" -->
-            <button type="button" id="register-btn" class="ms-4 bg-gray-400 text-white py-2 px-4 rounded cursor-not-allowed">
+            <button
+                type="submit"
+                id="register-btn"
+                class="ms-4 bg-gray-400 text-white py-2 px-4 rounded cursor-not-allowed"
+                disabled
+            >
                 登録
             </button>
         </div>
@@ -66,7 +70,11 @@
             <h2 class="text-xl font-bold mb-4 text-gray-900 dark:text-gray-100">利用規約</h2>
 
             <!-- スクロール可能な規約テキスト -->
-            <div id="terms-box" class="overflow-y-auto p-4 border rounded bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 mb-4" style="height: 60vh;">
+            <div
+                id="terms-box"
+                class="overflow-y-auto p-4 border rounded bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 mb-4"
+                style="height: 60vh;"
+            >
                 <p>本利用規約（以下「本規約」といいます。）は、〜（省略）〜</p>
                 @for ($i = 0; $i < 30; $i++)
                     <p>…十分にスクロール可能な内容…</p>
@@ -74,7 +82,11 @@
             </div>
 
             <!-- 同意ボタン -->
-            <button id="terms-agree-btn" class="bg-gray-400 text-white py-2 px-4 rounded disabled:opacity-50" disabled>
+            <button
+                id="terms-agree-btn"
+                class="bg-gray-400 text-white py-2 px-4 rounded disabled:opacity-50"
+                disabled
+            >
                 同意して閉じる
             </button>
         </div>
@@ -87,7 +99,6 @@
             const agreeBtn = document.getElementById('terms-agree-btn');
             const termsBox = document.getElementById('terms-box');
             const registerBtn = document.getElementById('register-btn');
-            const form = document.getElementById('register-form');
 
             let agreed = false;
 
@@ -116,17 +127,13 @@
                 registerBtn.classList.add('bg-blue-600', 'hover:bg-blue-700', 'cursor-pointer');
             });
 
-            // 登録ボタン押下
-            registerBtn.addEventListener('click', (e) => {
-                e.preventDefault();
+            // フォーム送信時のチェック
+            const form = document.getElementById('register-form');
+            form.addEventListener('submit', (e) => {
                 if (!agreed) {
+                    e.preventDefault();
                     modal.classList.remove('hidden');
-                    return;
                 }
-
-                // 通常送信（バリデーションやCSRF維持）
-                registerBtn.disabled = true;
-                form.requestSubmit(); // ✅ form.submit()ではなくこれ！
             });
         });
     </script>
