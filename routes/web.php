@@ -28,7 +28,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 // 利用規約ページ
-Route::get('/terms', [TermsController::class, 'index'])->name('terms');
+// Route::get('/terms', [TermsController::class, 'index'])->name('terms');
 
 
 // Route::middleware(['auth', 'verified'])->group(function () {
