@@ -80,29 +80,70 @@ class StripeController extends Controller
             $hasPaymentMethod = $this->customerHasPaymentMethod($user->stripe_customer_id);
 
             if ($user->stripe_subscription_id && $hasPaymentMethod) {
-                // サブスク更新（プラン変更）
-                $subscription = Subscription::update(
-                    $user->stripe_subscription_id,
-                    [
-                        'items' => [
-                            ['price' => $plan['stripe_plan']],
-                        ],
-                        'proration_behavior' => 'create_prorations',
-                    ]
-                );
+                // ⭐ 現在のサブスク情報を取得（updateに必要な item ID を取る）
+                $subscription = Subscription::retrieve($user->stripe_subscription_id); // ⭐
+                $subscriptionItemId = $subscription->items->data[0]->id ?? null; // ⭐
 
-                $user->stripe_plan = $plan['stripe_plan'];
-                $user->stripe_status = $subscription->status;
-                $user->save();
+                if ($subscriptionItemId) {
+                    // ⭐ 正しい形式でサブスク更新（idを指定してprice変更）
+                    $updated = Subscription::update(
+                        $user->stripe_subscription_id,
+                        [
+                            'items' => [
+                                [
+                                    'id' => $subscriptionItemId, // ⭐ ここが重要
+                                    'price' => $plan['stripe_plan'],
+                                ],
+                            ],
+                            'proration_behavior' => 'create_prorations', // ⭐ 課金差額の調整あり
+                        ]
+                    );
 
-                return response()->json([
-                    'redirect' => route('checkout.success'),
-                ]);
+                    // ⭐ DB更新
+                    $user->stripe_plan = $plan['stripe_plan'];
+                    $user->stripe_status = $updated->status;
+                    $user->save();
+
+                    return response()->json([
+                        'redirect' => route('checkout.success'),
+                    ]);
+                } else {
+                    // ⭐ item が見つからない場合は Checkout セッションを新規作成
+                    return $this->createCheckoutSession($user, $plan);
+                }
             } else {
-                // 支払い情報がない場合はCheckoutへ
+                // ⭐ 支払い情報がない場合は Checkout へ誘導
                 return $this->createCheckoutSession($user, $plan);
             }
         }
+
+        // if ($user->stripe_customer_id) {
+        //     $hasPaymentMethod = $this->customerHasPaymentMethod($user->stripe_customer_id);
+
+        //     if ($user->stripe_subscription_id && $hasPaymentMethod) {
+        //         // サブスク更新（プラン変更）
+        //         $subscription = Subscription::update(
+        //             $user->stripe_subscription_id,
+        //             [
+        //                 'items' => [
+        //                     ['price' => $plan['stripe_plan']],
+        //                 ],
+        //                 'proration_behavior' => 'create_prorations',
+        //             ]
+        //         );
+
+        //         $user->stripe_plan = $plan['stripe_plan'];
+        //         $user->stripe_status = $subscription->status;
+        //         $user->save();
+
+        //         return response()->json([
+        //             'redirect' => route('checkout.success'),
+        //         ]);
+        //     } else {
+        //         // 支払い情報がない場合はCheckoutへ
+        //         return $this->createCheckoutSession($user, $plan);
+        //     }
+        // }
 
         // Stripe未登録顧客
         return $this->createCheckoutSession($user, $plan);
@@ -131,26 +172,53 @@ class StripeController extends Controller
     /**
      * Checkout 成功時
      */
+    // public function success(Request $request)
+    // {
+    //     $sessionId = $request->get('session_id');
+    //     if (!$sessionId) {
+    //         return redirect()->route('checkout')->with('error', 'セッション情報が見つかりません。');
+    //     }
+        
+    //     Stripe::setApiKey(config('stripe.secret'));
+        
+    //     if ($sessionId) {
+    //         $user = $request->user();
+    //         $session = Session::retrieve($sessionId);
+    
+    //         $lineItems = Session::allLineItems($sessionId, ['limit' => 1]);
+    //         $planId = $lineItems->data[0]->price->id ?? null;
+    
+    //         $user->stripe_customer_id = $session->customer;
+    //         $user->stripe_subscription_id = $session->subscription;
+    //         $user->stripe_plan = $planId;
+    //         $user->stripe_status = $session->payment_status;
+    //         $user->save();
+    //     }
+
+    //     return view('checkout.success');
+    // }
+
     public function success(Request $request)
     {
         $sessionId = $request->get('session_id');
-        if (!$sessionId) {
-            return redirect()->route('checkout')->with('error', 'セッション情報が見つかりません。');
-        }
-
-        Stripe::setApiKey(config('stripe.secret'));
-        $session = Session::retrieve($sessionId);
         $user = $request->user();
 
-        $lineItems = Session::allLineItems($sessionId, ['limit' => 1]);
-        $planId = $lineItems->data[0]->price->id ?? null;
+        Stripe::setApiKey(config('stripe.secret'));
 
-        $user->stripe_customer_id = $session->customer;
-        $user->stripe_subscription_id = $session->subscription;
-        $user->stripe_plan = $planId;
-        $user->stripe_status = $session->payment_status;
-        $user->save();
+        // ✅ session_id がある場合だけ Stripe から取得
+        if ($sessionId) {
+            $session = Session::retrieve($sessionId);
+            $lineItems = Session::allLineItems($sessionId, ['limit' => 1]);
+            $planId = $lineItems->data[0]->price->id ?? null;
 
+            $user->stripe_customer_id = $session->customer;
+            $user->stripe_subscription_id = $session->subscription;
+            $user->stripe_plan = $planId;
+            $user->stripe_status = $session->payment_status;
+            $user->save();
+        }
+
+        // ✅ session_id がない場合でもビューをそのまま表示
         return view('checkout.success');
     }
 
