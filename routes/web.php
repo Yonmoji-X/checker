@@ -11,6 +11,7 @@ use App\Http\Controllers\BreakSessionController;
 use App\Http\Controllers\AttendanceRequestController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\NewPasswordController;
+use App\Http\Controllers\TermsController;
 // Stripe
 use App\Http\Controllers\StripeController;
 
@@ -25,6 +26,9 @@ Route::get('/', function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 });
+
+// 利用規約ページ
+Route::get('/terms', [TermsController::class, 'index'])->name('terms');
 
 
 // Route::middleware(['auth', 'verified'])->group(function () {

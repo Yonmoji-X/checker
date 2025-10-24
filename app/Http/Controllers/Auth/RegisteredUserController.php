@@ -33,6 +33,7 @@ class RegisteredUserController extends Controller
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'role' => ['required', 'in:admin,user'], // role のバリデーションを追加
+            'terms' => 'accepted', // ⭐ 利用規約チェック必須
         ]);
 
         $user = User::create([

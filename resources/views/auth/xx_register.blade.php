@@ -40,24 +40,29 @@
             <x-input-error :messages="$errors->get('role')" class="mt-2" />
         </div>
 
+        <!-- Terms Checkbox ★初期無効 -->
         <div class="mt-4">
-            <label for="terms" class="flex items-center">
-                <input id="terms" type="checkbox" name="terms" required>
+            <label for="terms-checkbox" class="flex items-center">
+                <input id="terms-checkbox" type="checkbox" name="terms" disabled class="mr-2">
                 <span class="ml-2 text-sm text-gray-600">
-                    <a href="{{ route('terms') }}" target="_blank" class="underline">利用規約</a> に同意します
+                    <button type="button" class="underline text-blue-600 open-terms-modal">利用規約</button> に同意します
                 </span>
             </label>
         </div>
 
-
+        <!-- 登録ボタン ★初期無効 -->
         <div class="flex items-center justify-end mt-4">
             <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('login') }}">
                 {{ __('すでに登録済みですか?') }}
             </a>
 
-            <x-primary-button class="ms-4">
+            <x-primary-button id="register-btn" class="ms-4" disabled>
                 {{ __('登録') }}
             </x-primary-button>
         </div>
     </form>
+
+    <!-- ★termsモーダルをインクルード -->
+    @include('terms.index')
+
 </x-guest-layout>
