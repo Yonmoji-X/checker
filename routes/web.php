@@ -27,6 +27,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 });
 
+
+Route::prefix('policy')->group(function() {
+    Route::view('terms', 'policy.terms')->name('policy.terms');
+    Route::view('privacy', 'policy.privacy')->name('policy.privacy');
+    Route::view('business', 'policy.business')->name('policy.business');
+});
+
 // 利用規約ページ
 // Route::get('/terms', [TermsController::class, 'index'])->name('terms');
 

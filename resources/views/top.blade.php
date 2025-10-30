@@ -128,7 +128,13 @@
                     </main>
 
                     <footer class="py-16 text-center text-sm text-black dark:text-white/70">
-                        勤怠管理・チェックアプリ
+                        勤怠管理・チェックアプリ <br>
+                        <a href="{{ route('policy.terms') }}">利用規約</a>
+                        <span>・</span>
+                        <a href="{{ route('policy.privacy') }}">プライバシーポリシー</a>
+                        <span>・</span>
+                        <a href="{{ route('policy.business') }}">事業者情報</a>
+
                     </footer>
                 </div>
             </div>
