@@ -42,7 +42,8 @@
             @csrf
             @method('PUT')
             <input type="text" name="attendance" value="{{ $attendance->attendance }}" class="flex-1 px-3 py-2 border rounded-md text-sm">
-            <button type="submit" class="px-3 py-2 bg-green-500 text-white text-xs rounded-md hover:bg-green-600">保存</button>
+            <button type="submit" class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-blue-600 bg-blue-100 rounded-md hover:bg-blue-200 dark:bg-blue-900 dark:text-blue-300 dark:hover:bg-blue-800">保存</button>
+            <!-- <button type="submit" class="px-3 py-2 bg-green-500 text-white text-xs rounded-md hover:bg-green-600">保存</button> -->
         </form>
     </td>
 </tr>

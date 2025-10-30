@@ -77,8 +77,18 @@
                     </div>
 
 
-                    <div class="mt-6">
+                    <!-- <div class="mt-6">
                         <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">送信</button>
+                    </div> -->
+                    <div class="mt-6 flex justify-center">
+                        <!-- <button type="submit" 
+                            class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-6 rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-400 transition-all duration-200">
+                            送信
+                        </button> -->
+                        <button type="submit" 
+                            class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-6 rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-400 transition-all duration-200">
+                            送信
+                        </button>
                     </div>
                 </form>
             </div>
