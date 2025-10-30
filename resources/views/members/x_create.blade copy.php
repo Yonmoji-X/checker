@@ -17,14 +17,7 @@
 
                         <div class="mb-4">
                             <label for="name" class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">名前</label>
-                            <input 
-                                type="text" 
-                                name="name" 
-                                id="name" 
-                                class="w-full py-2 px-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                                value="{{ old('name') }}" 
-                                placeholder="山田 太郎">
-
+                            <input type="text" name="name" id="name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline" value="{{ old('name') }}">
                             @error('name')
                                 <span class="text-red-500 text-xs italic">{{ $message }}</span>
                             @enderror
@@ -32,31 +25,15 @@
 
                         <div class="mb-4">
                             <label for="email" class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">メールアドレス</label>
-                            <input 
-                                type="email" 
-                                name="email" 
-                                id="email" 
-                                class="w-full py-2 px-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                                value="{{ old('email') }}" 
-                                placeholder="例：example@email.com">
-
+                            <input type="email" name="email" id="email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline" value="{{ old('email') }}">
                             @error('email')
                                 <span class="text-red-500 text-xs italic">{{ $message }}</span>
                             @enderror
                         </div>
 
                         <div class="mb-4">
-                            <label for="content" class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">備考</label>
-                            <textarea 
-                                name="content" 
-                                id="content" 
-                                rows="4" 
-                                class="w-full py-2 px-3 rounded-lg border border-gray-300 dark:border-gray-600
-                                    bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300
-                                    focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                            >
-                                {{ old('content') }}
-                            </textarea>
+                            <label for="content" class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">内容</label>
+                            <textarea name="content" id="content" rows="4" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline">{{ old('content') }}</textarea>
                             @error('content')
                                 <span class="text-red-500 text-xs italic">{{ $message }}</span>
                             @enderror
