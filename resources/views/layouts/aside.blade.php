@@ -120,7 +120,7 @@
         </div>
 
         <!-- 下部（ユーザー情報 + ログアウト） -->
-        <div class="p-4 border-t border-gray-700">
+        <div class="p-4 border-t border-gray-700 pb-6">
             <div class="text-sm text-gray-300 mb-2 truncate">
                 <div>{{ Auth::user()->name }}</div>
                 <div class="text-xs text-gray-500">{{ Auth::user()->email }}</div>
