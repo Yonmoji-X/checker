@@ -53,6 +53,7 @@
                 すでに登録済みですか?
             </a>
 
+            <!-- 修正ポイント: type="button" -->
             <button type="button" id="register-btn" class="ms-4 bg-gray-400 text-white py-2 px-4 rounded cursor-not-allowed">
                 登録
             </button>
@@ -64,9 +65,16 @@
         <div class="bg-white dark:bg-gray-900 rounded-lg w-3/4 max-w-3xl p-6 flex flex-col max-h-[90vh]">
             <h2 class="text-xl font-bold mb-4 text-gray-900 dark:text-gray-100">利用規約</h2>
 
-            <div id="terms-box" class="overflow-y-auto p-4 border rounded bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 mb-4 prose dark:prose-invert" style="height: 60vh;">
-                @include('policy.terms_content')
+            <!-- スクロール可能な規約テキスト -->
+            <!-- <div id="terms-box" class="overflow-y-auto p-4 border rounded bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 mb-4" style="height: 60vh;"> -->
+            
+            <div id="terms-box" class="overflow-y-auto p-4 border rounded bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 mb-4 prose dark:prose-invert" style="height: 60vh;">  
+                <!-- <main class="max-w-4xl mx-auto p-6 mt-6 bg-white rounded shadow space-y-6"> -->
+                    @include('policy.terms_content')
+                <!-- </main> -->
             </div>
+
+
 
             <!-- 同意ボタン -->
             <button id="terms-agree-btn" class="bg-gray-400 text-white py-2 px-4 rounded disabled:opacity-50" disabled>
@@ -76,7 +84,7 @@
     </div>
 
     <script>
-        function initRegisterForm() {
+        document.addEventListener('DOMContentLoaded', function() {
             const modal = document.getElementById('terms-modal');
             const openBtn = document.getElementById('open-terms-btn');
             const agreeBtn = document.getElementById('terms-agree-btn');
@@ -84,18 +92,16 @@
             const registerBtn = document.getElementById('register-btn');
             const form = document.getElementById('register-form');
 
-            if (!form || !registerBtn) return;
-
             let agreed = false;
 
             // モーダルを開く
-            openBtn?.addEventListener('click', () => {
+            openBtn.addEventListener('click', () => {
                 modal.classList.remove('hidden');
             });
 
-            // スクロールで同意ボタン有効化（余裕を持たせる）
-            termsBox?.addEventListener('scroll', () => {
-                if (termsBox.scrollTop + termsBox.clientHeight >= termsBox.scrollHeight - 10) {
+            // スクロールで同意ボタン有効化
+            termsBox.addEventListener('scroll', () => {
+                if (termsBox.scrollTop + termsBox.clientHeight >= termsBox.scrollHeight - 1) {
                     agreeBtn.disabled = false;
                     agreeBtn.classList.remove('bg-gray-400');
                     agreeBtn.classList.add('bg-blue-600', 'hover:bg-blue-700', 'cursor-pointer');
@@ -103,7 +109,7 @@
             });
 
             // 同意ボタン押下
-            agreeBtn?.addEventListener('click', () => {
+            agreeBtn.addEventListener('click', () => {
                 modal.classList.add('hidden');
                 agreed = true;
 
@@ -114,28 +120,17 @@
             });
 
             // 登録ボタン押下
-            registerBtn?.addEventListener('click', (e) => {
+            registerBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 if (!agreed) {
                     modal.classList.remove('hidden');
                     return;
                 }
 
+                // 通常送信（バリデーションやCSRF維持）
                 registerBtn.disabled = true;
-
-                // form.requestSubmit()のフォールバック対応
-                if (typeof form.requestSubmit === 'function') {
-                    form.requestSubmit();
-                } else {
-                    form.submit();
-                }
+                form.requestSubmit(); // ✅ form.submit()ではなくこれ！
             });
-        }
-
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initRegisterForm);
-        } else {
-            initRegisterForm();
-        }
+        });
     </script>
 </x-guest-layout>
