@@ -7,6 +7,14 @@
         </div>
     </div>
 
+    <!-- ✅ オーバーレイ（暗幕） -->
+    <div
+        x-show="open"
+        @click="open = false"
+        class="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden transition-opacity duration-300"
+        x-transition.opacity
+    ></div>
+
     <!-- ✅ サイドバー本体 -->
     <aside
         :class="{ 'translate-x-0': open, '-translate-x-full': !open }"
@@ -131,7 +139,7 @@
         </div>
     </aside>
 
-    <!-- ✅ モバイル専用フッター（ハンバーガーメニュー付き） -->
+    <!-- ✅ モバイル専用フッター -->
     <div class="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-300 dark:border-gray-700 shadow md:hidden z-60">
         <div class="flex justify-around items-center py-2">
             <!-- 出退勤 -->
@@ -157,9 +165,8 @@
                 <span class="text-xs font-semibold">休憩</span>
             </a>
 
-            <!-- ⭐ ハンバーガーメニュー（他と統一した白背景デザイン） -->
-            <a @click.prevent="open = !open"
-               href="#"
+            <!-- ハンバーガー -->
+            <button @click="open = !open"
                class="flex flex-col items-center text-gray-700 dark:text-gray-200 hover:text-blue-500 transition">
                 <template x-if="!open">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mb-1" fill="none"
@@ -176,7 +183,7 @@
                     </svg>
                 </template>
                 <span class="text-xs font-semibold">メニュー</span>
-            </a>
+            </button>
         </div>
     </div>
 </nav>
