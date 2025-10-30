@@ -124,6 +124,8 @@ Route::middleware('auth')->group(function () {
     // テンプレート順序更新
     Route::post('/update-template-order', [TemplateController::class, 'updateOrder'])->name('template.updateOrder');
 
+    // グループ関係
+    Route::post('/groups/bulk-remove', [GroupController::class, 'bulkRemove'])->name('groups.bulkRemove');
 
     // Stirpe
     // Route::get('/checkout', [StripeController::class, 'index'])->name('checkout');
