@@ -8,9 +8,14 @@
     </x-slot>
 
     <div class="py-8">
-        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8 mt-6">
+        <!-- <div class="max-w-3xl mx-auto sm:px-6 lg:px-8 mt-6">
+            <div class="bg-white dark:bg-gray-800 shadow-md sm:rounded-lg overflow-hidden">
+                <div class="p-6 text-gray-900 dark:text-gray-100"> -->
+        <div class="max-w-6xl mx-auto sm:px-6 lg:px-8 mt-6"> 
             <div class="bg-white dark:bg-gray-800 shadow-md sm:rounded-lg overflow-hidden">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
+                <!-- ⭐ overflow-x-auto を追加して、画面が小さいときだけ横スクロール可能に -->
+                
 
                     @if (session('success'))
                         <div id="flash-message" class="bg-green-500 text-white p-4 rounded mb-4">
@@ -50,7 +55,8 @@
                             <input type="date" id="end_date" value="{{ $endDate }}" class="mt-1 block w-full py-2 px-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 rounded-md">
                         </div>
                     </div>
-                    <div class="overflow-x-auto">
+                    <!-- <div class="overflow-x-auto"> -->
+                    <div class="overflow-x-auto sm:overflow-x-visible">
                         <table class="w-full min-w-[700px] divide-y divide-gray-200 dark:divide-gray-700">
                             <thead class="bg-gray-50 dark:bg-gray-700">
                                 <tr>
@@ -68,10 +74,10 @@
                                 @include('breaksessions._table_rows')
                             </tbody>
                         </table>
-                            <div id="paginationContainer" class="mt-4">
-                                {{-- 初期は空、JSで描画 --}}
-                                @include('breaksessions._pagination')
-                            </div>
+                        <div id="paginationContainer" class="mt-4">
+                            {{-- 初期は空、JSで描画 --}}
+                            @include('breaksessions._pagination')
+                        </div>
                     </div>
                 </div>
             </div>
