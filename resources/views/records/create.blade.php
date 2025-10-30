@@ -67,7 +67,8 @@
                             {{ session('success') }}
                         </div>
                     @endif
-                    <div id="items_container" class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg p-6">
+                    <div id="items_container" class="bg-white dark:bg-gray-800 sm:rounded-lg p-2">
+                    <!-- <div id="items_container" class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg p-6"> -->
                         <input type="hidden" name="attendance" value=null >
                         <!-- <input type="hidden" id="clockInTime" name="clock_in_time" value=""> -->
                         <!-- <input type="hidden" name="clock_in_time" id="clock_in_time"> -->
