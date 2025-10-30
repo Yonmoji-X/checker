@@ -10,7 +10,7 @@
     <div class="py-6">
         <div class="max-w-xl mx-auto sm:px-6 lg:px-8 space-y-6 ">
 
-            @forelse ($templates as $template)
+            @foreach ($templates as $template)
             <div class="p-6 bg-white dark:bg-gray-800 shadow-md rounded-3xl overflow-hidden transition-transform transform hover:scale-[1.02]">
 
 
@@ -102,11 +102,7 @@
                 </div>
 
             </div>
-            @empty
-                <div class="p-6 bg-white dark:bg-gray-800 shadow-md rounded-3xl text-center text-gray-500 dark:text-gray-400">
-                    まだ登録されていません。 <!-- ⭐問題なし -->
-                </div>
-            @endforelse
+            @endforeach
             <div class="mt-4 p-4">
                 {{ $templates->links() }}
             </div>
