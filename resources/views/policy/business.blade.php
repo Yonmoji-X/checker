@@ -6,15 +6,23 @@
     <title>事業者向け情報 - SafeTimeCard</title>
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     @vite(['resources/css/app.css'])
+    <script src="https://cdn.tailwindcss.com"></script>
     <style> html { background-color: #f9fafb; } </style>
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans">
 
     <!-- ヘッダー -->
-    <header class="bg-purple-800 text-white shadow-md p-4 flex items-center justify-between">
+    <!-- <header class="bg-gray-800 text-white shadow-md p-4 flex items-center justify-between">
         <button 
             onclick="history.back()" 
             class="px-3 py-1 bg-purple-500 hover:bg-purple-700 rounded text-white transition">
+            ← 戻る
+        </button>
+        <h1 class="text-2xl font-bold text-center flex-1">事業者向け情報</h1>
+        <div class="w-12"></div>
+    </header> -->
+    <header class="bg-indigo-600 text-white shadow-md p-4 flex items-center justify-between">
+        <button onclick="history.back()" class="px-3 py-1 bg-indigo-500 hover:bg-indigo-700 rounded text-white transition">
             ← 戻る
         </button>
         <h1 class="text-2xl font-bold text-center flex-1">事業者向け情報</h1>

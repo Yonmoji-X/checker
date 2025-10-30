@@ -18,6 +18,7 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
     @vite(['resources/css/app.css'])
+    <script src="https://cdn.tailwindcss.com"></script>
     
     <style>
         html { background-color: #f9fafb; }
@@ -25,9 +26,9 @@
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans">
 
-    <!-- ヘッダー -->
-    <header class="bg-blue-600 text-white shadow-md p-4 flex items-center justify-between">
-        <button onclick="history.back()" class="px-3 py-1 bg-blue-500 hover:bg-blue-700 rounded text-white transition">
+    <!-- ヘッダー-->
+    <header class="bg-indigo-600 text-white shadow-md p-4 flex items-center justify-between">
+        <button onclick="history.back()" class="px-3 py-1 bg-indigo-500 hover:bg-indigo-700 rounded text-white transition">
             ← 戻る
         </button>
         <h1 class="text-2xl font-bold text-center flex-1">利用規約</h1>
