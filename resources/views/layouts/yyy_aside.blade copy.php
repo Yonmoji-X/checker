@@ -1,17 +1,29 @@
-<nav class="z-50" x-data="{ open: false }">
+<nav class="z-50">
     <!-- ✅ 上部バー（モバイルのみ） -->
     <div class="md:hidden flex items-center justify-between bg-white h-14 p-4 shadow fixed top-0 left-0 right-0 z-50">
         <div class="flex items-center space-x-2">
             <img src="{{ asset('images/app-icon-192.png') }}" alt="App Icon" class="h-8 w-8 rounded-full" />
             <span class="font-semibold text-lg">{{ $header }}</span>
         </div>
+        <button @click="open = !open" class="focus:outline-none bg-gray-800 text-white p-2 rounded-md">
+            <svg x-show="!open" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                 viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+            <svg x-show="open" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                 viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+        </button>
     </div>
 
     <!-- ✅ サイドバー本体 -->
     <aside
         :class="{ 'translate-x-0': open, '-translate-x-full': !open }"
         class="fixed md:static top-0 left-0 w-64 h-full bg-gray-800 text-gray-100 flex flex-col justify-between
-               transform transition-transform duration-300 ease-in-out z-50 md:translate-x-0 will-change-transform"
+               transform transition-transform duration-300 ease-in-out z-50 md:translate-x-0"
     >
         <!-- 上部タイトル -->
         <div>
@@ -96,7 +108,7 @@
                             {{ __('一覧') }}
                         </x-nav-link>
                     </div>
-
+                    
                     <!-- 決済 -->
                     <div>
                         <p class="text-xs text-gray-400 uppercase mt-4 mb-1">決済</p>
@@ -129,11 +141,11 @@
                 </button>
             </form>
         </div>
-    </aside>
 
-    <!-- ✅ モバイル専用フッター（ハンバーガーメニュー付き） -->
+    </aside>
+    <!-- ✅ モバイル専用フッター（常に最下部に固定） -->
     <div class="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-300 dark:border-gray-700 shadow md:hidden z-60">
-        <div class="flex justify-around items-center py-2">
+        <div class="flex justify-around py-2">
             <!-- 出退勤 -->
             <a href="{{ route('records.create') }}"
                class="flex flex-col items-center text-gray-700 dark:text-gray-200 hover:text-blue-500">
@@ -155,27 +167,6 @@
                     <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" />
                 </svg>
                 <span class="text-xs font-semibold">休憩</span>
-            </a>
-
-            <!-- ⭐ ハンバーガーメニュー（他と統一した白背景デザイン） -->
-            <a @click.prevent="open = !open"
-               href="#"
-               class="flex flex-col items-center text-gray-700 dark:text-gray-200 hover:text-blue-500 transition">
-                <template x-if="!open">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mb-1" fill="none"
-                         viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M4 6h16M4 12h16M4 18h16"/>
-                    </svg>
-                </template>
-                <template x-if="open">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mb-1" fill="none"
-                         viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M6 18L18 6M6 6l12 12"/>
-                    </svg>
-                </template>
-                <span class="text-xs font-semibold">メニュー</span>
             </a>
         </div>
     </div>
