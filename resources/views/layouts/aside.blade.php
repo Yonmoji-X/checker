@@ -141,7 +141,7 @@
 
     <!-- ✅ モバイル専用フッター -->
     <div class="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-300 dark:border-gray-700 shadow md:hidden z-60">
-        <div class="flex justify-around items-center py-2">
+        <div class="flex justify-around items-center py-2 pb-6">
             <!-- 出退勤 -->
             <a href="{{ route('records.create') }}"
                class="flex flex-col items-center text-gray-700 dark:text-gray-200 hover:text-blue-500">
