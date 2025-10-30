@@ -3,6 +3,7 @@
     <div class="md:hidden flex items-center justify-between bg-white h-14 p-4 shadow fixed top-0 left-0 right-0 z-50">
         <div class="flex items-center space-x-2">
             <img src="{{ asset('images/app-icon-192.png') }}" alt="App Icon" class="h-8 w-8 rounded-full" />
+            <!-- <span class="font-semibold text-lg">SafeTimeCard</span> -->
             <span class="font-semibold text-lg">{{ $header }}</span>
         </div>
         <button @click="open = !open" class="focus:outline-none bg-gray-800 text-white p-2 rounded-md">
@@ -70,7 +71,7 @@
                 </div>
 
                 <!-- チェック一覧 -->
-                <div>
+                 <div>
                     <p class="text-xs text-gray-400 uppercase mt-4 mb-1">チェック項目</p>
                     <x-nav-link :href="route('records.index')" :active="request()->routeIs('records.index')">
                         {{ __('一覧') }}
@@ -120,6 +121,7 @@
                         </x-nav-link>
                     </div>
                 @endif
+
             </nav>
         </div>
 
@@ -141,33 +143,6 @@
                 </button>
             </form>
         </div>
-
     </aside>
-    <!-- ✅ モバイル専用フッター（常に最下部に固定） -->
-    <div class="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-300 dark:border-gray-700 shadow md:hidden z-60">
-        <div class="flex justify-around py-2">
-            <!-- 出退勤 -->
-            <a href="{{ route('records.create') }}"
-               class="flex flex-col items-center text-gray-700 dark:text-gray-200 hover:text-blue-500">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mb-1" fill="none"
-                     viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M5 13l4 4L19 7" />
-                </svg>
-                <span class="text-xs font-semibold">出退勤</span>
-            </a>
-
-            <!-- 休憩 -->
-            <a href="{{ route('breaksessions.create') }}"
-               class="flex flex-col items-center text-gray-700 dark:text-gray-200 hover:text-blue-500">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mb-1" fill="none"
-                     viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M12 8v4l3 3" />
-                    <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" />
-                </svg>
-                <span class="text-xs font-semibold">休憩</span>
-            </a>
-        </div>
-    </div>
+    
 </nav>
