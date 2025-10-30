@@ -15,7 +15,16 @@
             <span class="text-2xl font-bold text-indigo-700">SafeTimeCard</span>
         </div>
         <nav class="flex gap-4">
-
+            @if (Route::has('login'))
+                @auth
+                    <a href="{{ url('/dashboard') }}" class="px-4 py-2 rounded-md bg-indigo-600 text-white hover:bg-indigo-700 transition">ダッシュボード</a>
+                @else
+                    <a href="{{ route('login') }}" class="px-4 py-2 rounded-md bg-indigo-600 text-white hover:bg-indigo-700 transition">ログイン</a>
+                    @if (Route::has('register'))
+                        <a href="{{ route('register') }}" class="px-4 py-2 rounded-md border border-indigo-600 text-indigo-600 hover:bg-indigo-100 transition">新規登録</a>
+                    @endif
+                @endauth
+            @endif
         </nav>
     </header>
 
