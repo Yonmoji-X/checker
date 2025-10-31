@@ -76,40 +76,32 @@ class StripeController extends Controller
         // -------------------------
         // 2️⃣ 有料プランの場合
         // -------------------------
-        $trialDays = 0; // デフォルト値
-
-        // usersテーブルのuse_trialカラムを確認してtrueならトライアル日数をstripe.phpから読み込み適用
-        if ($user->use_trial === false && ($plan['trial_days'] ?? 0) > 0) {
-            $trialDays = $plan['trial_days'];  // 初回のみstripe.phpのトライアル日数を適用
-            $user->use_trial = true;  // トライアル使用済みに更新
-            $user->save();
-        }
-        
+        $trialDays = $plan['trial_days'] ?? 0;
 
         if ($user->stripe_customer_id) {
             $hasPaymentMethod = $this->customerHasPaymentMethod($user->stripe_customer_id);
 
             if ($user->stripe_subscription_id && $hasPaymentMethod) {
-                //  現在のサブスク情報を取得（updateに必要な item ID を取る）
-                $subscription = Subscription::retrieve($user->stripe_subscription_id); 
-                $subscriptionItemId = $subscription->items->data[0]->id ?? null; 
+                // ⭐ 現在のサブスク情報を取得（updateに必要な item ID を取る）
+                $subscription = Subscription::retrieve($user->stripe_subscription_id); // ⭐
+                $subscriptionItemId = $subscription->items->data[0]->id ?? null; // ⭐
 
                 if ($subscriptionItemId) {
-                    //  正しい形式でサブスク更新（idを指定してprice変更）
+                    // ⭐ 正しい形式でサブスク更新（idを指定してprice変更）
                     $updated = Subscription::update(
                         $user->stripe_subscription_id,
                         [
                             'items' => [
                                 [
-                                    'id' => $subscriptionItemId, 
+                                    'id' => $subscriptionItemId, // ⭐ ここが重要
                                     'price' => $plan['stripe_plan'],
                                 ],
                             ],
-                            'proration_behavior' => 'create_prorations', //  課金差額の調整あり
+                            'proration_behavior' => 'create_prorations', // ⭐ 課金差額の調整あり
                         ]
                     );
 
-                    //  DB更新
+                    // ⭐ DB更新
                     $user->stripe_plan = $plan['stripe_plan'];
                     $user->stripe_status = $updated->status;
                     $user->save();
@@ -118,11 +110,11 @@ class StripeController extends Controller
                         'redirect' => route('checkout.success'),
                     ]);
                 } else {
-                    //  item が見つからない場合は Checkout セッションを新規作成
+                    // ⭐ item が見つからない場合は Checkout セッションを新規作成
                     return $this->createCheckoutSession($user, $plan, $trialDays);
                 }
             } else {
-                //  支払い情報がない場合は Checkout へ誘導
+                // ⭐ 支払い情報がない場合は Checkout へ誘導
                 return $this->createCheckoutSession($user, $plan, $trialDays);
             }
         }
