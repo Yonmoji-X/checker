@@ -12,7 +12,7 @@
             <h2 class="text-2xl font-bold mb-6">プランを選択してください</h2>
 
             {{-- $plans を plan-card に渡す --}}
-            <x-plan-card :plans="$plans" />
+            <x-plan-card :plans="$plans" :user="auth()->user()"/>
         </div>
     </div>
 

@@ -17,7 +17,8 @@ class StripeController extends Controller
     public function index()
     {
         $plans = config('stripe.plans_list');
-        return view('checkout.index', compact('plans'));
+        $user = auth()->user();
+        return view('checkout.index', compact('plans', 'user'));
     }
 
     /**

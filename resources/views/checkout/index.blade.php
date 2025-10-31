@@ -9,6 +9,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             {{-- コントローラから渡された $plans を渡す --}}
             <x-plan-card :plans="$plans" />
+            <!-- <x-plan-card :plans="$plans" :user="auth()->user()"/> -->
         </div>
     </div>
 
