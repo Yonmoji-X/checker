@@ -32,6 +32,10 @@ Route::prefix('policy')->group(function() {
     Route::view('terms', 'policy.terms')->name('policy.terms');
     Route::view('privacy', 'policy.privacy')->name('policy.privacy');
     Route::view('business', 'policy.business')->name('policy.business');
+    Route::view('cancel', 'policy.cancel')->name('policy.cancel');
+    Route::view('legal', 'policy.legal')->name('policy.legal');
+    Route::view('refund', 'policy.refund')->name('policy.refund');
+    Route::view('contact', 'policy.contact')->name('policy.contact');
 });
 
 // 利用規約ページ

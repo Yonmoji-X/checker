@@ -48,6 +48,15 @@
         <a href="{{ route('policy.privacy') }}">プライバシーポリシー</a>
         <span>・</span>
         <a href="{{ route('policy.business') }}">事業者情報</a>
+        <span>・</span>
+        <a href="{{ route('policy.cancel') }}">キャンセルポリシー</a>
+        <span>・</span>
+        <a href="{{ route('policy.refund') }}">返金ポリシー</a>
+        <span>・</span>
+        <a href="{{ route('policy.legal') }}">特定商取引法に基づく表記</a>
+        <span>・</span>
+        <!-- この項目はStudioに飛ばすかもしれないので仮 -->
+        <a href="{{ route('policy.contact') }}">お問い合わせ</a>
 
 
     </footer>

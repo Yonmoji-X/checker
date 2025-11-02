@@ -1,5 +1,5 @@
 
-    <div class="max-w-4xl mx-auto p-6 space-y-6 mt-6 bg-white rounded shadow">
+    <div class="max-w-4xl mx-auto space-y-6 text-gray-700">
         <section>
             <h1 class="text-2xl font-bold mb-4">事業者情報</h1>
             <p class="text-sm text-gray-600">本アプリは個人開発によるサブスクリプション型勤怠管理サービス「SafeTimeCard」です。事業者向けの情報を以下に記載します。</p>
