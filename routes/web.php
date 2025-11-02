@@ -149,6 +149,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/checkout/cancel', [StripeController::class, 'cancel'])->name('checkout.cancel');
     Route::get('checkout/plan', [StripeController::class, 'myPlan'])->name('checkout.plan');
     Route::get('/checkout/free-success', [StripeController::class, 'freeSuccess'])->name('checkout.free_success');
+    // 解約ページ表示
+    Route::get('/checkout/unsubscribe', [StripeController::class, 'unsubscribePage'])->name('checkout.unsubscribe')->middleware('auth');
+    // 解約処理（POST）
+    Route::post('/checkout/unsubscribe', [StripeController::class, 'unsubscribe'])->name('checkout.unsubscribe.post')->middleware('auth');
+    Route::get('checkout/plan', [StripeController::class, 'myPlan'])->name('checkout.plan');
+
     // });
     // Route::get('/checkout', [StripeController::class, 'index'])->name('checkout');
     // Route::post('/create-checkout-session', [StripeController::class, 'createSession'])->name('checkout.session');

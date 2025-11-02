@@ -274,4 +274,58 @@ class StripeController extends Controller
         ]);
         return count($paymentMethods->data) > 0;
     }
+
+
+
+
+    // =========解約関連処==========
+    // 解約ページ表示
+    public function unsubscribePage()
+    {
+        $user = auth()->user();
+        $plans = collect(config('stripe.plans_list'));
+        $plan = $plans->firstWhere('stripe_plan', $user->stripe_plan);
+        $planName = $plan['name'] ?? '未購入';
+
+        return view('checkout.unsubscribe', [
+            'subscriptionId' => $user->stripe_subscription_id,
+            'planName' => $planName,
+        ]);
+    }
+
+
+    // 解約処理
+    public function unsubscribe(Request $request)
+    {
+        $user = $request->user();
+
+        if (!$user->stripe_subscription_id) {
+            return redirect()->route('checkout.plan')  // ←ここを修正
+                ->with('error', 'サブスクリプションが存在しません。');
+        }
+
+        Stripe::setApiKey(config('stripe.secret'));
+
+        try {
+            // サブスクリプションをキャンセル（請求期間終了時に解約）
+            $subscription = Subscription::update(
+                $user->stripe_subscription_id,
+                ['cancel_at_period_end' => true]
+            );
+
+            // DB更新
+            $user->stripe_status = $subscription->status;
+            $user->save();
+
+            // 成功時リダイレクト
+            return redirect()->route('checkout.plan')  // ←ここも修正
+                ->with('success', 'サブスクリプションを解約しました。請求期間終了時に反映されます。');
+
+        } catch (\Exception $e) {
+            // エラー時リダイレクト
+            return redirect()->route('checkout.plan')  // ←ここも修正
+                ->with('error', '解約処理に失敗しました: ' . $e->getMessage());
+        }
+    }
+
 }
