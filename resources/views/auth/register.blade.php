@@ -65,7 +65,7 @@
             <h2 class="text-xl font-bold mb-4 text-gray-900 dark:text-gray-100">利用規約</h2>
 
             <div id="terms-box" class="overflow-y-auto p-4 border rounded bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 mb-4 prose dark:prose-invert" style="height: 60vh;">
-                @include('policy.terms_content')
+                @include('policy.parts.terms_content')
             </div>
 
             <!-- 同意ボタン -->
