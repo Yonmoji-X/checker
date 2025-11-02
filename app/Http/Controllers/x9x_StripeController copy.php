@@ -76,6 +76,8 @@ class StripeController extends Controller
         // -------------------------
         // 2️⃣ 有料プランの場合
         // -------------------------
+        $trialDays = $plan['trial_days'] ?? 0;
+
         if ($user->stripe_customer_id) {
             $hasPaymentMethod = $this->customerHasPaymentMethod($user->stripe_customer_id);
 
@@ -109,50 +111,22 @@ class StripeController extends Controller
                     ]);
                 } else {
                     // ⭐ item が見つからない場合は Checkout セッションを新規作成
-                    return $this->createCheckoutSession($user, $plan);
+                    return $this->createCheckoutSession($user, $plan, $trialDays);
                 }
             } else {
                 // ⭐ 支払い情報がない場合は Checkout へ誘導
-                return $this->createCheckoutSession($user, $plan);
+                return $this->createCheckoutSession($user, $plan, $trialDays);
             }
         }
 
-        // if ($user->stripe_customer_id) {
-        //     $hasPaymentMethod = $this->customerHasPaymentMethod($user->stripe_customer_id);
-
-        //     if ($user->stripe_subscription_id && $hasPaymentMethod) {
-        //         // サブスク更新（プラン変更）
-        //         $subscription = Subscription::update(
-        //             $user->stripe_subscription_id,
-        //             [
-        //                 'items' => [
-        //                     ['price' => $plan['stripe_plan']],
-        //                 ],
-        //                 'proration_behavior' => 'create_prorations',
-        //             ]
-        //         );
-
-        //         $user->stripe_plan = $plan['stripe_plan'];
-        //         $user->stripe_status = $subscription->status;
-        //         $user->save();
-
-        //         return response()->json([
-        //             'redirect' => route('checkout.success'),
-        //         ]);
-        //     } else {
-        //         // 支払い情報がない場合はCheckoutへ
-        //         return $this->createCheckoutSession($user, $plan);
-        //     }
-        // }
-
         // Stripe未登録顧客
-        return $this->createCheckoutSession($user, $plan);
+        return $this->createCheckoutSession($user, $plan, $trialDays);
     }
 
     /**
      * Checkout セッション作成
      */
-    private function createCheckoutSession($user, $plan)
+    private function createCheckoutSession($user, $plan, $trialDays = 0)
     {
         $session = Session::create([
             'payment_method_types' => ['card'],

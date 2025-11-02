@@ -49,6 +49,7 @@
         <span>・</span>
         <a href="{{ route('policy.business') }}">事業者情報</a>
 
+
     </footer>
 
 </body>
