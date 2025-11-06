@@ -68,7 +68,7 @@ Route::get('/time', function () {
     return view('time');
 });
 
-// webhookのためのルート
+// webhookのためのルートg
 Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle'])
     ->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
 
