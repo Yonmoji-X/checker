@@ -328,4 +328,24 @@ class StripeController extends Controller
         }
     }
 
+
+    public function showCancelDate()
+    {
+        Stripe::setApiKey(env('STRIPE_SECRET'));
+
+        // 例：ユーザーのsubscription_idを取得
+        $user = auth()->user();
+        $subscriptionId = $user->stripe_subscription_id; // 保存してあると仮定
+
+        $subscription = Subscription::retrieve($subscriptionId);
+
+        // 解約予定日（キャンセル予約されている場合）
+        $cancelAt = $subscription->cancel_at ? date('Y-m-d H:i:s', $subscription->cancel_at) : null;
+
+        // 即時解約された場合（すでにキャンセル済み）
+        $canceledAt = $subscription->canceled_at ? date('Y-m-d H:i:s', $subscription->canceled_at) : null;
+
+        return view('profile.cancel-date', compact('cancelAt', 'canceledAt'));
+    }
+
 }
