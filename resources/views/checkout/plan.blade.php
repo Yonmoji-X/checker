@@ -48,6 +48,8 @@
                 $statusText = $statusMap[$user->stripe_status ?? null] ?? '未設定';
             @endphp
 
+            
+
             {{-- プラン情報がある場合 --}}
             @if($currentPlan)
                 <div class="{{ $bgColor }} p-8 rounded-2xl shadow-lg">
@@ -64,6 +66,15 @@
                         <div>
                             <span class="font-semibold text-gray-700 dark:text-gray-300">支払いステータス:</span>
                             <span class="text-gray-800 dark:text-gray-200 font-medium">{{ $statusText }}</span>
+                        </div>
+                        <div>
+                            @if ($user->stripe_canceled_at)
+                                <p>解約日: {{ \Carbon\Carbon::parse($user->stripe_canceled_at)->format('Y年m月d日') }}</p>
+                                <p>解約日まで使用可能です。</p>
+                            @else
+                                <!-- <p>解約はされていません。</p> -->
+                            @endif
+
                         </div>
                     </div>
 

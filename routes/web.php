@@ -14,6 +14,7 @@ use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\TermsController;
 // Stripe
 use App\Http\Controllers\StripeController;
+use App\Http\Controllers\StripeWebhookController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -66,6 +67,11 @@ Route::prefix('policy')->group(function() {
 Route::get('/time', function () {
     return view('time');
 });
+
+// webhookのためのルート
+Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle']);
+
+
 
 // 認証が必要なルート群
 Route::middleware('auth')->group(function () {
@@ -154,6 +160,8 @@ Route::middleware('auth')->group(function () {
     // 解約処理（POST）
     Route::post('/checkout/unsubscribe', [StripeController::class, 'unsubscribe'])->name('checkout.unsubscribe.post')->middleware('auth');
     Route::get('checkout/plan', [StripeController::class, 'myPlan'])->name('checkout.plan');
+    // // webhookのためのルート
+    // Route::post('/stripe/webhook', [StripeWebhookController::class, 'handleWebhook']);
 
     // });
     // Route::get('/checkout', [StripeController::class, 'index'])->name('checkout');
