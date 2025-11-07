@@ -68,13 +68,12 @@
                             <span class="text-gray-800 dark:text-gray-200 font-medium">{{ $statusText }}</span>
                         </div>
                         <div>
-                        {{-- ⭐ 解約予定日がある場合のみ表示 --}}
-                        @if($cancelDate)
-                            <p class="text-red-500 mt-2">
-                                <!-- このサブスクリプションは {{ $cancelDate }} に解約予定です。 -->
-                                このサブスクリプションは {{ \Carbon\Carbon::parse($cancelDate)->format('Y/m/d H:i') }} に解約予定です。
-                            </p>
-                        @endif
+                            @if ($user->stripe_canceled_at)
+                                <p>解約日: {{ \Carbon\Carbon::parse($user->stripe_canceled_at)->format('Y年m月d日') }}</p>
+                                <p>解約日まで使用可能です。</p>
+                            @else
+                                <p>解約はされていません。</p>
+                            @endif
 
 
 

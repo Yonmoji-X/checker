@@ -28,13 +28,26 @@ class StripeWebhookController extends Controller
         switch ($event->type) {
             case 'customer.subscription.updated':
                 $subscription = $event->data->object;
+
                 $user = User::where('stripe_customer_id', $subscription->customer)->first();
                 if ($user) {
+                    // ステータス更新
                     $user->stripe_status = $subscription->status;
-                    $user->stripe_canceled_at = $subscription->cancel_at
-                        ? date('Y-m-d H:i:s', $subscription->cancel_at)
-                        : null;
+
+                    // キャンセル予定がある場合
+                    if ($subscription->cancel_at_period_end) {
+                        // Stripeダッシュボードで表示される「キャンセル日」は通常 current_period_end
+                        $user->stripe_canceled_at = date('Y-m-d H:i:s', $subscription->current_period_end);
+                    } elseif ($subscription->cancel_at) {
+                        // 明示的に cancel_at がある場合
+                        $user->stripe_canceled_at = date('Y-m-d H:i:s', $subscription->cancel_at);
+                    } else {
+                        // キャンセル予定なし
+                        $user->stripe_canceled_at = null;
+                    }
+
                     $user->save();
+                    Log::info("User {$user->id} subscription updated: status={$user->stripe_status}, canceled_at={$user->stripe_canceled_at}");
                 }
                 break;
 
@@ -45,11 +58,10 @@ class StripeWebhookController extends Controller
                     $user->stripe_status = 'canceled';
                     $user->stripe_canceled_at = now();
                     $user->save();
+                    Log::info("User {$user->id} subscription canceled immediately.");
                 }
                 break;
         }
-
-        Log::info('✅ Stripe webhook received: ' . $event->type);
 
         return response('ok', 200);
     }

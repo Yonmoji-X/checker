@@ -93,19 +93,6 @@ class StripeController extends Controller
             if ($user->stripe_subscription_id && $hasPaymentMethod) {
                 //  現在のサブスク情報を取得（updateに必要な item ID を取る）
                 $subscription = Subscription::retrieve($user->stripe_subscription_id); 
-                
-                if ($subscription->status === 'canceled' || $subscription->status === 'incomplete_expired') {
-                    // DBリセット
-                    $user->stripe_customer_id = null;
-                    $user->stripe_subscription_id = null;
-                    $user->stripe_plan = null;
-                    $user->stripe_status = null;
-                    $user->stripe_canceled_at = null;
-                    $user->save();
-                    // 既にキャンセル済 → 新しいセッションを作成
-                    return $this->createCheckoutSession($user, $plan, $trialDays);
-                }
-                
                 $subscriptionItemId = $subscription->items->data[0]->id ?? null; 
 
                 if ($subscriptionItemId) {
@@ -267,27 +254,12 @@ class StripeController extends Controller
         $plan = $plans->firstWhere('stripe_plan', $user->stripe_plan);
         $planName = $plan['name'] ?? '未購入';
 
-        // ⭐ Stripeから最新のキャンセル日を取得して上書き（手動更新）
-        if ($user->stripe_subscription_id) {
-            \Stripe\Stripe::setApiKey(config('stripe.secret'));
-            try {
-                $subscription = \Stripe\Subscription::retrieve($user->stripe_subscription_id);
-                if ($subscription->cancel_at) {
-                    $user->stripe_canceled_at = date('Y-m-d H:i:s', $subscription->cancel_at);
-                    $user->save(); // ⭐ ローカルDBにも反映
-                }
-            } catch (\Exception $e) {
-                // 通信エラー時などはスルー
-            }
-        }
-
         return view('checkout.plan', [
             'planName' => $planName,
             'planId' => $user->stripe_plan,
             'status' => $user->stripe_status,
             'subscriptionId' => $user->stripe_subscription_id,
             'customerId' => $user->stripe_customer_id,
-            'cancelDate' => $user->stripe_canceled_at, // ⭐ Bladeで使う変数を渡す
         ]);
     }
 
@@ -322,89 +294,40 @@ class StripeController extends Controller
     }
 
 
-      // ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-// ========================
-// 解約処理（即時解約ではないパターン）
-// ========================
+    // 解約処理
     public function unsubscribe(Request $request)
     {
         $user = $request->user();
 
         if (!$user->stripe_subscription_id) {
-            return redirect()->route('checkout.plan')
+            return redirect()->route('checkout.plan')  // ←ここを修正
                 ->with('error', 'サブスクリプションが存在しません。');
         }
 
-        \Stripe\Stripe::setApiKey(config('stripe.secret'));
+        Stripe::setApiKey(config('stripe.secret'));
 
         try {
-            // Stripeのサブスクリプションをキャンセル（請求期間終了時に停止）
-            $subscription = \Stripe\Subscription::update(
+            // サブスクリプションをキャンセル（請求期間終了時に解約）
+            $subscription = Subscription::update(
                 $user->stripe_subscription_id,
                 ['cancel_at_period_end' => true]
             );
 
-            // ⭐ Stripe APIからキャンセル予定日時を取得
-            $cancelAt = $subscription->cancel_at 
-                ? date('Y-m-d H:i:s', $subscription->cancel_at)
-                : null;
-
-            // ⭐ DBを更新（stripe_canceled_at に保存）
+            // DB更新
             $user->stripe_status = $subscription->status;
-            $user->stripe_canceled_at = $cancelAt;
             $user->save();
 
-            // ⭐ 成功メッセージに解約日を含める
-            return redirect()->route('checkout.plan')
-                ->with('success', $cancelAt 
-                    ? "サブスクリプションを解約しました。{$cancelAt} に解約予定です。" 
-                    : "サブスクリプションを解約しました。"
-                );
+            // 成功時リダイレクト
+            return redirect()->route('checkout.plan')  // ←ここも修正
+                ->with('success', 'サブスクリプションを解約しました。請求期間終了時に反映されます。');
 
         } catch (\Exception $e) {
-            return redirect()->route('checkout.plan')
+            // エラー時リダイレクト
+            return redirect()->route('checkout.plan')  // ←ここも修正
                 ->with('error', '解約処理に失敗しました: ' . $e->getMessage());
         }
     }
 
-
-    // 即時解約の場合（テスト用）■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-    // public function unsubscribe(Request $request)
-    // {
-    //     $user = $request->user();
-
-    //     if (!$user->stripe_subscription_id) {
-    //         return redirect()->route('checkout.plan')
-    //             ->with('error', 'サブスクリプションが存在しません。');
-    //     }
-
-    //     \Stripe\Stripe::setApiKey(config('stripe.secret'));
-
-    //     try {
-    //         // ⭐ Stripeのサブスクリプションを即時キャンセル（期間末ではなく今すぐ停止）
-    //         $subscription = \Stripe\Subscription::retrieve($user->stripe_subscription_id);
-    //         $subscription->cancel(); // ←これが即時解約
-
-    //         // 即時キャンセルされた日時を取得
-    //         $canceledAt = $subscription->canceled_at 
-    //             ? date('Y-m-d H:i:s', $subscription->canceled_at)
-    //             : now()->format('Y-m-d H:i:s');
-
-    //         // DB更新
-    //         $user->stripe_status = 'canceled';
-    //         $user->stripe_canceled_at = $canceledAt;
-    //         $user->save();
-
-    //         return redirect()->route('checkout.plan')
-    //             ->with('success', "サブスクリプションを即時解約しました（{$canceledAt} に解約完了）。");
-
-    //     } catch (\Exception $e) {
-    //         return redirect()->route('checkout.plan')
-    //             ->with('error', '解約処理に失敗しました: ' . $e->getMessage());
-    //     }
-    // }
-    
-    // ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 
     public function showCancelDate()
     {

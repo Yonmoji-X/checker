@@ -67,11 +67,9 @@
     </div>
     
     {{-- 🔹 plan未選択なら、強制選択 --}}
-    @if(auth()->check() && auth()->user()->role === 'admin' && 
-    (is_null(auth()->user()->stripe_status) || auth()->user()->stripe_status === 'canceled'))
+    @if(auth()->check() && auth()->user()->role === 'admin' && empty(auth()->user()->stripe_plan))
         <x-plan-modal />
     @endif
-
 
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 </body>

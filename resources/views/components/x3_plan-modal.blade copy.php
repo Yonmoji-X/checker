@@ -4,8 +4,7 @@
     $plans = $plans ?? config('stripe.plans_list');
 @endphp
 
-@if(auth()->check() && auth()->user()->role === 'admin' && 
-   (is_null(auth()->user()->stripe_status) || auth()->user()->stripe_status === 'canceled'))
+@if(auth()->check() && auth()->user()->role === 'admin' && empty(auth()->user()->stripe_plan))
     <div class="fixed inset-0 bg-black bg-opacity-70 z-[9998]"></div>
 
     <div class="fixed inset-0 flex items-center justify-center z-[9999]">
