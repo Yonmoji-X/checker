@@ -1,6 +1,4 @@
-@props(['plans' => [],
-        'user' => null,
-])
+@props(['plans' => [], 'user' => null, 'isCanceled' => false])
 
 <div class="flex flex-wrap gap-6 justify-center">
     @foreach($plans as $plan)
@@ -9,16 +7,18 @@
                 <h3 class="text-xl sm:text-2xl font-bold {{ $plan['text'] }} mb-2">{{ $plan['name'] }}</h3>
                 <p class="text-gray-600 dark:text-gray-300 mb-4">{{ $plan['price'] }} / 月</p>
                 <p class="text-gray-600 dark:text-gray-300 mb-4">{{ $plan['limit'] }} 名の名簿登録が可能。</p>
-                {{-- ⭐ use_trial が false の場合のみトライアル日数表示 --}}
+
                 @if($user && !$user->use_trial && !empty($plan['trial_days']))
                     <p class="text-green-600 dark:text-green-400 mb-2">
                         {{ $plan['trial_days'] }}日間無料トライアル
                     </p>
                 @endif
             </div>
+
             <button 
                 class="font-semibold py-2 px-4 rounded-xl transition-colors {{ $plan['button'] }}"
-                onclick="selectPlan('{{ $plan['key'] }}')"
+                onclick="selectPlan(event, '{{ $plan['key'] }}')"
+                data-canceled="{{ $isCanceled ? 1 : 0 }}"
             >
                 購入する
             </button>
@@ -28,24 +28,35 @@
 
 <script src="https://js.stripe.com/v3/"></script>
 <script>
-    const stripe = Stripe('{{ config("stripe.key") }}');
+const stripe = Stripe('{{ config("stripe.key") }}');
 
-    async function selectPlan(planKey) {
-        const res = await fetch('{{ route("checkout.session") }}', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            body: JSON.stringify({ plan: planKey })
-        });
+async function selectPlan(event, planKey) {
+    const btn = event.currentTarget;
+    const isCanceled = btn.dataset.canceled == "1";
 
-        const result = await res.json();
+    const message = isCanceled
+        ? '現在解約予定です。解約を取り消してこのプランに変更しますか？'
+        : 'プランの変更を行いますか？下位プランに変更した場合、機能が制限される場合があります。';
 
-        if(result.redirect){
-            window.location.href = result.redirect;
-        } else if(result.id){
-            stripe.redirectToCheckout({ sessionId: result.id });
-        }
+    if(!confirm(message)) return;
+
+    const res = await fetch('{{ route("checkout.session") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({ plan: planKey })
+    });
+
+    const result = await res.json();
+
+    if(result.redirect){
+        window.location.href = result.redirect;
+    } else if(result.id){
+        stripe.redirectToCheckout({ sessionId: result.id });
+    } else if(result.error){
+        alert(result.error);
     }
+}
 </script>

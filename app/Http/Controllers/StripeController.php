@@ -14,12 +14,32 @@ class StripeController extends Controller
     /**
      * プラン一覧ページ
      */
+    // public function index()
+    // {
+    //     $plans = config('stripe.plans_list');
+    //     $user = auth()->user();
+    //     return view('checkout.index', compact('plans', 'user'));
+    // }
+    // StripeController.php - index()内
     public function index()
     {
         $plans = config('stripe.plans_list');
         $user = auth()->user();
-        return view('checkout.index', compact('plans', 'user'));
+        $isCanceled = false;
+
+        if($user && $user->stripe_subscription_id){
+            \Stripe\Stripe::setApiKey(config('stripe.secret'));
+            try {
+                $subscription = \Stripe\Subscription::retrieve($user->stripe_subscription_id);
+                $isCanceled = $subscription->cancel_at ? true : false;
+            } catch (\Exception $e) {
+                $isCanceled = false;
+            }
+        }
+
+        return view('checkout.index', compact('plans', 'user', 'isCanceled'));
     }
+
 
     /**
      * Checkout セッション作成または無料プラン登録
@@ -35,6 +55,24 @@ class StripeController extends Controller
         }
 
         $user = $request->user();
+
+        // ⭐ 解約予定中なら取り消し
+        if($user->stripe_subscription_id && $user->stripe_canceled_at) {
+            try {
+                \Stripe\Stripe::setApiKey(config('stripe.secret'));
+                $subscription = \Stripe\Subscription::update(
+                    $user->stripe_subscription_id,
+                    ['cancel_at_period_end' => false]
+                );
+                $user->stripe_status = $subscription->status;
+                $user->stripe_canceled_at = null;
+                $user->save();
+            } catch(\Exception $e) {
+                return response()->json(['error' => '解約取り消しに失敗しました: '.$e->getMessage()], 500);
+            }
+        }
+
+
         Stripe::setApiKey(config('stripe.secret'));
 
         // -------------------------
