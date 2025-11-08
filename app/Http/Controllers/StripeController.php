@@ -118,9 +118,14 @@ class StripeController extends Controller
         $trialDays = 0; // デフォルト値
 
         // usersテーブルのuse_trialカラムを確認してtrueならトライアル日数をstripe.phpから読み込み適用
-        if ($user->use_trial === false && ($plan['trial_days'] ?? 0) > 0) {
-            $trialDays = $plan['trial_days'];  // 初回のみstripe.phpのトライアル日数を適用
-            $user->use_trial = true;  // トライアル使用済みに更新
+        // if ($user->use_trial === false && ($plan['trial_days'] ?? 0) > 0) {
+        //     $trialDays = $plan['trial_days'];  // 初回のみstripe.phpのトライアル日数を適用
+        //     $user->use_trial = true;  // トライアル使用済みに更新
+        //     $user->save();
+        // }
+        if ($user->use_trial == 0 && ($plan['trial_days'] ?? 0) > 0) {
+            $trialDays = $plan['trial_days'];
+            $user->use_trial = 1;  // トライアル使用済みに更新
             $user->save();
         }
         
