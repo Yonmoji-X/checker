@@ -161,6 +161,12 @@ Route::middleware('auth')->group(function () {
     // 解約処理（POST）
     Route::post('/checkout/unsubscribe', [StripeController::class, 'unsubscribe'])->name('checkout.unsubscribe.post')->middleware('auth');
     Route::get('checkout/plan', [StripeController::class, 'myPlan'])->name('checkout.plan');
+    // 解約の取り消し処理
+    Route::post('/checkout/cancel-cancellation', [StripeController::class, 'cancelCancellation'])->name('checkout.cancel_cancellation');
+    Route::post('/checkout/unsubscribe', [StripeController::class, 'unsubscribe'])->name('checkout.unsubscribe.post');
+    // Route::post('/subscription/cancel-cancel', [StripeController::class, 'cancelCancellation'])
+    // ->name('subscription.cancel.cancel');
+    
     // // webhookのためのルート
     // Route::post('/stripe/webhook', [StripeWebhookController::class, 'handleWebhook']);
 

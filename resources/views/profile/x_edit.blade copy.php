@@ -19,6 +19,14 @@
                 </div>
             </div>
 
+            <!-- Stripe解約 -->
+             @if (auth()->user()->role === 'admin')
+            <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
+                <div class="max-w-xl">
+                    @include('profile.partials.delete-Stripe-subscription')
+                </div>
+            </div>
+            @endif
 
             <!-- Stripe解約（新バージョン：解約キャンセル対応） -->
              @if (auth()->user()->role === 'admin')

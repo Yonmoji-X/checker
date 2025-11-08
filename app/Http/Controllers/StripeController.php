@@ -425,4 +425,36 @@ class StripeController extends Controller
         return view('profile.cancel-date', compact('cancelAt', 'canceledAt'));
     }
 
+
+    // 解約取り消し処理
+    public function cancelCancellation(Request $request)
+    {
+        $user = auth()->user();
+
+        if (!$user->stripe_subscription_id) {
+            return back()->with('error', 'サブスクリプションが見つかりません。');
+        }
+
+        // Stripe::setApiKey(config('services.stripe.secret'));
+        Stripe::setApiKey(config('stripe.secret'));
+
+
+        try {
+            // Stripe側でキャンセル予定を解除
+            $subscription = Subscription::update(
+                $user->stripe_subscription_id,
+                ['cancel_at_period_end' => false]
+            );
+
+            // DB更新
+            $user->stripe_status = $subscription->status; // 例: 'active'
+            $user->stripe_canceled_at = null;
+            $user->save();
+
+            return back()->with('success', '解約の取り消しが完了しました。');
+        } catch (\Exception $e) {
+            return back()->with('error', '処理に失敗しました: ' . $e->getMessage());
+        }
+    }
+
 }

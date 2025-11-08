@@ -1,5 +1,5 @@
 <?php
-
+// ★このファイルは実質使っていないが、Stripe Webhookの受け口として残しておく
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
