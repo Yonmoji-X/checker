@@ -5,8 +5,7 @@
         <p>現在のプラン: <strong>{{ $planName }}</strong></p>
         <p>解約を行うと、現在の請求期間終了時にサービス利用が停止されます。</p>
 
-        <form action="{{ route('checkout.unsubscribe.post') }}" method="POST"
-              onsubmit="return confirm('本当に解約されますか？');">
+        <form action="{{ route('checkout.unsubscribe.post') }}" method="POST">
             @csrf
             <button type="submit" 
                 class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-800 transition">

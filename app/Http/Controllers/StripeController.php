@@ -451,7 +451,10 @@ class StripeController extends Controller
             $user->stripe_canceled_at = null;
             $user->save();
 
-            return back()->with('success', '解約の取り消しが完了しました。');
+            // return back()->with('success', '解約の取り消しが完了しました。');
+            return redirect()
+                ->route('checkout.cancel_cancellation_success')
+                ->with('success', '解約の取り消しが完了しました。');
         } catch (\Exception $e) {
             return back()->with('error', '処理に失敗しました: ' . $e->getMessage());
         }

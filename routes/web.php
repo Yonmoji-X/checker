@@ -164,6 +164,10 @@ Route::middleware('auth')->group(function () {
     // 解約の取り消し処理
     Route::post('/checkout/cancel-cancellation', [StripeController::class, 'cancelCancellation'])->name('checkout.cancel_cancellation');
     Route::post('/checkout/unsubscribe', [StripeController::class, 'unsubscribe'])->name('checkout.unsubscribe.post');
+    Route::get('/checkout/cancel-cancellation-success', function () {
+        return view('checkout.cancel_cancellation_success');
+    })->name('checkout.cancel_cancellation_success');
+    // 
     // Route::post('/subscription/cancel-cancel', [StripeController::class, 'cancelCancellation'])
     // ->name('subscription.cancel.cancel');
     

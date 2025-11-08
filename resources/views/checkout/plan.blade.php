@@ -74,6 +74,13 @@
                                 <!-- このサブスクリプションは {{ $cancelDate }} に解約予定です。 -->
                                 このサブスクリプションは {{ \Carbon\Carbon::parse($cancelDate)->format('Y/m/d H:i') }} に解約予定です。
                             </p>
+                            <p>
+                                解約の取り消しは
+                                <a href="{{ route('profile.edit') }}" 
+                                class="text-indigo-600 hover:underline">
+                                こちら
+                                </a>から可能です。
+                            </p>
                         @endif
 
 
