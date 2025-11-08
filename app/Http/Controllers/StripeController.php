@@ -116,6 +116,7 @@ class StripeController extends Controller
         // 2️⃣ 有料プランの場合
         // -------------------------
         $trialDays = 0; // デフォルト値
+        // 0:トライアル期間未使用、1:使用済み
 
         // usersテーブルのuse_trialカラムを確認してtrueならトライアル日数をstripe.phpから読み込み適用
         // if ($user->use_trial === false && ($plan['trial_days'] ?? 0) > 0) {

@@ -11,8 +11,8 @@
             <h2 class="text-xl font-semibold mb-2">解約手順</h2>
             <ol class="list-decimal list-inside space-y-1">
                 <li>アプリにログイン</li>
-                <li>アカウント設定または「サブスクリプション管理」ページを開く</li>
-                <li>「プランを解約する」ボタンをクリック</li>
+                <li>プロフィールページを開く</li>
+                <li>「サブスクリプションの管理」セクションの解約ボタンをクリック</li>
                 <li>確認画面で「はい」を選択</li>
             </ol>
         </section>

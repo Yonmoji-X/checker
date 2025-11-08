@@ -31,7 +31,7 @@
 
         <section>
             <h2 class="text-xl font-semibold mb-2">販売価格</h2>
-            <p>各プランページに税込価格を明記しています。</p>
+            <p>各プランページに価格を明記しています。</p>
         </section>
 
         <section>
