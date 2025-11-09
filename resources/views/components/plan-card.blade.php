@@ -36,7 +36,7 @@ async function selectPlan(event, planKey) {
 
     const message = isCanceled
         ? '現在解約予定です。解約を取り消してこのプランに変更しますか？'
-        : 'プランの変更を行いますか？下位プランに変更した場合、機能が制限される場合があります。';
+        : 'プランを購入されますか？';
 
     if(!confirm(message)) return;
 
