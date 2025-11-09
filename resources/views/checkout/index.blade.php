@@ -5,15 +5,12 @@
         </h2>
     </x-slot>
 
-    <div class="py-6">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            {{-- コントローラから渡された $plans を渡す --}}
-            <!-- <x-plan-card :plans="$plans" /> -->
-             <x-plan-card :plans="$plans" :user="$user" :is-canceled="$isCanceled" />
-            <!-- <x-plan-card :plans="$plans" :user="auth()->user()"/> -->
+    <div class="flex flex-col min-h-screen">
+        <div class="py-6 flex-grow">
+            <div class="max-w-7xl mx-auto sm:px-6">
+            <!-- <div class="bg-white shadow p-6 rounded-none"> -->
+                <x-plan-card :plans="$plans" :user="$user" :is-canceled="$isCanceled" />
+            </div>
         </div>
     </div>
-
-    <!-- {{-- モーダルを追加 --}}
-    <x-plan-change-modal /> -->
 </x-app-layout>
