@@ -11,7 +11,9 @@
 
         <section>
             <h2 class="text-xl font-semibold mb-2">販売事業者</h2>
-            <p>SafeTimeCard 運営者（個人事業）</p>
+            <!-- <p>SafeTimeCard 運営者：髙山機械設計（個人事業）</p> -->
+            <p>販売事業者：髙山機械設計（個人事業）<br>
+                サービス名　：SafeTimeCard</p>
         </section>
 
         <section>
@@ -21,17 +23,29 @@
 
         <section>
             <h2 class="text-xl font-semibold mb-2">所在地</h2>
-            <p>島根県隠岐郡知夫村（お問い合わせ時に詳細開示）</p>
+            <p>島根県隠岐郡知夫村（詳細住所はお問い合わせいただいた際に開示いたします）</p>
+
+            <!-- <p>島根県隠岐郡知夫村（お問い合わせ頂ければ、開示いたします。）</p> -->
         </section>
 
         <section>
             <h2 class="text-xl font-semibold mb-2">お問い合わせ先</h2>
-            <p class="font-mono text-gray-700">support@safetimecard.example.com</p>
+            <p>
+            お問い合わせは、
+            <a href="{{ route('policy.contact') }}"
+                class="text-blue-600 hover:underline">
+                こちら
+            </a>
+            からお願いいたします。
+            </p>
+            <!-- <p class="font-mono text-gray-700">support@safetimecard.example.com</p> -->
         </section>
 
         <section>
             <h2 class="text-xl font-semibold mb-2">販売価格</h2>
-            <p>各プランページに価格を明記しています。</p>
+            <!-- <p>各プランページに価格を明記しています。</p> -->
+            <p>各プランページに価格を明記しています（免税事業者のため消費税はかかりません）。</p>
+
         </section>
 
         <section>
@@ -47,6 +61,7 @@
         <section>
             <h2 class="text-xl font-semibold mb-2">返品・キャンセルについて</h2>
             <p>サービスの性質上、提供開始後の返金・キャンセルは原則お受けしておりません。</p>
+            <p>解約に関しましては、キャンセルポリシーをご参照ください。</p>
         </section>
 
         <section>

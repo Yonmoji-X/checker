@@ -20,9 +20,17 @@
 
         <section>
             <h2 class="text-xl font-semibold mb-2">返金申請方法</h2>
-            <p>
+            <!-- <p>
                 以下のサポート窓口まで、登録メールアドレスからご連絡ください。  
                 <span class="font-mono text-gray-700">support@safetimecard.example.com</span>
+            </p> -->
+            <p>
+            返金に関するお問い合わせは、
+            <a href="{{ route('policy.contact') }}"
+                class="text-blue-600 hover:underline">
+                こちら
+            </a>
+            からお願いいたします。
             </p>
         </section>
 
@@ -31,7 +39,7 @@
             <p>
                 定期課金（サブスクリプション）は自動更新されます。  
                 更新日までに解約が行われなかった場合、翌月分が自動的に請求されます。  
-                解約はいつでも可能です（下記参照）。
+                解約はいつでも可能です（キャンセルポリシー参照）。
             </p>
         </section>
 

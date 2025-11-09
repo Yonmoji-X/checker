@@ -43,7 +43,7 @@
         <!-- 利用規約確認ボタン -->
         <div class="mt-4">
             <button type="button" id="open-terms-btn" class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">
-                利用規約を確認
+                利用規約・プライバシーポリシーを確認
             </button>
         </div>
 
@@ -62,10 +62,14 @@
     <!-- モーダル -->
     <div id="terms-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
         <div class="bg-white dark:bg-gray-900 rounded-lg w-3/4 max-w-3xl p-6 flex flex-col max-h-[90vh]">
-            <h2 class="text-xl font-bold mb-4 text-gray-900 dark:text-gray-100">利用規約</h2>
+            <h2 class="text-xl font-bold mb-4 text-gray-900 dark:text-gray-100">利用規約・プライバシーポリシー</h2>
 
             <div id="terms-box" class="overflow-y-auto p-4 border rounded bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 mb-4 prose dark:prose-invert" style="height: 60vh;">
                 @include('policy.parts.terms_content')
+                <br>
+                <hr class="my-6">
+                <br>
+                @include('policy.parts.privacy_content')
             </div>
 
             <!-- 同意ボタン -->

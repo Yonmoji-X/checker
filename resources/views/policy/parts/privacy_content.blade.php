@@ -38,8 +38,16 @@
 
         <section>
             <h2 class="text-xl font-semibold mb-2">お問い合わせ窓口</h2>
-            <p>個人情報に関するお問い合わせは、以下のメールアドレスまでご連絡ください。</p>
-            <p class="font-mono text-gray-700">privacy@safetimecard.example.com</p>
+            <p>
+            個人情報に関するお問い合わせは、
+            <a href="{{ route('policy.contact') }}"
+                class="text-blue-600 hover:underline">
+                こちら
+            </a>
+            からお願いいたします。
+            </p>
+
+            <!-- <p class="font-mono text-gray-700">privacy@safetimecard.example.com</p> -->
         </section>
 
         <section>

@@ -35,8 +35,17 @@
 
         <section>
             <h2 class="text-xl font-semibold mb-2">お問い合わせ</h2>
-            <p>不明点は以下までお問い合わせください。</p>
-            <p class="font-mono text-gray-700">support@safetimecard.example.com</p>
+            <!-- <p>不明点は以下までお問い合わせください。</p>
+            <p class="font-mono text-gray-700">support@safetimecard.example.com</p> -->
+
+            <p>
+            お問い合わせは、
+            <a href="{{ route('policy.contact') }}"
+                class="text-blue-600 hover:underline">
+                こちら
+            </a>
+            からお願いいたします。
+            </p>
         </section>
 
     </div>

@@ -14,12 +14,21 @@
 
         <section>
             <h2 class="text-xl font-semibold mb-2">利用条件</h2>
-            <p>当サービスは、登録事業者が利用することを前提としています。利用にあたっては、各種契約や規約を遵守してください。</p>
+            <p>本サービスは、利用登録を済ませた事業者が使用することを前提としています。利用にあたっては、各種契約や規約を遵守してください。</p>
         </section>
 
         <section>
             <h2 class="text-xl font-semibold mb-2">サポート情報</h2>
-            <p>ご不明な点は以下の窓口までお問い合わせください。</p>
-            <p class="font-mono text-gray-700">support@safetimecard.example.com</p>
+                        <p>
+            お問い合わせは、
+            <a href="{{ route('policy.contact') }}"
+                class="text-blue-600 hover:underline">
+                こちら
+            </a>
+            または、下記アドレスからお願いいたします。<br>
+            <p class="font-mono text-gray-700">takayama.tmd@outlook.jp</p>
+            </p>
+            <!-- <p>ご不明な点は以下の窓口までお問い合わせください。</p>
+            <p class="font-mono text-gray-700">support@safetimecard.example.com</p> -->
         </section>
     </div>

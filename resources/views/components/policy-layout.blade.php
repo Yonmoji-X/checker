@@ -23,7 +23,9 @@
         html { background-color: #f9fafb; }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800 font-sans">
+<!-- <body class="bg-gray-50 text-gray-800 font-sans"> -->
+<body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col">
+
 
     <!-- ヘッダー-->
     <header class="bg-indigo-600 text-white shadow-md p-4 flex items-center justify-between">
@@ -35,9 +37,10 @@
     </header>
 
     <!-- メイン -->
-    <main class="max-w-4xl mx-auto p-6 mt-6 bg-white rounded shadow space-y-6">
+     <main class="max-w-4xl mx-auto p-6 mt-6 bg-white rounded shadow space-y-6 flex-grow">
         {{ $slot }}
     </main>
+
 
     <!-- フッター -->
     <footer class="bg-gray-200 text-gray-700 p-4 mt-12 text-center text-sm">
