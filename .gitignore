@@ -8,6 +8,9 @@
 .env
 .env.backup
 .env.production
+**/.env
+**/.env.backup
+**/.env.production
 .phpactor.json
 .phpunit.result.cache
 Homestead.json
@@ -18,3 +21,6 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
+
+
+# cd /opt/bitnami/env_files
