@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter; // ログイン試行回数制限用
 use Illuminate\Support\Str;
-use Illuminate\Validation\ValidationException; 
+use Illuminate\Validaition\ValidationException;
 
 use Illuminate\View\View;
 
@@ -28,19 +28,7 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        // ロック確認
-        $this->ensureIsNotRateLimited($request);
-
-        try {
-            $request->authenticate();
-        } catch (ValidationException $e) {
-            // 失敗時にカウントを増やす
-            RateLimiter::hit($this->throttleKey($request), 60); // 60秒後に自動リセット
-            throw $e;
-        }
-
-        // 成功時はカウントリセット
-        RateLimiter::clear($this->throttleKey($request));
+        $request->authenticate();
 
         $request->session()->regenerate();
 
@@ -53,26 +41,6 @@ class AuthenticatedSessionController extends Controller
 
         // 通常はダッシュボードへ
         return redirect()->intended(route('dashboard'));
-    }
-
-    // ロック中か確認
-    protected function ensureIsNotRateLimited(Request $request)
-    {
-        if (! RateLimiter::tooManyAttempts($this->throttleKey($request), 5)) { // 5回まで許可
-            return;
-        }
-
-        $seconds = RateLimiter::availableIn($this->throttleKey($request));
-
-        throw ValidationException::withMessages([
-            'email' => "ログイン試行が多すぎます。{$seconds} 秒後に再試行してください。",
-        ]);
-    }
-
-    // ユーザーごとのキー生成
-    protected function throttleKey(Request $request)
-    {
-        return Str::lower($request->input('email')).'|'.$request->ip();
     }
 
     /**
