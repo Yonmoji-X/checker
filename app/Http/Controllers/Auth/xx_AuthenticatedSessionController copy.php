@@ -41,16 +41,10 @@ class AuthenticatedSessionController extends Controller
 
         // 成功時はカウントリセット
         RateLimiter::clear($this->throttleKey($request));
-        
-        // Remember Me チェック
-        $remember = $request->filled('remember');
 
         $request->session()->regenerate();
 
         $user = $request->user();
-
-        // ログイン成功後にremenberを渡して再log in（長期log in有効化）
-        Auth::login($user, $remember);
 
         // 管理者でプラン未選択の場合はプラン選択画面へ
         if ($user->role === 'admin' && !$user->stripe_plan) {
