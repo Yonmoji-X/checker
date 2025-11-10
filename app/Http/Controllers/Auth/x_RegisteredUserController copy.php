@@ -9,8 +9,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
-use Illuminate\Validation\Rules\Password;
-
 use Illuminate\View\View;
 
 class RegisteredUserController extends Controller
@@ -33,17 +31,7 @@ class RegisteredUserController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            // 'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'password' => [
-                'required',
-                'confirmed',
-                Password::min(8)
-                    ->letters()         // 英字を含む
-                    ->mixedCase()       // 大文字・小文字の両方
-                    ->numbers()         // 数字を含む
-                    ->symbols()         // 記号を含む
-                    ->uncompromised(),  // 流出したことのあるパスワードを拒否
-            ],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'role' => ['required', 'in:admin,user'], // role のバリデーションを追加
             // 'terms' => 'accepted', // ⭐ 利用規約チェック必須
         ]);

@@ -19,6 +19,10 @@
         <!-- Password -->
         <div class="mt-4">
             <x-input-label for="password" :value="__('パスワード')" />
+            <div class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                ※8文字以上で、英大文字・小文字・数字・記号（! @ # $ % ^ & * 等）を含めてください。
+            </div>
+
             <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="new-password" />
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
         </div>
