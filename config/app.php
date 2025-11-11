@@ -128,8 +128,12 @@ return [
 
     // 'providers' => [
     //     // Other service providers...
-    //     App\Http\Middleware\RoleMiddleware::class,
+    //     // App\Http\Middleware\RoleMiddleware::class,
+    //     App\Providers\FortifyServiceProvider::class,
+
     // ],
+
+    
 
 
 ];
