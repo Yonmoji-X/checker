@@ -40,6 +40,9 @@
         <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
             二段階認証を有効にすると、ログイン時に認証アプリによる確認が必要になります。
         </p>
+        <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+            必ずPCで設定を行ってください。
+        </p>
 
         {{-- 有効化ボタン --}}
         <form method="POST" action="{{ url('/user/two-factor-authentication') }}">

@@ -25,9 +25,18 @@
                     @include('profile.partials.two-factor-authentication-form')
                 </div>
             </div> -->
+            <!-- 二段階認証設定 -->
+            <!-- @if(auth()->check() && auth()->user()->role === 'admin')
+                <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg mt-4">
+                    <div class="max-w-xl">
+                        @include('profile.partials.two-factor-authentication-form')
+                    </div>
+                </div>
+            @endif -->
+
             @if(auth()->check() && auth()->user()->role === 'admin')
                 <!-- 二段階認証設定 -->
-                <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg mt-4">
+                <div class="hidden md:block p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg mt-4">
                     <div class="max-w-xl">
                         @include('profile.partials.two-factor-authentication-form')
                     </div>
