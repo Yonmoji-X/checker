@@ -3,7 +3,7 @@
     <div class="md:hidden flex items-center justify-between bg-white h-14 p-4 shadow fixed top-0 left-0 right-0 z-50">
         <div class="flex items-center space-x-2">
             <img src="{{ asset('images/app-icon-192.png') }}" alt="App Icon" class="h-8 w-8 rounded-full" />
-            <span class="font-semibold text-lg">{{ $header ?? '' }}</span>
+            <span class="font-semibold text-lg">{{ $header }}</span>
         </div>
     </div>
 
@@ -58,9 +58,7 @@
                     <x-nav-link :href="route('attendancerequests.create')" :active="request()->routeIs('attendancerequests.create')">
                         {{ __('申請') }}
                     </x-nav-link>
-
-                    {{-- auth()->user() が存在する場合のみ role をチェック --}}
-                    @if (auth()->check() && auth()->user()->role === 'admin')
+                    @if (auth()->user()->role === 'admin')
                         <x-nav-link :href="route('attendancerequests.index')" :active="request()->routeIs('attendancerequests.index')">
                             {{ __('一覧') }}
                         </x-nav-link>
@@ -76,7 +74,7 @@
                 </div>
 
                 <!-- 管理者メニュー -->
-                @if(auth()->check() && auth()->user()->role === 'admin')
+                @if (auth()->user()->role === 'admin')
                     <div>
                         <p class="text-xs text-gray-400 uppercase mt-4 mb-1">アイテム</p>
                         <x-nav-link :href="route('templates.create')" :active="request()->routeIs('templates.create')">
@@ -122,25 +120,23 @@
         </div>
 
         <!-- 下部（ユーザー情報 + ログアウト） -->
-        @if(auth()->check())
-            <div class="p-4 border-t border-gray-700 pb-6">
-                <div class="text-sm text-gray-300 mb-2 truncate">
-                    <div>{{ auth()->user()->name }}</div>
-                    <div class="text-xs text-gray-500">{{ auth()->user()->email }}</div>
-                </div>
-
-                <x-nav-link :href="route('profile.edit')" :active="request()->routeIs('profile.edit')" class="block mb-2">
-                    {{ __('プロフィール') }}
-                </x-nav-link>
-
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button type="submit" class="w-full bg-gray-700 hover:bg-gray-600 text-white py-2 rounded-md text-sm font-medium">
-                        {{ __('ログアウト') }}
-                    </button>
-                </form>
+        <div class="p-4 border-t border-gray-700 pb-6">
+            <div class="text-sm text-gray-300 mb-2 truncate">
+                <div>{{ Auth::user()->name }}</div>
+                <div class="text-xs text-gray-500">{{ Auth::user()->email }}</div>
             </div>
-        @endif
+
+            <x-nav-link :href="route('profile.edit')" :active="request()->routeIs('profile.edit')" class="block mb-2">
+                {{ __('プロフィール') }}
+            </x-nav-link>
+
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit" class="w-full bg-gray-700 hover:bg-gray-600 text-white py-2 rounded-md text-sm font-medium">
+                    {{ __('ログアウト') }}
+                </button>
+            </form>
+        </div>
     </aside>
 
     <!-- ✅ モバイル専用フッター -->

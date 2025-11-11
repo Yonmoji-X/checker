@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter; // ログイン試行回数制限用
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException; 
-
 use Illuminate\View\View;
 
 class AuthenticatedSessionController extends Controller
@@ -32,7 +31,7 @@ class AuthenticatedSessionController extends Controller
         $this->ensureIsNotRateLimited($request);
 
         try {
-            $request->authenticate();
+            $request->authenticate(); // ✅ Fortify 標準の認証処理
         } catch (ValidationException $e) {
             // 失敗時にカウントを増やす
             RateLimiter::hit($this->throttleKey($request), 60); // 60秒後に自動リセット
@@ -42,15 +41,22 @@ class AuthenticatedSessionController extends Controller
         // 成功時はカウントリセット
         RateLimiter::clear($this->throttleKey($request));
         
-        // Remember Me チェック
-        $remember = $request->filled('remember');
-
+        // ✅ session regenerate は保持
         $request->session()->regenerate();
 
         $user = $request->user();
 
-        // ログイン成功後にremenberを渡して再log in（長期log in有効化）
-        Auth::login($user, $remember);
+        // ✅ 二段階認証が有効でまだ確認していない場合はリダイレクト
+        if ($user->two_factor_secret && ! $user->two_factor_confirmed_at) {
+            // Fortify 標準の two-factor-challenge にリダイレクト
+            return redirect()->route('two-factor.login'); // ルートは Fortify のルートに合わせる
+        }
+
+        // Remember Me チェック
+        $remember = $request->filled('remember');
+
+        // ✅ Auth::login() は不要。すでに authenticate() 内でログイン済み
+        // Auth::login($user, $remember); ←削除
 
         // 管理者でプラン未選択の場合はプラン選択画面へ
         if ($user->role === 'admin' && !$user->stripe_plan) {

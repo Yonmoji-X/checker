@@ -1,0 +1,21 @@
+[90m= [39m[34;4mApp\Models\User[39;24m {#6205
+    [34mid[39m: [35m19[39m,
+    [34mname[39m: "[32mJP[39m",
+    [34memail[39m: "[32mjp@gmail.jp[39m",
+    [34memail_verified_at[39m: [36mnull[39m,
+    #[33mpassword[39m: "[32m$2y$12$Ptz6mYIvIhH4YZUkGSwBhe/RIr3xBhykCbLZbFViY01rteDTyAXfq[39m",
+    #[33mtwo_factor_secret[39m: "[32meyJpdiI6Iml0R253VkNPTDVMcWFuWnlSU0JiQnc9PSIsInZhbHVlIjoiaUVFN0RxR1lHVFJDMmFTUWdRMGpDVUZPSCtURGZJYStBUWtaUEhaYi9CST0iLCJtYWMiOiIxYTM0YWM1ZTVhNmI2MTllMGUwNjVmZGRiMmVhNDVlYWQzNjVmYjBiODMwNmE3OGVlNmUxM2RjODhhYTg5ZTM2IiwidGFnIjoiIn0=[39m",
+    #[33mtwo_factor_recovery_codes[39m: "[32meyJpdiI6InBMaFMxaEN6ODBkRE9lV2l2YXBkdHc9PSIsInZhbHVlIjoickU1cjl2WUZJSXVpbHZJY2hOSlk2Q3h2Ti8yQWVQNjBDdFpZUmJxeFh2dVZVUzJOdzkyV1NaNnJLbElTY2xoK0VnOHZ2Qm8rT29jd1JFYWxUaUl6Q3gzR3ovRWlrSkY2UFJHcXVLOTFBS21kdU5vQ3Y0c3BjQy9ETXlyRk93K1lQRUl4eUkxUFY0WENOeGFxekZNbFBUeTc5Vy90aW43QnVZeHdzUzdLZTFJckRhZ1gwTCs2a0o0S3lUdi9kZHNYZXZ1RWgrRG1MWDhpeERWRWQ0VncwczdSSHJNak9Gc2l5V3hGRW9MZjFWUUh0ME5qMkhUeEY5WEtIL21iNTdyaEZrM0NkUjAwZnhQYUhWRFEvSUR2d2c9PSIsIm1hYyI6ImJlMjVjOWY4YjM0NWJjOGNmNmNiOTk1OTgyYzA1OTA1Nzg4NDMzNmZjZWVjYzQ4Yzc4OTQzNzU5YjYwMWY5ZjciLCJ0YWciOiIifQ==[39m",
+    [34mtwo_factor_confirmed_at[39m: [36mnull[39m,
+    #[33mremember_token[39m: "[32m3OWcQbDravBPgTqNyw9MV1yihuViADjo30sUwC1KMlPz43OlGb2cQHBFmNlq[39m",
+    [34mstripe_customer_id[39m: "[32mcus_TNVfasnHi3eF4j[39m",
+    [34mstripe_subscription_id[39m: "[32msub_1SQkeKDLkABa4BgY1TXwkzzO[39m",
+    [34mstripe_plan[39m: "[32mprice_1SKpZpDLkABa4BgYgFCzXILs[39m",
+    [34mstripe_status[39m: "[32mactive[39m",
+    [34mstripe_canceled_at[39m: "[32m2025-12-07 17:03:58[39m",
+    [34mcreated_at[39m: "[32m2025-10-25 01:37:41[39m",
+    [34mupdated_at[39m: "[32m2025-11-11 14:31:52[39m",
+    [34mrole[39m: "[32madmin[39m",
+    [34muse_trial[39m: [35m1[39m,
+  }
+

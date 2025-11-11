@@ -50,6 +50,17 @@ class LoginRequest extends FormRequest
         }
 
         RateLimiter::clear($this->throttleKey());
+        
+        $user = Auth::user();
+
+        // 二段階認証が有効かチェック
+        if ($user->two_factor_secret && !session()->has('two_factor_passed')) {
+            Auth::logout();  // ログイン状態を解除
+            session(['login.id' => $user->id, 'login.remember' => $this->boolean('remember')]);
+            throw ValidationException::withMessages([
+                'email' => '二段階認証コードが必要です。',
+            ])->redirectTo(route('two-factor.login')); // Fortify が用意する /two-factor-challenge
+        }
     }
 
     /**

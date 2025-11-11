@@ -11,6 +11,7 @@ use App\Http\Controllers\BreakSessionController;
 use App\Http\Controllers\AttendanceRequestController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\NewPasswordController;
+use App\Http\Controllers\Auth\TwoFactorAuthenticatedSessionController;
 use App\Http\Controllers\TermsController;
 // Stripe
 use App\Http\Controllers\StripeController;
@@ -39,6 +40,8 @@ Route::prefix('policy')->group(function() {
     Route::view('contact', 'policy.contact')->name('policy.contact');
 });
 
+
+
 // 利用規約ページ
 // Route::get('/terms', [TermsController::class, 'index'])->name('terms');
 
@@ -61,7 +64,9 @@ Route::prefix('policy')->group(function() {
 //         return app(\App\Http\Controllers\DashboardController::class)->index();
 //     })->name('dashboard');
 // });
-
+Route::get('/home', function () {
+    return redirect()->route('dashboard');
+});
 
 // タイムページ
 Route::get('/time', function () {
@@ -182,6 +187,22 @@ Route::middleware('auth')->group(function () {
     // Route::get('/checkout/cancel', [StripeController::class, 'cancel'])->name('checkout.cancel');
     // Route::get('/checkout/plan', [StripeController::class, 'myPlan'])->name('checkout.plan');
     // Route::get('/checkout/free-success', [StripeController::class, 'freeSuccess'])->name('checkout.free_success');
+    // ⭐ 二段階認証 Confirm 用ルート ⭐
+    // Route::get('/two-factor/confirm', [\App\Http\Controllers\TwoFactorController::class, 'show'])
+    //     ->name('two-factor.confirm'); // ⭐ GET で QR 表示
+
+    // Route::post('/two-factor/confirm', [\App\Http\Controllers\TwoFactorController::class, 'confirm'])
+    //     ->name('two-factor.confirm.post'); // ⭐ POST で Confirm ボタン処理
+    // routes/web.php
+    Route::get('/two-factor/confirm', [TwoFactorController::class, 'show'])->name('two-factor.confirm');
+    Route::post('/two-factor/confirm', [TwoFactorController::class, 'confirm'])->name('two-factor.confirm.post');
+
+    // Route::get('/two-factor-challenge', [TwoFactorAuthenticatedSessionController::class, 'create'])
+    //     ->middleware(['auth']) // guest:web は不要
+    //     ->name('two-factor.login');
+
+    // Route::post('/two-factor-challenge', [TwoFactorAuthenticatedSessionController::class, 'store'])
+    //     ->middleware(['auth']); // guest:web は不要
 
     
 });

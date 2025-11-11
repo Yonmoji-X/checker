@@ -12,21 +12,19 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Laravel\Fortify\Actions\RedirectIfTwoFactorAuthenticatable;
+
 use Laravel\Fortify\Fortify;
+
+// ✅ 追加
+use Laravel\Fortify\Contracts\TwoFactorChallengeViewResponse;
 
 class FortifyServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
     public function register(): void
     {
         //
     }
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
         Fortify::createUsersUsing(CreateNewUser::class);
@@ -37,12 +35,22 @@ class FortifyServiceProvider extends ServiceProvider
 
         RateLimiter::for('login', function (Request $request) {
             $throttleKey = Str::transliterate(Str::lower($request->input(Fortify::username())).'|'.$request->ip());
-
             return Limit::perMinute(5)->by($throttleKey);
         });
 
         RateLimiter::for('two-factor', function (Request $request) {
             return Limit::perMinute(5)->by($request->session()->get('login.id'));
+        });
+
+        // ✅ 修正版バインディング
+        $this->app->singleton(TwoFactorChallengeViewResponse::class, function ($app) {
+            return new class implements TwoFactorChallengeViewResponse {
+                public function toResponse($request)
+                {
+                    // ⭐ Blade を自分のビューに合わせる
+                    return response()->view('auth.two-factor-challenge');
+                }
+            };
         });
     }
 }
