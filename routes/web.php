@@ -11,8 +11,9 @@ use App\Http\Controllers\BreakSessionController;
 use App\Http\Controllers\AttendanceRequestController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\NewPasswordController;
-use App\Http\Controllers\Auth\TwoFactorAuthenticatedSessionController;
+// use App\Http\Controllers\Auth\TwoFactorAuthenticatedSessionController;
 use App\Http\Controllers\TermsController;
+use App\Http\Controllers\TwoFactorController;
 // Stripe
 use App\Http\Controllers\StripeController;
 use App\Http\Controllers\StripeWebhookController;
@@ -196,6 +197,8 @@ Route::middleware('auth')->group(function () {
     // routes/web.php
     Route::get('/two-factor/confirm', [TwoFactorController::class, 'show'])->name('two-factor.confirm');
     Route::post('/two-factor/confirm', [TwoFactorController::class, 'confirm'])->name('two-factor.confirm.post');
+    // Route::post('/user/two-factor-authentication/download', [TwoFactorController::class, 'enable'])
+    //     ->middleware(['auth']);
 
     // Route::get('/two-factor-challenge', [TwoFactorAuthenticatedSessionController::class, 'create'])
     //     ->middleware(['auth']) // guest:web は不要

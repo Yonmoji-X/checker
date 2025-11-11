@@ -31,4 +31,28 @@ class TwoFactorController extends Controller
 
         return redirect()->route('dashboard')->with('status', '二段階認証が有効になりました');
     }
+
+    // public function enable(Request $request)
+    // {
+    //     $user = $request->user();
+
+    //     // 二段階認証を有効化（Laravel Fortifyの処理を呼び出す）
+    //     $user->enableTwoFactorAuthentication(); // もしメソッドがない場合は Fortifyの処理をコピー
+
+    //     // QRコードのSVGを取得
+    //     $svg = $user->twoFactorQrCodeSvg();
+
+    //     // SVGをJPGに変換
+    //     $image = new \Imagick();
+    //     $image->readImageBlob($svg);
+    //     $image->setImageFormat('jpeg');
+
+    //     $jpgData = $image->getImageBlob();
+
+    //     // ダウンロードレスポンス
+    //     return Response::make($jpgData, 200, [
+    //         'Content-Type' => 'image/jpeg',
+    //         'Content-Disposition' => 'attachment; filename="SafeTimeCard_2FA.jpg"',
+    //     ]);
+    // }
 }

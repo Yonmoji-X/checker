@@ -41,6 +41,5 @@
                 二段階認証を有効化
             </x-primary-button>
         </form>
-        
     @endif
 </div>
