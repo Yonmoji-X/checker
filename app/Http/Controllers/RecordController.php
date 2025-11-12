@@ -53,7 +53,7 @@ class RecordController extends Controller
         $perPage = 5; // ページネーション件数
 
         // --- 全レコード取得 & フィルター ---
-        $records = Record::with('template')
+        $records = Record::with(['template', 'member'])
             ->where('user_id', $userId)
             ->whereBetween('created_at', [$startDate, $endDate])
             ->when($memberId, fn($q) => $q->where('member_id', $memberId))

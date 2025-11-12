@@ -11,6 +11,9 @@
         <div class="text-sm text-gray-600 dark:text-gray-400 mb-2">
             <!-- グループID: {{ $headId }} -->
             {{ $firstRecord->created_at->format('Y/m/d H:i') }}
+                @if($firstRecord->member)
+                    - {{ $firstRecord->member->name }}
+                @endif
         </div>
 
         {{-- 各レコードを個別に表示 --}}
