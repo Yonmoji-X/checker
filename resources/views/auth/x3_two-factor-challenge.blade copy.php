@@ -18,7 +18,7 @@
         <p class="mb-4 text-gray-600 dark:text-gray-300">
             ２段階認証コードを入力してください。<br>
             <span class="text-sm text-gray-500 dark:text-gray-400">
-                認証コードは、<strong>Google Authenticator</strong>（認証アプリ）で生成されます。
+                ※認証コードは、<strong>Google Authenticator</strong>などの認証アプリで生成されます。
             </span>
         </p>
         <!-- <p class="mb-6 text-sm text-gray-500 dark:text-gray-400">
@@ -28,25 +28,27 @@
         {{-- ２段階認証コード入力フォーム --}}
         <form method="POST" action="{{ route('two-factor.login') }}" class="mb-6">
             @csrf
-            <label for="code" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                認証コード
-            </label>
-
-            <div class="flex items-center gap-2 mb-2">
+            <div class="mb-4">
+                <label for="code" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    認証コード
+                </label>
                 <input id="code" name="code" type="text" required autofocus
-                    class="flex-grow px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+            </div>
 
+            <div class="flex flex-col items-end">
                 <button type="submit"
                     class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-md shadow">
                     認証
                 </button>
+
+                @if(session('two_factor_error'))
+                    <span class="text-red-500 text-sm mt-2">{{ session('two_factor_error') }}</span>
+                @endif
             </div>
 
-            @if(session('two_factor_error'))
-                <span class="text-red-500 text-sm">{{ session('two_factor_error') }}</span>
-            @endif
-        </form>
 
+        </form>
 
         <hr class="border-gray-300 dark:border-gray-700 my-6">
 

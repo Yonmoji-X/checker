@@ -7,6 +7,9 @@
         <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
             ２段階認証は現在有効です。
         </p>
+        <p class="mt-2 text-sm text-red-600 dark:text-red-400 font-bold">
+            Google Authenticatorアプリで下のQRコードをスキャンし、リカバリーコードを安全な場所に保存してください。
+        </p>
 
         {{-- QRコード --}}
         <div id="two-factor-qr" class="mt-4 inline-block">
@@ -32,7 +35,11 @@
         <form method="POST" action="{{ url('/user/two-factor-authentication') }}">
             @csrf
             @method('DELETE')
-            <x-primary-button class="mt-4">
+            <x-primary-button
+                class="mt-4"
+                type="submit"
+                onclick="return confirm('二段階認証を無効化しますか？');"
+            >
                 ２段階認証を無効化
             </x-primary-button>
         </form>
@@ -40,22 +47,44 @@
         <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
             ２段階認証を有効にすると、ログイン時に認証アプリによる確認が必要になります。
         </p>
-        <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-            必ずPCで設定を行ってください。
+        <h3 class="mt-4 text-gray-900 dark:text-gray-100">Google Authenticator をインストール</h3>
+        <p class="text-sm text-gray-600 dark:text-gray-400">
+            お手持ちのスマホで下のQRを読み取り、アプリをインストールしてください。
         </p>
+
+        <div class="flex gap-4 mt-2">
+            <div class="text-center">
+                <p class="text-xs mb-1">iOS / App Store</p>
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://apps.apple.com/app/google-authenticator/id388497605" alt="iOS QR">
+            </div>
+            <div class="text-center">
+                <p class="text-xs mb-1">Android / Google Play</p>
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2" alt="Android QR">
+            </div>
+        </div>
+
 
         {{-- 有効化ボタン --}}
         <form method="POST" action="{{ url('/user/two-factor-authentication') }}">
             @csrf
-            <x-primary-button type="submit" class="mt-4">
+            <x-primary-button
+                type="submit"
+                class="mt-4"
+                onclick="return confirm('二段階認証を実行しますか？');"
+            >
                 ２段階認証を有効化
             </x-primary-button>
         </form>
+        <p class="mt-2 text-sm text-red-600 dark:text-red-400 font-bold">
+            必ずPCで設定を行ってください。
+        </p>
     @endif
-
+    
     {{-- デバッグ表示 --}}
+    {{-- コメント
     <p>status: {{ session('status') }}</p>
     <p>recovery_codes: {{ auth()->user()->two_factor_recovery_codes ? 'あり' : 'なし' }}</p>
+     --}}
 </div>
 
 {{-- jsPDF & html2canvas --}}
