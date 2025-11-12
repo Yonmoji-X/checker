@@ -21,7 +21,14 @@
 
     <!-- ヒーロー -->
     <main class="flex-1 flex flex-col items-center justify-center text-center px-6">
-        <h1 class="text-5xl md:text-6xl font-extrabold text-indigo-800 mb-4">シンプルな勤怠管理</h1>
+        <!-- <h1 class="text-5xl md:text-6xl font-extrabold text-indigo-800 mb-4">シンプルな勤怠管理</h1> -->
+        <h1
+        class="font-extrabold text-indigo-800 mb-4 text-center leading-tight"
+        style="font-size: clamp(2rem, 8vw, 3.5rem); white-space: nowrap;"
+        >
+        シンプルな勤怠管理
+        </h1>
+
         <p class="text-lg md:text-xl text-indigo-700 mb-8 max-w-xl">SafeTimeCardで社員の出退勤をスマートに管理。クラウドでどこからでもアクセス可能です。</p>
         <div class="flex gap-4">
             @if (Route::has('login'))
