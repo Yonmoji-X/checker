@@ -28,47 +28,37 @@ class RecordController extends Controller
         $userId = Auth::id();
         $currentUser = Auth::user();
 
-        // userロールの場合、admin_id に切り替え
-        if ($currentUser->role === 'user') {
+        if ($currentUser->role == 'user') {
             $group = Group::where('user_id', $userId)->first();
             if ($group) $userId = $group->admin_id;
         }
 
-        // 日付範囲、フィルター
         $startDate = $request->start_date ?? now()->startOfMonth()->format('Y-m-d');
         $endDate   = $request->end_date   ?? now()->endOfMonth()->format('Y-m-d');
         $memberId  = $request->member_id ?? null;
         $templateMemberStatus = $request->member_status ?? 0;
         $templateClockStatus  = $request->clock_status ?? 1;
+        $members = Member::where('user_id', $userId)->where('is_visible', 1)->withPlanLimit()->reorder()->orderByRaw('name COLLATE utf8mb4_unicode_520_ci ASC')->get();
 
-        // 表示メンバー
-        $members = Member::where('user_id', $userId)
-            ->where('is_visible', 1)
-            ->withPlanLimit()
-            ->reorder()
-            ->orderByRaw('name COLLATE utf8mb4_unicode_520_ci ASC')
-            ->get();
-
-        $perPage = 10; // ページネーション件数
-
-        // head_id のみを distinct で取得（クエリビルド）
+        // まず head_id のみを distinct でページネーション
         $headQuery = Record::select('head_id')
             ->whereBetween('created_at', [$startDate, $endDate])
-            ->where('user_id', $userId)
-            ->where(function($query) {
-                $query->whereNotNull('check_item') 
-                    ->orWhereNotNull('photo_item')
-                    ->orWhereNotNull('content_item')
-                    ->orWhereNotNull('temperature_item');
-            })
-            ->when($memberId, fn($q) => $q->where('member_id', $memberId))
-            ->when($templateMemberStatus, fn($q) => $q->where('member_status', $templateMemberStatus))
-            ->when($templateClockStatus !== null, fn($q) => $q->where('clock_status', $templateClockStatus))
-            ->distinct()
-            ->orderBy('head_id', 'desc');
+            ->where('user_id', $userId);
 
-        // ページネーション実行
-        $headIds = $headQuery->paginate($perPage);
+        if ($memberId) {
+            $headQuery->where('member_id', $memberId);
+        }
+        if ($templateMemberStatus) {
+            $headQuery->where('member_status', $templateMemberStatus);
+        }
+        if ($templateClockStatus) {
+            $headQuery->where('clock_status', $templateClockStatus);
+        }
+
+        $perPage = 10;
+        $headIds = $headQuery->distinct()
+            ->orderBy('head_id', 'desc')
+            ->paginate($perPage);
 
         // ページングされた head_id に属するレコードを取得（template を eager load）
         $grouped = Record::query()
@@ -89,7 +79,9 @@ class RecordController extends Controller
             ->get()
             ->groupBy('head_id');
 
-        // 部分ビューをレンダリング
+        // dd($grouped);
+
+        // 部分ビューを返す処理
         $rows = view('records._table_rows', ['groups' => $grouped])->render();
         $pagination = view('records._pagination', ['groups' => $headIds])->render();
 
@@ -109,9 +101,9 @@ class RecordController extends Controller
             'templateClockStatus' => $templateClockStatus,  
             'memberId'  => $memberId,
             'members'   => $members,
+            // 'members'   => Member::where('user_id', $userId)->get(),
         ]);
     }
-
 
 
     public function filter(Request $request) 
