@@ -5,7 +5,7 @@
     <div class="mb-4 text-sm text-red-600 dark:text-red-400">
         {{ __('パスワード入力後もう一度') }}
         <span class="font-extrabold text-red-700 text-lg bg-yellow-100 px-1 rounded">
-            {{ __('「２段階認証を有効化」') }}
+            {{ __('「２段階認証を有効化/無効化」') }}
         </span>
         {{ __('ボタンを押してください。') }}
     </div>
