@@ -23,6 +23,7 @@ use Carbon\Carbon;
 class RecordController extends Controller
 {
   
+
     public function index(Request $request)
     {
         $userId = Auth::id();
@@ -49,33 +50,12 @@ class RecordController extends Controller
             ->orderByRaw('name COLLATE utf8mb4_unicode_520_ci ASC')
             ->get();
 
-        $perPage = 10; // ページネーション件数
+        $perPage = 5; // ページネーション件数
 
-        // head_id のみを distinct で取得（クエリビルド）
-        $headQuery = Record::select('head_id')
-            ->whereBetween('created_at', [$startDate, $endDate])
-            ->where('user_id', $userId)
-            ->where(function($query) {
-                $query->whereNotNull('check_item') 
-                    ->orWhereNotNull('photo_item')
-                    ->orWhereNotNull('content_item')
-                    ->orWhereNotNull('temperature_item');
-            })
-            ->when($memberId, fn($q) => $q->where('member_id', $memberId))
-            ->when($templateMemberStatus, fn($q) => $q->where('member_status', $templateMemberStatus))
-            ->when($templateClockStatus !== null, fn($q) => $q->where('clock_status', $templateClockStatus))
-            ->distinct()
-            ->orderBy('head_id', 'desc');
-
-        // ページネーション実行
-        $headIds = $headQuery->paginate($perPage);
-
-        // ページングされた head_id に属するレコードを取得（template を eager load）
-        $grouped = Record::query()
-            ->with('template')
+        // --- 全レコード取得 & フィルター ---
+        $records = Record::with('template')
             ->where('user_id', $userId)
             ->whereBetween('created_at', [$startDate, $endDate])
-            ->whereIn('head_id', $headIds->pluck('head_id'))
             ->when($memberId, fn($q) => $q->where('member_id', $memberId))
             ->when($templateMemberStatus, fn($q) => $q->where('member_status', $templateMemberStatus))
             ->when($templateClockStatus !== null, fn($q) => $q->where('clock_status', $templateClockStatus))
@@ -86,12 +66,25 @@ class RecordController extends Controller
                     ->orWhereNotNull('temperature_item');
             })
             ->orderBy('created_at', 'desc')
-            ->get()
-            ->groupBy('head_id');
+            ->get();
+
+        // --- head_id ごとにグループ化 ---
+        $grouped = $records->groupBy('head_id')->map(fn($group) => collect($group));
+
+        // --- Collection ベースでページネーション ---
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+        $currentItems = $grouped->slice(($currentPage - 1) * $perPage, $perPage);
+        $paginatedGroups = new LengthAwarePaginator(
+            $currentItems,
+            $grouped->count(),
+            $perPage,
+            $currentPage,
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
 
         // 部分ビューをレンダリング
-        $rows = view('records._table_rows', ['groups' => $grouped])->render();
-        $pagination = view('records._pagination', ['groups' => $headIds])->render();
+        $rows = view('records._table_rows', ['groups' => $currentItems])->render();
+        $pagination = view('records._pagination', ['groups' => $paginatedGroups])->render();
 
         if ($request->ajax()) {
             return response()->json([
@@ -102,7 +95,7 @@ class RecordController extends Controller
 
         return view('records.index', [
             'groups'    => $grouped,
-            'paged'     => $headIds,
+            'paged'     => $paginatedGroups,
             'startDate' => $startDate,
             'endDate'   => $endDate,
             'templateMemberStatus'=> $templateMemberStatus, 
