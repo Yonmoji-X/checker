@@ -40,27 +40,26 @@
     </main>
 
     <!-- フッター -->
-    <footer class="py-6 text-center text-indigo-600 text-sm">
-        &copy; 2025 SafeTimeCard. All rights reserved.
-        <br>      
-        <a href="{{ route('policy.terms') }}">利用規約</a>
-        <span>・</span>
-        <a href="{{ route('policy.privacy') }}">プライバシーポリシー</a>
-        <span>・</span>
-        <a href="{{ route('policy.business') }}">事業者情報</a>
-        <span>・</span>
-        <a href="{{ route('policy.cancel') }}">キャンセルポリシー</a>
-        <br>
-        <!-- <span>・</span> -->
-        <a href="{{ route('policy.refund') }}">返金ポリシー</a>
-        <span>・</span>
-        <a href="{{ route('policy.legal') }}">特定商取引法に基づく表記</a>
-        <span>・</span>
-        <!-- この項目はStudioに飛ばすかもしれないので仮 -->
-        <a href="{{ route('policy.contact') }}">お問い合わせ</a>
+    <footer class="py-6 text-center text-indigo-600 text-sm border-t border-gray-200 dark:border-gray-700 dark:text-indigo-400">
+        <p class="mb-2">&copy; 2025 SafeTimeCard. All rights reserved.</p>
 
-
+        <div class="flex flex-wrap justify-center gap-x-2 gap-y-1 text-sm">
+            <a href="{{ route('policy.terms') }}" class="hover:underline">利用規約</a>
+            <span>・</span>
+            <a href="{{ route('policy.privacy') }}" class="hover:underline">プライバシーポリシー</a>
+            <span>・</span>
+            <a href="{{ route('policy.business') }}" class="hover:underline">事業者情報</a>
+            <span>・</span>
+            <a href="{{ route('policy.cancel') }}" class="hover:underline">キャンセルポリシー</a>
+            <span>・</span>
+            <a href="{{ route('policy.refund') }}" class="hover:underline">返金ポリシー</a>
+            <span>・</span>
+            <a href="{{ route('policy.legal') }}" class="hover:underline">特定商取引法に基づく表記</a>
+            <span>・</span>
+            <a href="{{ route('policy.contact') }}" class="hover:underline">お問い合わせ</a>
+        </div>
     </footer>
+
 
 </body>
 </html>
