@@ -21,7 +21,14 @@ use App\Http\Controllers\StripeWebhookController;
 use Illuminate\Support\Facades\Route;
 
 // ホームページ
+// Route::get('/', function () {
+//     return view('top');
+// });
+
 Route::get('/', function () {
+    if (auth()->check()) {
+        return redirect()->route('dashboard');
+    }
     return view('top');
 });
 
