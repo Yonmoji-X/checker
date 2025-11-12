@@ -34,28 +34,27 @@
         @include('layouts.aside')
 
         <!-- ✅ メインコンテンツ -->
-<!-- ✅ メインコンテンツ -->
-<div
-    :class="{
-        'translate-x-64 md:translate-x-0': open,  // モバイル時のみ右スライド
-    }"
-    class="flex-1 flex flex-col relative transform transition-transform duration-300 ease-in-out"
->
-    <!-- Header -->
-    @isset($header)
-        <header class="bg-white dark:bg-gray-800 shadow fixed w-full md:static z-30">
-            <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 h-14">
-                {{ $header }}
-            </div>
-        </header>
-    @endisset
+        <div
+            :class="{
+                'translate-x-64 md:translate-x-0': open,  // モバイル時のみ右スライド
+            }"
+            class="flex-1 flex flex-col relative transform transition-transform duration-300 ease-in-out"
 
-    <!-- Page Content -->
-    <main class="flex-1 p-6 mt-14 md:mt-0 overflow-y-auto" style="max-height: calc(100vh - 3.5rem);">
-        {{ $slot }}
-    </main>
-</div>
+        >
+            <!-- Header -->
+            @isset($header)
+                <header class="bg-white dark:bg-gray-800 shadow fixed w-full md:static z-30">
+                    <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 h-14">
+                        {{ $header }}
+                    </div>
+                </header>
+            @endisset
 
+            <!-- Page Content -->
+            <main class="flex-1 p-6 overflow-y-auto mt-14 md:mt-0">
+                {{ $slot }}
+            </main>
+        </div>
 
         <!-- ✅ 背景フェード（モバイル時のみ） -->
         <div
