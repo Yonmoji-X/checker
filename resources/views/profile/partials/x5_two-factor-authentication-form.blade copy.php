@@ -1,11 +1,11 @@
 <div>
     <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
-        ２段階認証
+        二段階認証
     </h2>
 
     @if (auth()->user()->two_factor_secret)
         <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-            ２段階認証は現在有効です。
+            二段階認証は現在有効です。
         </p>
 
         {{-- QRコード --}}
@@ -33,12 +33,12 @@
             @csrf
             @method('DELETE')
             <x-primary-button class="mt-4">
-                ２段階認証を無効化
+                二段階認証を無効化
             </x-primary-button>
         </form>
     @else
         <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-            ２段階認証を有効にすると、ログイン時に認証アプリによる確認が必要になります。
+            二段階認証を有効にすると、ログイン時に認証アプリによる確認が必要になります。
         </p>
         <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
             必ずPCで設定を行ってください。
@@ -48,7 +48,7 @@
         <form method="POST" action="{{ url('/user/two-factor-authentication') }}">
             @csrf
             <x-primary-button type="submit" class="mt-4">
-                ２段階認証を有効化
+                二段階認証を有効化
             </x-primary-button>
         </form>
     @endif
@@ -97,11 +97,11 @@ document.addEventListener('DOMContentLoaded', async function () {
         const m = String(now.getMinutes()).padStart(2,'0');
 
         tempDiv.innerHTML = `
-            <h1 style="font-size:24px; margin-bottom:5px;">SafeTimeCard ２段階認証</h1>
+            <h1 style="font-size:24px; margin-bottom:5px;">SafeTimeCard 二段階認証</h1>
             <p style="font-size:12px; margin-bottom:5px;">日付: ${yyyy}/${mm}/${dd} ${h}:${m}</p>
             <p style="font-size:10px; line-height:1.2; margin-bottom:10px;">
             これは重要なファイルです。安全に保管してください。<br>
-            Google Authenticatorをスマートフォンにダウンロードし、QRコードを読み込んで２段階認証を有効化してください。
+            Google Authenticatorをスマートフォンにダウンロードし、QRコードを読み込んで二段階認証を有効化してください。
             </p>
         `;
         document.body.appendChild(tempDiv);
