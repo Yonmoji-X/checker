@@ -24,6 +24,8 @@
                 <ul class="list-none text-gray-600 dark:text-gray-400 text-sm">
                     @if(isset($record->check_item) && $record->check_item == 1)
                         <li class="mb-1">チェック: はい</li>
+                    @elseif(isset($record->check_item) && $record->check_item == 0)
+                        <li class="mb-1">チェック: いいえ</li>
                     @endif
                     @if(isset($record->content_item) && $record->content_item !== '')
                         <li class="mb-1">内容: {{ $record->content_item }}</li>

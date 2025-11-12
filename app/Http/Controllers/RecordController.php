@@ -62,19 +62,23 @@ class RecordController extends Controller
 
         // ページングされた head_id に属するレコードを取得（template を eager load）
         $grouped = Record::query()
-            ->with('template') // ★ここを追加
+            ->with('template')
             ->where('user_id', $userId)
             ->whereBetween('created_at', [$startDate, $endDate])
             ->whereIn('head_id', $headIds->pluck('head_id'))
+            ->when($memberId, fn($q) => $q->where('member_id', $memberId))
+            ->when($templateMemberStatus, fn($q) => $q->where('member_status', $templateMemberStatus))
+            ->when($templateClockStatus !== null, fn($q) => $q->where('clock_status', $templateClockStatus))
             ->where(function($query) {
-                $query->where('check_item', 1)
+                $query->whereNotNull('check_item') 
                     ->orWhereNotNull('photo_item')
                     ->orWhereNotNull('content_item')
-                    ->orWhere('temperature_item', '!=', null);
+                    ->orWhereNotNull('temperature_item');
             })
             ->orderBy('created_at', 'desc')
             ->get()
             ->groupBy('head_id');
+
         // dd($grouped);
 
         // 部分ビューを返す処理
